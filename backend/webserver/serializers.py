@@ -24,22 +24,22 @@ class HostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Host 
-        fields = ('host_id', 'created_at', 'ip_address')
+        fields = ('id', 'created_at', 'ip_address')
 
 class InstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Instance 
-        fields = ('instance_id', 'created_at', 'user_id', 'host_id', 'port')
+        fields = ('id', 'created_at', 'user_id', 'host_id', 'port')
 
 class FeedbackTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FeedbackType 
-        fields = ('type_id', 'created_at', 'name')
+        fields = ('id', 'created_at', 'name')
 
 class FeedbackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Feedback
-        fields = ('feedback_id', 'created_at', 'details', 'type_id', 'demo_id')
+        fields = ('id', 'created_at', 'details', 'type', 'demo')
