@@ -1,12 +1,5 @@
 from rest_framework import serializers
-#from .models import Student
 from .models import User, Demo, Instance, Host, FeedbackType, Feedback
-
-# class StudentSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = Student 
-#         fields = ('pk', 'name', 'email', 'document', 'phone', 'registrationDate')
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
