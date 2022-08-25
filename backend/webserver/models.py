@@ -15,32 +15,34 @@ from django.db import models
 class User(models.Model):
     id = models.AutoField("user_id", primary_key=True)
     created_at = models.DateTimeField("created_at", auto_now_add=True)
-    name = models.CharField("name", max_length=240)
+    name = models.CharField("name", max_length=240, unique=True)
+    #temporary solution until password authentication is actually implemented
     password = models.CharField("password", max_length=240)
     is_admin = models.BooleanField("is_admin")
     
     def __str__(self):
-        return self.name
+        return self.id
 
 class Demo(models.Model):
     id = models.AutoField("demo_id", primary_key=True)
     created_at = models.DateTimeField("created_at", auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField("title", max_length=240)
+    title = models.CharField("title", max_length=240, unique=True)
     short_desc = models.CharField("short_desc", max_length=240)
     detail_desc = models.CharField("detail_desc", max_length=240)
-    file_path = models.FilePathField("file_path")
+    #temporary solution until upload is actually implemented
+    file_path = models.CharField("file_path", max_length=240)
     
     def __str__(self):
-        return self.name
+        return self.id
 
 class Host(models.Model):
     id = models.AutoField("host_id", primary_key=True)
     created_at = models.DateTimeField("created_at", auto_now_add=True)
-    ip_address = models.GenericIPAddressField("host")
+    ip_address = models.GenericIPAddressField("host", unique=True)
     
     def __str__(self):
-        return self.name
+        return self.id
 
 class Instance(models.Model):
     id = models.AutoField("instance_id", primary_key=True)
@@ -49,16 +51,19 @@ class Instance(models.Model):
     host = models.ForeignKey(Host, on_delete=models.CASCADE)
     port = models.IntegerField("port")
     
+    class Meta:
+        unique_together = ("host", "port")
+
     def __str__(self):
-        return self.name
+        return self.id
 
 class FeedbackType(models.Model):
     id = models.AutoField("type_id", primary_key=True)
     created_at = models.DateTimeField("created_at", auto_now_add=True)
-    name = models.CharField("name", max_length=240)
+    name = models.CharField("name", max_length=240, unique=True)
     
     def __str__(self):
-        return self.name
+        return self.id
 
 class Feedback(models.Model):
     id = models.AutoField("feedback_id", primary_key=True)
@@ -68,5 +73,5 @@ class Feedback(models.Model):
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.name
+        return self.id
 

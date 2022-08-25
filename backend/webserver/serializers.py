@@ -9,16 +9,16 @@ from .models import User, Demo, Instance, Host, FeedbackType, Feedback
 #         fields = ('pk', 'name', 'email', 'document', 'phone', 'registrationDate')
 
 class UserSerializer(serializers.ModelSerializer):
-
+    password = serializers.CharField(write_only=True)
     class Meta:
         model = User 
-        fields = ('id', 'created_at', 'name', 'password', 'is_admin')
+        fields = ('id', 'created_at', 'name', 'is_admin', 'password')
 
 class DemoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Demo 
-        fields = ('demo_id', 'created_at', 'user_id', 'title', 'short_desc', 'detail_desc', 'file_path')
+        fields = ('id', 'created_at', 'created_by', 'title', 'short_desc', 'detail_desc', 'file_path')
 
 class HostSerializer(serializers.ModelSerializer):
 
