@@ -3,14 +3,14 @@ import { connect } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { Paper, Typography } from "@mui/material";
 
-//import Navbar from "./Navbar";
+import Navbar from "./Navbar";
 
 const WrapperContainer = (props) => {
   const { isLoggedIn, pageTitle } = props;
 
   return isLoggedIn ? (
     <Fragment>
-      {/* <Navbar /> */}
+      <Navbar />
       <Paper>
         <Typography variant={"h5"} component={"h5"} gutterBottom align="left">
           {pageTitle}
