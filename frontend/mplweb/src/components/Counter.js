@@ -5,6 +5,7 @@ import {
   decrement,
   increment,
   incrementByAmount,
+  getUserDetail,
   incrementAsync,
   incrementIfOdd,
 } from "../slices/counterSlice";
@@ -14,7 +15,8 @@ function Counter(props) {
   const dispatch = useDispatch();
   const [incrementAmount, setIncrementAmount] = useState(2);
   const incrementValue = Number(incrementAmount) || 0;
-  const { count, increment, decrement, incrementByAmount } = props;
+  const { count, increment, decrement, incrementByAmount, getUserDetail } =
+    props;
   return (
     <div>
       <div>
@@ -36,9 +38,17 @@ function Counter(props) {
         <button
           aria-label="Increment by value"
           // onClick={() => dispatch(increment())}
-          onClick={() => incrementByAmount(incrementAmount)}
+          onClick={() => incrementByAmount(incrementAmount, "test", "jimmy")}
         >
           + amount
+        </button>
+        <button
+          aria-label="get user detail"
+          onClick={() =>
+            getUserDetail({ id: 3, param2: "test", param3: "jimmy" })
+          }
+        >
+          get user 3's details
         </button>
       </div>
       <div>
@@ -70,6 +80,10 @@ const mapDispatchToProps = (dispatch) => {
     increment: () => dispatch(increment()),
     decrement: () => dispatch(decrement()),
     incrementByAmount: (amount) => dispatch(incrementByAmount(amount)),
+    getUserDetail: (params) => {
+      console.log(params);
+      dispatch(getUserDetail(params));
+    },
   };
 };
 
