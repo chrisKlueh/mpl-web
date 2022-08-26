@@ -6,7 +6,7 @@ export function* workerLogin({ payload }) {
   const { username, password } = payload;
   try {
     yield call(loginReq, username, password);
-    yield put(loginSuccess({ userid: 1, loginToken: "hans" }));
+    yield put(loginSuccess({ userId: 1, loginToken: "hans" }));
   } catch (error) {
     yield put(loginError());
   }

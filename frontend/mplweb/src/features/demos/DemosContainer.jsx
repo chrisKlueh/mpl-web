@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import WrapperContainer from "../wrapper/WrapperContainer";
 import { showDemosRequest } from "../../slices/demosSlice";
 
 class DemosContainer extends Component {
@@ -37,10 +38,9 @@ class DemosContainer extends Component {
   render() {
     const { isLoading, demos } = this.props;
     return (
-      <div>
-        <h1>DemosContainer</h1>
+      <WrapperContainer pageTitle="DemosContainer">
         {this.renderDemos(demos, isLoading)}
-      </div>
+      </WrapperContainer>
     );
   }
 }
