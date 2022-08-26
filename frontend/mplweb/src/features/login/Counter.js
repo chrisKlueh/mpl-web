@@ -6,7 +6,7 @@ import {
   increment,
   incrementByAmount,
   getUserDetail,
-} from "../slices/counterSlice";
+} from "../../slices/counterSlice";
 function Counter(props) {
   // const count = useSelector(selectCount);
   const [incrementAmount] = useState(2);
