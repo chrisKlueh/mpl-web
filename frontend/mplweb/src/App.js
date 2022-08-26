@@ -1,11 +1,14 @@
 import "./App.css";
-import Counter from "./components/Counter";
+import { BrowserRouter as Router } from "react-router-dom";
+import Routing from "./features/routing/Routes";
 
 function App() {
   return (
-    <div className="App">
-      <Counter />
-    </div>
+    <Router>
+      <div className="App">
+        <Routing />
+      </div>
+    </Router>
   );
 }
 
