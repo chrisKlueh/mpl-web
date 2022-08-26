@@ -10,7 +10,7 @@ export default class Routing extends Component {
     return (
       <Routes>
         <Route path="/login" element={<LogInContainer isSignedUp={true} />} />
-        <Route path="/signup" element={<LogInContainer isSignedUp={false} />} />
+        {/* <Route path="/signup" element={<LogInContainer isSignedUp={false} />} /> */}
         <Route path="/demos" element={<DemosContainer />} />
         <Route path="/instance/:id" element={<InstanceContainer />} />
         <Route path="/feedback" element={<FeedbackContainer />} />

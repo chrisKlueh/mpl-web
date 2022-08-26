@@ -116,4 +116,14 @@ def feedback_detail(request, pk):
     elif request.method == 'DELETE':
         feedback.delete()
         return Response(status=status.HTTP_200_OK)
-        
+
+#todo
+@api_view(['POST'])
+def login(request):
+    if request.method == 'POST':
+        # serializer = FeedbackSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        return Response(status=status.HTTP_201_CREATED)
+
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
