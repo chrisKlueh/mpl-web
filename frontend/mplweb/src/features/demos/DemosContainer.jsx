@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import WrapperContainer from "../wrapper/WrapperContainer";
 import { showDemosRequest } from "../../slices/demosSlice";
+import DemosList from "./DemosList";
 
 class DemosContainer extends Component {
   componentDidMount() {
@@ -38,7 +39,8 @@ class DemosContainer extends Component {
     const { isLoading, demos } = this.props;
     return (
       <WrapperContainer pageTitle="DemosContainer">
-        {this.renderDemos(demos, isLoading)}
+        {/* {this.renderDemos(demos, isLoading)} */}
+        <DemosList listItems={demos} isGettingDemos={isLoading} jens={"jens"} />
       </WrapperContainer>
     );
   }
