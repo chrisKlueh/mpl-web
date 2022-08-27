@@ -14,15 +14,22 @@ import {
 import { Delete, Edit, Monitor, PlayArrow } from "@mui/icons-material";
 import { connect } from "react-redux";
 
-import ListRowSkeleton from "./ListRowSkeleton";
+import ListRowSkeleton from "../wrapper/ListRowSkeleton";
+import ConfirmationDialog from "../wrapper/ConfirmationDialog";
 import { deleteDemoRequest } from "../../slices/demosSlice";
 
 const DemosList = (props) => {
   //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
   const [selectedId, setSelectedId] = useState(null);
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const navigate = useNavigate();
   const { isGettingDemos, listItems, deleteDemoRequest } = props;
+
+  const updateSelectedAndOpenDialog = (id) => {
+    setSelectedId(id);
+    setDeleteDialogOpen(true);
+  };
 
   const handleSpawnInstance = (id) => {
     setSelectedId(id);
@@ -32,7 +39,7 @@ const DemosList = (props) => {
   };
 
   const handleDeleteDemo = (id) => {
-    setSelectedId(id);
+    // setSelectedId(id);
     deleteDemoRequest(id);
   };
 
@@ -76,7 +83,7 @@ const DemosList = (props) => {
                   <IconButton
                     edge="end"
                     aria-label="delete"
-                    onClick={() => handleDeleteDemo(listItem.id)}
+                    onClick={() => updateSelectedAndOpenDialog(listItem.id)}
                   >
                     <Delete />
                   </IconButton>
@@ -102,6 +109,13 @@ const DemosList = (props) => {
           <div>this is a placeholder cause nothing seems to be here</div>
         )}
       </List>
+      <ConfirmationDialog
+        title="Confirm demo deletion"
+        description="Do you really want to delete this demo?"
+        handleClose={() => setDeleteDialogOpen(false)}
+        handleConfirm={() => handleDeleteDemo(selectedId)}
+        open={isDeleteDialogOpen}
+      />
     </div>
   );
 };
