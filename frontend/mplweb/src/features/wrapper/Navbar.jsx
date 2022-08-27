@@ -11,7 +11,7 @@ import Avatar from "@mui/material/Avatar";
 // import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
+import TimelineIcon from "@mui/icons-material/Timeline";
 
 import { Link } from "react-router-dom";
 
@@ -45,7 +45,7 @@ const Navbar = (props) => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <TimelineIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Link to="/demos" style={{ textDecoration: "none", color: "white" }}>
             <Typography
               variant="h6"
