@@ -10,7 +10,7 @@ const WrapperContainer = (props) => {
 
   return isLoggedIn ? (
     <Fragment>
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn} />
       <Paper>
         <Typography variant={"h5"} component={"h5"} gutterBottom align="left">
           {pageTitle}

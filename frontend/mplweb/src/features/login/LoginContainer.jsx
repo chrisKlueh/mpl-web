@@ -1,7 +1,9 @@
 import React from "react";
-import LoginForm from "./LoginForm";
 import { Navigate } from "react-router-dom";
 import { connect } from "react-redux";
+
+import LoginForm from "./LoginForm";
+import Navbar from "../wrapper/Navbar";
 
 const LoginContainer = (props) => {
   const { isLoggedIn } = props;
@@ -17,6 +19,7 @@ const LoginContainer = (props) => {
         backgroundPosition: "center, center",
       }}
     >
+      <Navbar isLoggedIn={isLoggedIn} />
       {isLoggedIn && <Navigate to={"/demos"} />}
       <div
         style={{
@@ -25,7 +28,6 @@ const LoginContainer = (props) => {
           right: 0,
           top: 0,
           bottom: 0,
-          justifyContent: "center",
           zIndex: 1,
           display: "flex",
         }}
