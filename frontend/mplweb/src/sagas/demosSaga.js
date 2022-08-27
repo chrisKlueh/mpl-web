@@ -9,7 +9,6 @@ import {
 export function* workerShowDemos() {
   try {
     const res = yield call(showDemosReq);
-    console.log(res.data);
     yield put(showDemosSuccess(res.data));
   } catch (error) {
     yield put(showDemosError());
