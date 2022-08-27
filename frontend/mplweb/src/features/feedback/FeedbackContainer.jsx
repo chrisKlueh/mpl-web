@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import WrapperContainer from "../wrapper/WrapperContainer";
-// import { showFeedbackRequest } from "../../slices/feedbackSlice";
+import { showFeedbackRequest } from "../../slices/feedbackSlice";
 
 class FeedbackContainer extends Component {
   componentDidMount() {
@@ -10,22 +10,23 @@ class FeedbackContainer extends Component {
   }
 
   handleShowFeedback = () => {
-    // const { showFeedbackRequest } = this.props;
-    // showFeedbackRequest();
+    const { showFeedbackRequest } = this.props;
+    showFeedbackRequest();
   };
 
   renderFeedback = (feedback, isLoading) => {
     if (isLoading) {
       return <div>LOADING...</div>;
     } else {
-      return feedback.map((demo) => {
+      console.log(feedback);
+      return feedback.map((feedback) => {
         return (
           <div>
-            <div key="header">
-              {feedback.id} {feedback.created_at} {feedback.type}{" "}
-              {feedback.demo}
+            <div>
+              id: {feedback.id} created_at: {feedback.created_at} type:{" "}
+              {feedback.type} demo: {feedback.demo}
             </div>
-            <div key="details">{feedback.details}</div>
+            <div>details: {feedback.details}</div>
             <br />
           </div>
         );
@@ -34,10 +35,10 @@ class FeedbackContainer extends Component {
   };
 
   render() {
-    // const { isLoading, feedback } = this.props;
+    const { isLoading, feedback } = this.props;
     return (
       <WrapperContainer pageTitle="FeedbackContainer">
-        {/* {this.renderFeedback(feedback, isLoading)} */}
+        {this.renderFeedback(feedback, isLoading)}
       </WrapperContainer>
     );
   }
@@ -45,14 +46,14 @@ class FeedbackContainer extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    // feedback: state.feedback.feedback,
-    // isLoading: state.demos.isGettingFeedback,
+    feedback: state.feedback.feedback,
+    isLoading: state.feedback.isGettingFeedback,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    // showFeedbackRequest: () => dispatch(showFeedbackRequest()),
+    showFeedbackRequest: () => dispatch(showFeedbackRequest()),
   };
 };
 

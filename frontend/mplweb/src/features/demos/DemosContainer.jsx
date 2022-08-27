@@ -21,12 +21,12 @@ class DemosContainer extends Component {
       return demos.map((demo) => {
         return (
           <div>
-            <div key="header">
+            <div>
               {demo.id} {demo.created_at} {demo.created_by} {demo.file_path}
             </div>
-            <div key="title">{demo.title}</div>
-            <div key="short_desc">{demo.short_desc}</div>
-            <div key="detail_desc">{demo.detail_desc}</div>
+            <div>{demo.title}</div>
+            <div>{demo.short_desc}</div>
+            <div>{demo.detail_desc}</div>
             <br />
           </div>
         );
