@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 
 import LoginForm from "./LoginForm";
-import Navbar from "../wrapper/Navbar";
+import Navbar from "../general/Navbar";
 
 const LoginContainer = (props) => {
   const { isLoggedIn } = props;

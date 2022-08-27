@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import WrapperContainer from "../wrapper/WrapperContainer";
+import WrapperContainer from "../general/WrapperContainer";
 import { showDemosRequest } from "../../slices/demosSlice";
 import DemosList from "./DemosList";
 

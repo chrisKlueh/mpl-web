@@ -14,8 +14,8 @@ import {
 import { Delete, Edit, Monitor, PlayArrow } from "@mui/icons-material";
 import { connect } from "react-redux";
 
-import ListRowSkeleton from "../wrapper/ListRowSkeleton";
-import ConfirmationDialog from "../wrapper/ConfirmationDialog";
+import ListRowSkeleton from "../general/ListRowSkeleton";
+import ConfirmationDialog from "../general/ConfirmationDialog";
 import { deleteDemoRequest } from "../../slices/demosSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 

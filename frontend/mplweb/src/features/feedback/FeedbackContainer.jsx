@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import WrapperContainer from "../wrapper/WrapperContainer";
+import WrapperContainer from "../general/WrapperContainer";
 import { showFeedbackRequest } from "../../slices/feedbackSlice";
 
 class FeedbackContainer extends Component {
