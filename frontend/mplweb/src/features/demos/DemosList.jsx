@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   List,
   ListItem,
@@ -14,9 +15,26 @@ import { Delete, Edit, Monitor, PlayArrow } from "@mui/icons-material";
 import { connect } from "react-redux";
 
 import ListRowSkeleton from "./ListRowSkeleton";
+import { deleteDemoRequest } from "../../slices/demosSlice";
 
 const DemosList = (props) => {
-  const { isGettingDemos, listItems } = props;
+  //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
+  const [selectedId, setSelectedId] = useState(null);
+
+  const navigate = useNavigate();
+  const { isGettingDemos, listItems, deleteDemoRequest } = props;
+
+  const handleSpawnInstance = (id) => {
+    setSelectedId(id);
+    //todo:
+    //spawn instance request (liefert zu öffnende instance id zurück)
+    navigate(`/instance/${1}`);
+  };
+
+  const handleDeleteDemo = (id) => {
+    setSelectedId(id);
+    deleteDemoRequest(id);
+  };
 
   const createListItems = (listItemArray) => {
     if (isGettingDemos) {
@@ -41,7 +59,11 @@ const DemosList = (props) => {
               />
               <ListItemSecondaryAction>
                 <Tooltip title="Spawn instance">
-                  <IconButton edge="end" aria-label="spawn">
+                  <IconButton
+                    edge="end"
+                    aria-label="spawn"
+                    onClick={() => handleSpawnInstance(listItem.id)}
+                  >
                     <PlayArrow />
                   </IconButton>
                 </Tooltip>
@@ -51,7 +73,11 @@ const DemosList = (props) => {
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Delete demo">
-                  <IconButton edge="end" aria-label="delete">
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => handleDeleteDemo(listItem.id)}
+                  >
                     <Delete />
                   </IconButton>
                 </Tooltip>
@@ -85,7 +111,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    deleteDemoRequest: (id) => dispatch(deleteDemoRequest(id)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DemosList);

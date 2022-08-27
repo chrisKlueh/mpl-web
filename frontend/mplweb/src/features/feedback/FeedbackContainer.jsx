@@ -18,7 +18,6 @@ class FeedbackContainer extends Component {
     if (isLoading) {
       return <div>LOADING...</div>;
     } else {
-      console.log(feedback);
       return feedback.map((feedback) => {
         return (
           <div>

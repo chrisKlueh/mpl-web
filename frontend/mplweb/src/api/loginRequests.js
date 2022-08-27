@@ -1,12 +1,13 @@
-import { post } from "axios";
+import axios from "axios";
 import { API_URL } from "../constants/index";
 
 export const loginReq = (username, password) => {
   return new Promise((resolve, reject) => {
-    post(`${API_URL}login/`, {
-      username,
-      password,
-    })
+    axios
+      .post(`${API_URL}login/`, {
+        username,
+        password,
+      })
       .then((response) => {
         resolve(response);
       })
