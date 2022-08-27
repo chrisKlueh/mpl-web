@@ -18,18 +18,20 @@ class FeedbackContainer extends Component {
     if (isLoading) {
       return <div>LOADING...</div>;
     } else {
-      return feedback.map((feedback) => {
-        return (
-          <div>
+      if (feedback.length > 0) {
+        return feedback.map((feedback) => {
+          return (
             <div>
-              id: {feedback.id} created_at: {feedback.created_at} type:{" "}
-              {feedback.type} demo: {feedback.demo}
+              <div>
+                id: {feedback.id} created_at: {feedback.created_at} type:{" "}
+                {feedback.type} demo: {feedback.demo}
+              </div>
+              <div>details: {feedback.details}</div>
+              <br />
             </div>
-            <div>details: {feedback.details}</div>
-            <br />
-          </div>
-        );
-      });
+          );
+        });
+      } else return <div>this is a placeholder cause theres no feedback</div>;
     }
   };
 
