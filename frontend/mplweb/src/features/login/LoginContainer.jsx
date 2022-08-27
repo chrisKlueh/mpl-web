@@ -6,9 +6,32 @@ import { connect } from "react-redux";
 const LoginContainer = (props) => {
   const { isLoggedIn } = props;
   return (
-    <div>
+    <div
+      style={{
+        position: "relative",
+        height: "100vh",
+        width: "100vw",
+        // backgroundImage: `url(${background})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center, center",
+      }}
+    >
       {isLoggedIn && <Navigate to={"/demos"} />}
-      <LoginForm />
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          justifyContent: "center",
+          zIndex: 1,
+          display: "flex",
+        }}
+      >
+        <LoginForm />
+      </div>
     </div>
   );
 };

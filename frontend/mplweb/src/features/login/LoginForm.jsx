@@ -20,8 +20,17 @@ class LogInForm extends React.Component {
   render() {
     const { isLoggingIn } = this.props;
     return (
-      <Paper>
-        <Typography variant="h4" component="h4" gutterBottom>
+      <Paper
+        sx={{
+          margin: "auto auto",
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h4"
+          gutterBottom
+          sx={{ paddingTop: "10px" }}
+        >
           Login
         </Typography>
         <Formik
@@ -41,11 +50,13 @@ class LogInForm extends React.Component {
             <Form>
               <Grid
                 container
-                spacing={4}
-                alignItems="flex-end"
-                justify="center"
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 10px",
+                }}
               >
-                <Grid item>
+                <Grid item sx={{ margin: "0 10px 0 0" }}>
                   <Face />
                 </Grid>
                 <Grid item>
@@ -54,18 +65,20 @@ class LogInForm extends React.Component {
                     name="username"
                     type="text"
                     label="Username"
-                    placeholder="fdai0000"
+                    placeholder="fdai1234"
                     disabled={isLoggingIn}
                   />
                 </Grid>
               </Grid>
               <Grid
                 container
-                spacing={4}
-                alignItems="flex-end"
-                justify="center"
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 10px",
+                }}
               >
-                <Grid item>
+                <Grid item sx={{ margin: "0 10px 0 0" }}>
                   <Fingerprint />
                 </Grid>
                 <Grid item>
@@ -78,12 +91,18 @@ class LogInForm extends React.Component {
                   />
                 </Grid>
               </Grid>
-              <Grid container justify="center" style={{ marginTop: "10px" }}>
+              <Grid
+                container
+                sx={{
+                  marginTop: "10px",
+                  justifyContent: "center",
+                }}
+              >
                 <Grid item>
                   <Button
                     variant="outlined"
                     color="primary"
-                    style={{ textTransform: "none" }}
+                    sx={{ textTransform: "none", marginBottom: "10px" }}
                     disabled={isLoggingIn}
                     onClick={submitForm}
                   >
