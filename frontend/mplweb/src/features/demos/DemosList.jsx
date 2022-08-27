@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import ListRowSkeleton from "../wrapper/ListRowSkeleton";
 import ConfirmationDialog from "../wrapper/ConfirmationDialog";
 import { deleteDemoRequest } from "../../slices/demosSlice";
+import { formatIsoDate } from "../../helpers/formatHelper";
 
 const DemosList = (props) => {
   //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
@@ -61,7 +62,7 @@ const DemosList = (props) => {
                 secondary={listItem.short_desc}
               />
               <ListItemText
-                primary={listItem.created_at}
+                primary={formatIsoDate(listItem.created_at, true)}
                 secondary={"By " + listItem.created_by}
               />
               <ListItemSecondaryAction>
