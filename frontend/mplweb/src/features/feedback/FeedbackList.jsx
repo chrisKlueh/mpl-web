@@ -16,8 +16,8 @@ import { connect } from "react-redux";
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import FeedbackDetails from "./FeedbackDetails";
-// import { deleteFeedbackRequest } from "../../slices/demosSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
+import { deleteFeedbackRequest } from "../../slices/feedbackSlice";
 import styles from "./FeedbackList.module.css";
 
 const FeedbackList = (props) => {
@@ -25,12 +25,8 @@ const FeedbackList = (props) => {
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isFeedbackDetailsOpen, setFeedbackDetailsOpen] = useState(false);
 
-  const {
-    isLoadingFeedback,
-    listItems,
-    // deleteFeedbackRequest
-  } = props;
-  console.log(listItems);
+  const { isLoadingFeedback, listItems, deleteFeedbackRequest } = props;
+
   const updateSelectedAndOpenDialog = (listItem, type) => {
     setSelectedListItem(listItem);
     switch (type) {
@@ -46,8 +42,7 @@ const FeedbackList = (props) => {
   };
 
   const handleDeleteFeedback = (id) => {
-    // deleteFeedbackRequest(id);
-    console.log(`deleting feedback ${id}`);
+    deleteFeedbackRequest(id);
   };
 
   const truncateFeedbackDetails = (details) => {
@@ -96,7 +91,7 @@ const FeedbackList = (props) => {
                     edge="end"
                     aria-label="delete"
                     onClick={() =>
-                      updateSelectedAndOpenDialog(selectedListItem.id, "DELETE")
+                      updateSelectedAndOpenDialog(listItem, "DELETE")
                     }
                   >
                     <Delete />
@@ -139,14 +134,10 @@ const FeedbackList = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {};
-};
-
 const mapDispatchToProps = (dispatch) => {
   return {
-    // deleteFeedbackRequest: (id) => dispatch(deleteFeedbackRequest(id)),
+    deleteFeedbackRequest: (id) => dispatch(deleteFeedbackRequest(id)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FeedbackList);
+export default connect(null, mapDispatchToProps)(FeedbackList);

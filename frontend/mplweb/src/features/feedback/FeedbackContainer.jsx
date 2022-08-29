@@ -28,7 +28,8 @@ class FeedbackContainer extends Component {
 const mapStateToProps = (state) => {
   return {
     feedback: state.feedback.feedback,
-    isLoading: state.feedback.isGettingFeedback,
+    isLoading:
+      state.feedback.isGettingFeedback || state.feedback.isDeletingFeedback,
   };
 };
 
