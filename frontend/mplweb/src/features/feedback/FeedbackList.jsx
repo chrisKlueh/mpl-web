@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import FeedbackDetails from "./FeedbackDetails";
+import Placeholder from "../general/Placeholder";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { deleteFeedbackRequest } from "../../slices/feedbackSlice";
 import styles from "./FeedbackList.module.css";
@@ -115,7 +116,7 @@ const FeedbackList = (props) => {
             {createListItems(listItems)}
           </div>
         ) : (
-          <div>this is a placeholder cause nothing seems to be here</div>
+          <Placeholder />
         )}
       </List>
       <ConfirmationDialog

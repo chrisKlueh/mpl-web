@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
+import Placeholder from "../general/Placeholder";
 import { deleteDemoRequest } from "../../slices/demosSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import styles from "./DemosList.module.css";
@@ -115,7 +116,7 @@ const DemosList = (props) => {
             {createListItems(listItems)}
           </div>
         ) : (
-          <div>this is a placeholder cause nothing seems to be here</div>
+          <Placeholder />
         )}
       </List>
       <ConfirmationDialog
