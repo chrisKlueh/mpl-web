@@ -1,0 +1,17 @@
+.paper {
+  width: 75%;
+  height: calc(100vh - 300px);
+  margin: 96px auto;
+  padding-top: 5px;
+}
+
+.pageTitle {
+  margin: 0 0 0 10px;
+}
+
+.children {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 382px);
+  justify-content: space-between;
+}

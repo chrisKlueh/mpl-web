@@ -2,27 +2,9 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { Paper, Typography } from "@mui/material";
-import { styled } from "@mui/system";
 
 import Navbar from "./Navbar";
-
-const StyledPaper = styled(Paper)(() => ({
-  width: "75%",
-  height: "calc(100vh - 300px)",
-  margin: "96px auto",
-  paddingTop: "5px",
-}));
-
-const StyledTypography = styled(Typography)(() => ({
-  margin: "0 0 0 10px",
-}));
-
-const StyledChildren = styled("div")(() => ({
-  display: "flex",
-  flexDirection: "column",
-  height: "calc(100vh - 382px)",
-  justifyContent: "space-between",
-}));
+import styles from "./WrapperContainer.module.css";
 
 const WrapperContainer = (props) => {
   const { isLoggedIn, pageTitle } = props;
@@ -30,17 +12,18 @@ const WrapperContainer = (props) => {
   return isLoggedIn ? (
     <Fragment>
       <Navbar isLoggedIn={isLoggedIn} />
-      <StyledPaper>
-        <StyledTypography
+      <Paper className={styles.paper}>
+        <Typography
           variant={"h5"}
           component={"h5"}
           gutterBottom
           align="left"
+          className={styles.pageTitle}
         >
           {pageTitle}
-        </StyledTypography>
-        <StyledChildren>{props.children}</StyledChildren>
-      </StyledPaper>
+        </Typography>
+        <div className={styles.children}>{props.children}</div>
+      </Paper>
     </Fragment>
   ) : (
     <Navigate to={{ pathname: "/login" }} />
