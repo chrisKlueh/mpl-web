@@ -1,3 +1,9 @@
+.root {
+  height: 100vh;
+  background-image: url("../../background.jpg");
+  background-position: 40% 5%;
+}
+
 .paper {
   width: 75%;
   /* min-height: calc(100vh - 300px); */

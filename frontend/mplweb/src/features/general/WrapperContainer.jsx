@@ -10,7 +10,7 @@ const WrapperContainer = (props) => {
   const { isLoggedIn, pageTitle } = props;
 
   return isLoggedIn ? (
-    <Fragment>
+    <div className={styles.root}>
       <Navbar isLoggedIn={isLoggedIn} />
       <Paper className={styles.paper}>
         <Typography
@@ -24,7 +24,7 @@ const WrapperContainer = (props) => {
         </Typography>
         <div className={styles.children}>{props.children}</div>
       </Paper>
-    </Fragment>
+    </div>
   ) : (
     <Navigate to={{ pathname: "/login" }} />
   );
