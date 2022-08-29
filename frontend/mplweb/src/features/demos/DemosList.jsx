@@ -18,6 +18,7 @@ import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import { deleteDemoRequest } from "../../slices/demosSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
+import styles from "./DemosList.module.css";
 
 const DemosList = (props) => {
   //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
@@ -46,12 +47,12 @@ const DemosList = (props) => {
 
   const createListItems = (listItemArray) => {
     if (isGettingDemos) {
-      return <ListRowSkeleton rows={5} />;
+      return <ListRowSkeleton rows={5} className={styles.skeleton} />;
     } else {
       return listItemArray.map((listItem) => {
         return (
           <Fragment>
-            <ListItem button key={listItem.id}>
+            <ListItem button key={listItem.id} className={styles.listItem}>
               <ListItemAvatar>
                 <Avatar>
                   <Monitor />
@@ -60,10 +61,12 @@ const DemosList = (props) => {
               <ListItemText
                 primary={listItem.title}
                 secondary={listItem.short_desc}
+                className={styles.listItemTitle}
               />
               <ListItemText
                 primary={formatIsoDate(listItem.created_at, true)}
                 secondary={"By " + listItem.created_by}
+                className={styles.listItemDate}
               />
               <ListItemSecondaryAction>
                 <Tooltip title="Spawn instance">
@@ -99,8 +102,8 @@ const DemosList = (props) => {
   };
 
   return (
-    <div>
-      <List dense={true}>
+    <div className={styles.root}>
+      <List dense={true} className={styles.list}>
         {listItems.length > 0 ? (
           <div>
             <Divider />
