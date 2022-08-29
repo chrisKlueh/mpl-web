@@ -17,11 +17,10 @@
 }
 
 .login {
-  margin-top: 10px;
+  margin: 10px 0;
   justify-content: center;
 }
 
 .loginButton {
   text-transform: none;
-  margin-bottom: 10px;
 }

@@ -46,8 +46,8 @@ class LogInForm extends React.Component {
           {({ submitForm }) => (
             <Form>
               <Grid container className={styles.grid}>
-                <Grid item className={styles.icon}>
-                  <Face />
+                <Grid item>
+                  <Face className={styles.icon} />
                 </Grid>
                 <Grid item>
                   <Field
@@ -61,8 +61,8 @@ class LogInForm extends React.Component {
                 </Grid>
               </Grid>
               <Grid container className={styles.grid}>
-                <Grid item className={styles.icon}>
-                  <Fingerprint />
+                <Grid item>
+                  <Fingerprint className={styles.icon} />
                 </Grid>
                 <Grid item>
                   <Field
