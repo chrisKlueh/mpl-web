@@ -8,6 +8,7 @@ import { TextField } from "formik-mui";
 
 import { loginRequest } from "../../slices/loginSlice";
 import { validateUsernameAndPasswords } from "./validationHelper";
+import styles from "./LoginForm.module.css";
 
 class LogInForm extends React.Component {
   handleLogin = (username, password) => {
@@ -20,16 +21,12 @@ class LogInForm extends React.Component {
   render() {
     const { isLoggingIn } = this.props;
     return (
-      <Paper
-        sx={{
-          margin: "auto auto",
-        }}
-      >
+      <Paper className={styles.paper}>
         <Typography
           variant="h4"
           component="h4"
           gutterBottom
-          sx={{ paddingTop: "10px" }}
+          className={styles.title}
         >
           Login
         </Typography>
@@ -48,15 +45,8 @@ class LogInForm extends React.Component {
         >
           {({ submitForm }) => (
             <Form>
-              <Grid
-                container
-                sx={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "0 10px",
-                }}
-              >
-                <Grid item sx={{ margin: "0 10px 0 0" }}>
+              <Grid container className={styles.grid}>
+                <Grid item className={styles.icon}>
                   <Face />
                 </Grid>
                 <Grid item>
@@ -70,15 +60,8 @@ class LogInForm extends React.Component {
                   />
                 </Grid>
               </Grid>
-              <Grid
-                container
-                sx={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "0 10px",
-                }}
-              >
-                <Grid item sx={{ margin: "0 10px 0 0" }}>
+              <Grid container className={styles.grid}>
+                <Grid item className={styles.icon}>
                   <Fingerprint />
                 </Grid>
                 <Grid item>
@@ -91,18 +74,12 @@ class LogInForm extends React.Component {
                   />
                 </Grid>
               </Grid>
-              <Grid
-                container
-                sx={{
-                  marginTop: "10px",
-                  justifyContent: "center",
-                }}
-              >
+              <Grid container className={styles.login}>
                 <Grid item>
                   <Button
                     variant="outlined"
                     color="primary"
-                    sx={{ textTransform: "none", marginBottom: "10px" }}
+                    className={styles.loginButton}
                     disabled={isLoggingIn}
                     onClick={submitForm}
                   >

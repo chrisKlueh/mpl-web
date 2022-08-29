@@ -1,0 +1,27 @@
+.paper {
+  margin: auto auto;
+}
+
+.title {
+  padding-top: 10px;
+}
+
+.grid {
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+}
+
+.icon {
+  margin: 0 10px 0 0;
+}
+
+.login {
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.loginButton {
+  text-transform: none;
+  margin-bottom: 10px;
+}
