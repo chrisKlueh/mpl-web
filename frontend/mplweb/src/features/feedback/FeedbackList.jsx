@@ -15,35 +15,43 @@ import { connect } from "react-redux";
 
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
+import FeedbackDetails from "./FeedbackDetails";
 // import { deleteFeedbackRequest } from "../../slices/demosSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import styles from "./FeedbackList.module.css";
 
 const FeedbackList = (props) => {
-  //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedListItem, setSelectedListItem] = useState(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isFeedbackDetailsOpen, setFeedbackDetailsOpen] = useState(false);
 
   const {
     isLoadingFeedback,
     listItems,
     // deleteFeedbackRequest
   } = props;
-
-  const updateSelectedAndOpenDialog = (id) => {
-    setSelectedId(id);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleShowFeedback = (id) => {
-    setSelectedId(id);
-    //todo: show feedback
-    console.log("feedback details");
+  console.log(listItems);
+  const updateSelectedAndOpenDialog = (listItem, type) => {
+    setSelectedListItem(listItem);
+    switch (type) {
+      case "DELETE":
+        setDeleteDialogOpen(true);
+        break;
+      case "FEEDBACK_DETAILS":
+        setFeedbackDetailsOpen(true);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleDeleteFeedback = (id) => {
     // deleteFeedbackRequest(id);
     console.log(`deleting feedback ${id}`);
+  };
+
+  const truncateFeedbackDetails = (details) => {
+    return details.length > 40 ? details.slice(0, 40) + "..." : details;
   };
 
   const createListItems = (listItemArray) => {
@@ -57,7 +65,9 @@ const FeedbackList = (props) => {
               button
               key={listItem.id}
               className={styles.listItem}
-              onClick={() => handleShowFeedback(listItem.id)}
+              onClick={() =>
+                updateSelectedAndOpenDialog(listItem, "FEEDBACK_DETAILS")
+              }
             >
               <ListItemAvatar>
                 <Avatar>
@@ -65,7 +75,7 @@ const FeedbackList = (props) => {
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary={listItem.type === 1 ? "Bug" : "Comment"}
+                primary={listItem.type === 1 ? "Bug Report" : "Comment"}
                 className={styles.genericListItem}
               />
               <ListItemText
@@ -73,7 +83,7 @@ const FeedbackList = (props) => {
                 className={styles.genericListItem}
               />
               <ListItemText
-                primary={listItem.details}
+                primary={truncateFeedbackDetails(listItem.details)}
                 className={styles.feedbackDetails}
               />
               <ListItemText
@@ -85,7 +95,9 @@ const FeedbackList = (props) => {
                   <IconButton
                     edge="end"
                     aria-label="delete"
-                    onClick={() => updateSelectedAndOpenDialog(listItem.id)}
+                    onClick={() =>
+                      updateSelectedAndOpenDialog(selectedListItem.id, "DELETE")
+                    }
                   >
                     <Delete />
                   </IconButton>
@@ -115,8 +127,13 @@ const FeedbackList = (props) => {
         title="Confirm feedback deletion"
         description="Do you really want to delete this feedback?"
         handleClose={() => setDeleteDialogOpen(false)}
-        handleConfirm={() => handleDeleteFeedback(selectedId)}
+        handleConfirm={() => handleDeleteFeedback(selectedListItem.id)}
         open={isDeleteDialogOpen}
+      />
+      <FeedbackDetails
+        feedbackDetails={selectedListItem}
+        handleClose={() => setFeedbackDetailsOpen(false)}
+        open={isFeedbackDetailsOpen}
       />
     </div>
   );

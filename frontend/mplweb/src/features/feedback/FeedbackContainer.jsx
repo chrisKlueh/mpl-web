@@ -15,32 +15,10 @@ class FeedbackContainer extends Component {
     showFeedbackRequest();
   };
 
-  // renderFeedback = (feedback, isLoading) => {
-  //   if (isLoading) {
-  //     return <div>LOADING...</div>;
-  //   } else {
-  //     if (feedback.length > 0) {
-  //       return feedback.map((feedback) => {
-  //         return (
-  //           <div>
-  //             <div>
-  //               id: {feedback.id} created_at: {feedback.created_at} type:{" "}
-  //               {feedback.type} demo: {feedback.demo}
-  //             </div>
-  //             <div>details: {feedback.details}</div>
-  //             <br />
-  //           </div>
-  //         );
-  //       });
-  //     } else return <div>this is a placeholder cause theres no feedback</div>;
-  //   }
-  // };
-
   render() {
     const { isLoading, feedback } = this.props;
     return (
-      <WrapperContainer pageTitle="FeedbackContainer">
-        {/* {this.renderFeedback(feedback, isLoading)} */}
+      <WrapperContainer pageTitle="Feedback">
         <FeedbackList listItems={feedback} isLoadingFeedback={isLoading} />
       </WrapperContainer>
     );
