@@ -38,9 +38,8 @@ class DemosContainer extends Component {
   render() {
     const { isLoading, demos } = this.props;
     return (
-      <WrapperContainer pageTitle="DemosContainer">
-        {/* {this.renderDemos(demos, isLoading)} */}
-        <DemosList listItems={demos} isGettingDemos={isLoading} jens={"jens"} />
+      <WrapperContainer pageTitle="Available Demos">
+        <DemosList listItems={demos} isGettingDemos={isLoading} />
       </WrapperContainer>
     );
   }

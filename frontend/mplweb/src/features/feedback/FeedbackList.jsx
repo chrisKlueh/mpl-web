@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   List,
   ListItem,
@@ -11,42 +10,44 @@ import {
   ListItemSecondaryAction,
   Tooltip,
 } from "@mui/material";
-import { Delete, Edit, Monitor, PlayArrow } from "@mui/icons-material";
+import { Delete, BugReport, Chat } from "@mui/icons-material";
 import { connect } from "react-redux";
 
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
-import { deleteDemoRequest } from "../../slices/demosSlice";
+// import { deleteFeedbackRequest } from "../../slices/demosSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
-import styles from "./DemosList.module.css";
+import styles from "./FeedbackList.module.css";
 
-const DemosList = (props) => {
+const FeedbackList = (props) => {
   //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
   const [selectedId, setSelectedId] = useState(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const navigate = useNavigate();
-  const { isGettingDemos, listItems, deleteDemoRequest } = props;
+  const {
+    isLoadingFeedback,
+    listItems,
+    // deleteFeedbackRequest
+  } = props;
 
   const updateSelectedAndOpenDialog = (id) => {
     setSelectedId(id);
     setDeleteDialogOpen(true);
   };
 
-  const handleSpawnInstance = (id) => {
+  const handleShowFeedback = (id) => {
     setSelectedId(id);
-    //todo:
-    //spawn instance request (liefert zu öffnende instance id zurück)
-    navigate(`/instance/${1}`);
+    //todo: show feedback
+    console.log("feedback details");
   };
 
-  const handleDeleteDemo = (id) => {
-    // setSelectedId(id);
-    deleteDemoRequest(id);
+  const handleDeleteFeedback = (id) => {
+    // deleteFeedbackRequest(id);
+    console.log(`deleting feedback ${id}`);
   };
 
   const createListItems = (listItemArray) => {
-    if (isGettingDemos) {
+    if (isLoadingFeedback) {
       return <ListRowSkeleton rows={5} className={styles.skeleton} />;
     } else {
       return listItemArray.map((listItem) => {
@@ -56,39 +57,31 @@ const DemosList = (props) => {
               button
               key={listItem.id}
               className={styles.listItem}
-              onClick={() => handleSpawnInstance(listItem.id)}
+              onClick={() => handleShowFeedback(listItem.id)}
             >
               <ListItemAvatar>
                 <Avatar>
-                  <Monitor />
+                  {listItem.type === 1 ? <BugReport /> : <Chat />}
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary={listItem.title}
-                secondary={listItem.short_desc}
-                className={styles.listItemTitle}
+                primary={listItem.type === 1 ? "Bug" : "Comment"}
+                className={styles.genericListItem}
+              />
+              <ListItemText
+                primary={`Demo: ${listItem.demo}`}
+                className={styles.genericListItem}
+              />
+              <ListItemText
+                primary={listItem.details}
+                className={styles.feedbackDetails}
               />
               <ListItemText
                 primary={formatIsoDate(listItem.created_at, true)}
-                secondary={"By " + listItem.created_by}
-                className={styles.listItemDate}
+                className={styles.feedbackDate}
               />
               <ListItemSecondaryAction>
-                <Tooltip title="Spawn instance">
-                  <IconButton
-                    edge="end"
-                    aria-label="spawn"
-                    onClick={() => handleSpawnInstance(listItem.id)}
-                  >
-                    <PlayArrow />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Edit demo">
-                  <IconButton edge="end" aria-label="edit">
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete demo">
+                <Tooltip title="Delete feedback">
                   <IconButton
                     edge="end"
                     aria-label="delete"
@@ -119,10 +112,10 @@ const DemosList = (props) => {
         )}
       </List>
       <ConfirmationDialog
-        title="Confirm demo deletion"
-        description="Do you really want to delete this demo?"
+        title="Confirm feedback deletion"
+        description="Do you really want to delete this feedback?"
         handleClose={() => setDeleteDialogOpen(false)}
-        handleConfirm={() => handleDeleteDemo(selectedId)}
+        handleConfirm={() => handleDeleteFeedback(selectedId)}
         open={isDeleteDialogOpen}
       />
     </div>
@@ -135,8 +128,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteDemoRequest: (id) => dispatch(deleteDemoRequest(id)),
+    // deleteFeedbackRequest: (id) => dispatch(deleteFeedbackRequest(id)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DemosList);
+export default connect(mapStateToProps, mapDispatchToProps)(FeedbackList);

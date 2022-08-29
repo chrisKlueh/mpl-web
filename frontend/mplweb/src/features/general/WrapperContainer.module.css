@@ -6,7 +6,7 @@
 }
 
 .pageTitle {
-  margin: 0 0 0 10px;
+  padding-inline-start: 10px;
 }
 
 .children {
