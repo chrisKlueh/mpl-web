@@ -8,14 +8,18 @@ import store from "./store";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+import { StyledEngineProvider } from "@mui/material/styles";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   //strict mode intentionally triggers componentDidMount twice (in development)
   //https://reactjs.org/docs/strict-mode.html#detecting-unexpected-side-effects
   // <React.StrictMode>
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <StyledEngineProvider injectFirst>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </StyledEngineProvider>
   // </React.StrictMode>
 );
 
