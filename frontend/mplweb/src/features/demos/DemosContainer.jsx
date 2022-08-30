@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import WrapperContainer from "../general/WrapperContainer";
 import { showDemosRequest } from "../../slices/demosSlice";
 import DemosList from "./DemosList";
+import DemoUploadDialog from "./DemoUploadDialog";
 
 class DemosContainer extends Component {
   componentDidMount() {
@@ -40,6 +41,7 @@ class DemosContainer extends Component {
     return (
       <WrapperContainer pageTitle="Available Demos">
         <DemosList listItems={demos} isGettingDemos={isLoading} />
+        <DemoUploadDialog />
       </WrapperContainer>
     );
   }
