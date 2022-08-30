@@ -16,7 +16,7 @@ import Dropzone from "./Dropzone";
 
 const DemoUploadDialog = (props) => {
   const [open, setOpen] = React.useState(false);
-  const [demoFile, setDemoFile] = React.useState(null);
+  const [demoFiles, setDemoFile] = React.useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -33,10 +33,12 @@ const DemoUploadDialog = (props) => {
       title: "my cool demotitle",
       short_desc: "this is my short_desc",
       detail_desc: "this is my detail_desc",
-      file: demoFile,
+      file: demoFiles,
     });
     handleClose();
   };
+
+  console.log(demoFiles);
 
   const { isUploadingDemo } = props;
   return (
@@ -60,7 +62,9 @@ const DemoUploadDialog = (props) => {
       >
         <DialogTitle id="form-dialog-title">Upload demo</DialogTitle>
         <DialogContent>
-          <Dropzone onChange={(files) => setDemoFile(files)} />
+          <Dropzone
+            onChange={(files) => setDemoFile((prev) => [...prev, ...files])}
+          />
         </DialogContent>
         <DialogActions>
           <Button

@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
+import styles from "./Dropzone.module.css";
+
 const Dropzone = (props) => {
   const [files, setFiles] = React.useState([]);
   const onDrop = useCallback(
@@ -13,24 +15,25 @@ const Dropzone = (props) => {
   );
 
   const fileList = files.map((file) => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-    </li>
+    <li key={file.path}>{`${file.path} (${file.size} bytes)`}</li>
   ));
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   return (
-    <div {...getRootProps()}>
+    <div {...getRootProps()} className={styles.dropzone}>
       <input {...getInputProps()} />
-      {isDragActive ? (
-        <p>Drop the files here ...</p>
-      ) : (
-        <p>Drag 'n' drop some files here, or click to select files</p>
-      )}
-      <aside>
-        <h4>Files</h4>
-        <ul>{fileList}</ul>
-      </aside>
+      <div className={styles.textContainer}>
+        <p>
+          {isDragActive
+            ? "Drop the demo files here ..."
+            : "Drag 'n' drop demo files here, or click to select."}
+        </p>
+        {fileList.length > 0 && (
+          <div>
+            <ul>{fileList}</ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
