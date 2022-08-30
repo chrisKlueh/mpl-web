@@ -6,7 +6,7 @@ import sadSmiley from "../../plotty.jpg";
 const Placeholder = () => {
   return (
     <div className={styles.container}>
-      <img className={styles.plotty} alt="Remy Sharp" src={sadSmiley} />
+      <img className={styles.plotty} alt="Plotty" src={sadSmiley} />
       <div>There's nothing here..</div>
     </div>
   );
