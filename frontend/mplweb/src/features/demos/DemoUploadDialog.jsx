@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-import { uploadDemoRequest } from "../../slices/demosSlice";
+import { uploadDemoRequest } from "../../slices/demoSlice";
 import Dropzone from "./Dropzone";
 
 const DemoUploadDialog = (props) => {

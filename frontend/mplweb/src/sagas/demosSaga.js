@@ -1,9 +1,5 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
-import {
-  showDemosReq,
-  deleteDemoReq,
-  uploadDemoReq,
-} from "../api/demosRequests";
+import { showDemosReq, deleteDemoReq } from "../api/demosRequests";
 import {
   showDemosRequest,
   showDemosSuccess,
@@ -11,9 +7,6 @@ import {
   deleteDemoRequest,
   deleteDemoSuccess,
   deleteDemoError,
-  uploadDemoRequest,
-  uploadDemoSuccess,
-  uploadDemoError,
 } from "../slices/demosSlice";
 
 export function* workerShowDemos() {
@@ -43,26 +36,6 @@ export function* watcherDeleteDemo() {
   yield takeEvery(deleteDemoRequest, workerDeleteDemo);
 }
 
-export function* workerUploadDemo({ payload }) {
-  console.log(payload);
-  const { created_by, title, short_desc, detail_desc, file } = payload;
-  try {
-    yield call(uploadDemoReq, created_by, title, short_desc, detail_desc, file);
-    yield put(uploadDemoSuccess());
-    yield put(showDemosRequest());
-  } catch (error) {
-    yield put(uploadDemoError());
-  }
-}
-
-export function* watcherUploadDemo() {
-  yield takeEvery(uploadDemoRequest, workerUploadDemo);
-}
-
 export default function* rootSaga() {
-  yield all([
-    fork(watcherShowDemos),
-    fork(watcherDeleteDemo),
-    fork(watcherUploadDemo),
-  ]);
+  yield all([fork(watcherShowDemos), fork(watcherDeleteDemo)]);
 }
