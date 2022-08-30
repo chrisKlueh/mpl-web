@@ -4,10 +4,8 @@ import {
   Fab,
   Tooltip,
   Dialog,
-  DialogActions,
   DialogTitle,
   DialogContent,
-  Button,
   Stepper,
   Step,
   StepLabel,
@@ -16,6 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { uploadDemoRequest } from "../../slices/demoSlice";
 import UploadDropzone from "./UploadDropzone";
+import DemoDetailsForm from "./DemoDetailsForm";
 import styles from "./UploadDemoDialog.module.css";
 
 const steps = ["Upload demo files", "Enter demo details"];
@@ -29,20 +28,33 @@ const DemoUploadDialog = (props) => {
     setOpen(true);
   };
 
+  const resetStepper = () => setActiveStep(0);
+
   const handleClose = () => {
     setOpen(false);
+    setDemoFile([]);
+    resetStepper();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (title, short_desc, detail_desc) => {
     const { uploadDemoRequest } = props;
     uploadDemoRequest({
       created_by: 1,
-      title: "my cool demotitle",
-      short_desc: "this is my short_desc",
-      detail_desc: "this is my detail_desc",
+      title: title,
+      short_desc: short_desc,
+      detail_desc: detail_desc,
       file: demoFiles,
     });
     handleClose();
+    resetStepper();
+  };
+
+  const step1Complete = () => demoFiles.length > 0;
+
+  const handleForward = (index) => {
+    if (step1Complete()) {
+      setActiveStep(index);
+    }
   };
 
   const { isUploadingDemo } = props;
@@ -75,7 +87,7 @@ const DemoUploadDialog = (props) => {
                 <Step
                   key={label}
                   {...stepProps}
-                  onClick={() => setActiveStep(index)}
+                  onClick={() => handleForward(index)}
                 >
                   <StepLabel {...labelProps}>{label}</StepLabel>
                 </Step>
@@ -84,28 +96,17 @@ const DemoUploadDialog = (props) => {
           </Stepper>
           {activeStep === 0 ? (
             <UploadDropzone
+              handleClose={handleClose}
               onChange={(files) => setDemoFile((prev) => [...prev, ...files])}
             />
           ) : (
-            <div>Demo Details Form goes here</div>
+            <DemoDetailsForm
+              handleClose={handleClose}
+              handleSubmit={handleSubmit}
+              demoFiles={demoFiles}
+            />
           )}
         </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleClose}
-            color="primary"
-            disabled={isUploadingDemo}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            color="primary"
-            disabled={isUploadingDemo || activeStep !== 1}
-          >
-            Upload
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

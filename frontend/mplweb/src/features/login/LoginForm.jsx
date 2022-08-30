@@ -7,7 +7,7 @@ import { Button, LinearProgress } from "@mui/material";
 import { TextField } from "formik-mui";
 
 import { loginRequest } from "../../slices/loginSlice";
-import { validateUsernameAndPasswords } from "./validationHelper";
+import { validateUsernameAndPasswords } from "../../helpers/loginValidationHelper";
 import styles from "./LoginForm.module.css";
 
 class LogInForm extends React.Component {
@@ -45,7 +45,7 @@ class LogInForm extends React.Component {
         >
           {({ submitForm }) => (
             <Form>
-              <Grid container className={styles.grid}>
+              <Grid container className={styles.container}>
                 <Grid item>
                   <Face className={styles.icon} />
                 </Grid>
@@ -60,7 +60,7 @@ class LogInForm extends React.Component {
                   />
                 </Grid>
               </Grid>
-              <Grid container className={styles.grid}>
+              <Grid container className={styles.container}>
                 <Grid item>
                   <Fingerprint className={styles.icon} />
                 </Grid>
