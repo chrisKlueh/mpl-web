@@ -19,6 +19,7 @@ import FeedbackDetails from "./FeedbackDetails";
 import Placeholder from "../general/Placeholder";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { deleteFeedbackRequest } from "../../slices/feedbackSlice";
+import { truncateString } from "../../helpers/listHelper";
 import styles from "./FeedbackList.module.css";
 
 const FeedbackList = (props) => {
@@ -44,10 +45,6 @@ const FeedbackList = (props) => {
 
   const handleDeleteFeedback = (id) => {
     deleteFeedbackRequest(id);
-  };
-
-  const truncateFeedbackDetails = (details) => {
-    return details.length > 40 ? details.slice(0, 40) + "..." : details;
   };
 
   const createListItems = (listItemArray) => {
@@ -78,7 +75,7 @@ const FeedbackList = (props) => {
                 className={styles.genericListItem}
               />
               <ListItemText
-                primary={truncateFeedbackDetails(listItem.details)}
+                primary={truncateString(listItem.details, 40)}
                 className={styles.feedbackDetails}
               />
               <ListItemText

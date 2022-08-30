@@ -19,6 +19,7 @@ import ConfirmationDialog from "../general/ConfirmationDialog";
 import Placeholder from "../general/Placeholder";
 import { deleteDemoRequest } from "../../slices/demosSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
+import { truncateString } from "../../helpers/listHelper";
 import styles from "./DemosList.module.css";
 
 const DemosList = (props) => {
@@ -65,7 +66,7 @@ const DemosList = (props) => {
               </ListItemAvatar>
               <ListItemText
                 primary={listItem.title}
-                secondary={listItem.short_desc}
+                secondary={truncateString(listItem.short_desc, 64)}
                 className={styles.listItemTitle}
               />
               <ListItemText
