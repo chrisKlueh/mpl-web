@@ -6,7 +6,7 @@ const createSkeleton = (rows, styling) => {
   let res = [];
   for (let i = 0; i < rows; i++) {
     res.push(
-      <Fragment>
+      <Fragment key={i}>
         <ListItem button className={styling} id={i}>
           <Skeleton animation="wave" variant="circle" width={40} height={40} />
           <Skeleton animation="wave" variant="rect" width={"95%"} height={40} />

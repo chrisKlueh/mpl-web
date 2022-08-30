@@ -56,10 +56,9 @@ const FeedbackList = (props) => {
     } else {
       return listItemArray.map((listItem) => {
         return (
-          <Fragment>
+          <Fragment key={listItem.id}>
             <ListItem
               button
-              key={listItem.id}
               className={styles.listItem}
               onClick={() =>
                 updateSelectedAndOpenDialog(listItem, "FEEDBACK_DETAILS")

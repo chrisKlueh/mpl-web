@@ -52,10 +52,9 @@ const DemosList = (props) => {
     } else {
       return listItemArray.map((listItem) => {
         return (
-          <Fragment>
+          <Fragment key={listItem.id}>
             <ListItem
               button
-              key={listItem.id}
               className={styles.listItem}
               onClick={() => handleSpawnInstance(listItem.id)}
             >
