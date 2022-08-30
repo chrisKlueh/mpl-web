@@ -8,15 +8,22 @@ import {
   DialogTitle,
   DialogContent,
   Button,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 import { uploadDemoRequest } from "../../slices/demoSlice";
-import Dropzone from "./Dropzone";
+import UploadDropzone from "./UploadDropzone";
+import styles from "./UploadDemoDialog.module.css";
+
+const steps = ["Upload demo files", "Enter demo details"];
 
 const DemoUploadDialog = (props) => {
   const [open, setOpen] = React.useState(false);
   const [demoFiles, setDemoFile] = React.useState([]);
+  const [activeStep, setActiveStep] = React.useState(0);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -37,8 +44,6 @@ const DemoUploadDialog = (props) => {
     });
     handleClose();
   };
-
-  console.log(demoFiles);
 
   const { isUploadingDemo } = props;
   return (
@@ -62,9 +67,28 @@ const DemoUploadDialog = (props) => {
       >
         <DialogTitle id="form-dialog-title">Upload demo</DialogTitle>
         <DialogContent>
-          <Dropzone
-            onChange={(files) => setDemoFile((prev) => [...prev, ...files])}
-          />
+          <Stepper activeStep={activeStep} className={styles.stepper}>
+            {steps.map((label, index) => {
+              const stepProps = {};
+              const labelProps = {};
+              return (
+                <Step
+                  key={label}
+                  {...stepProps}
+                  onClick={() => setActiveStep(index)}
+                >
+                  <StepLabel {...labelProps}>{label}</StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+          {activeStep === 0 ? (
+            <UploadDropzone
+              onChange={(files) => setDemoFile((prev) => [...prev, ...files])}
+            />
+          ) : (
+            <div>Demo Details Form goes here</div>
+          )}
         </DialogContent>
         <DialogActions>
           <Button
@@ -77,9 +101,9 @@ const DemoUploadDialog = (props) => {
           <Button
             onClick={handleSubmit}
             color="primary"
-            disabled={isUploadingDemo}
+            disabled={isUploadingDemo || activeStep !== 1}
           >
-            Submit
+            Upload
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
-import styles from "./Dropzone.module.css";
+import styles from "./UploadDropzone.module.css";
 
 const Dropzone = (props) => {
   const [files, setFiles] = React.useState([]);
