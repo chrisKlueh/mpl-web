@@ -99,7 +99,7 @@ def feedback_list(request):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'DELETE'])
 def feedback_detail(request, pk):
     try:
         feedback = Feedback.objects.get(pk=pk)
@@ -109,13 +109,6 @@ def feedback_detail(request, pk):
     if request.method == 'GET':
         serializer = FeedbackSerializer(feedback, context={'request': request})
         return Response(serializer.data)
-
-    if request.method == 'PUT':
-        serializer = FeedbackSerializer(feedback, data=request.data,context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         feedback.delete()
