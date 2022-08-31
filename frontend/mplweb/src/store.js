@@ -2,7 +2,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 
-import counterReducer from "./slices/counterSlice";
 import loginReducer from "./slices/loginSlice";
 import demosReducer from "./slices/demosSlice";
 import demoReducer from "./slices/demoSlice";
@@ -14,7 +13,6 @@ const middleware = [sagaMiddleware];
 
 const store = configureStore({
   reducer: {
-    counter: counterReducer,
     login: loginReducer,
     demos: demosReducer,
     demo: demoReducer,

@@ -9,7 +9,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DemoSerializer(serializers.ModelSerializer):
     file = serializers.CharField(write_only=True)
-    created_by = serializers.CharField(write_only=True)
     class Meta:
         model = Demo 
         fields = ('id', 'created_at', 'created_by', 'title', 'short_desc', 'detail_desc', 'file')
