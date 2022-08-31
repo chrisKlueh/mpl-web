@@ -21,6 +21,7 @@ import { deleteDemoRequest } from "../../slices/demosSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { truncateString } from "../../helpers/listHelper";
 import styles from "./DemosList.module.css";
+import DemoEditDialog from "./DemoEditDialog";
 
 const DemosList = (props) => {
   //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
@@ -143,6 +144,11 @@ const DemosList = (props) => {
         handleClose={() => setDeleteDialogOpen(false)}
         handleConfirm={() => handleDeleteDemo(selectedId)}
         open={isDeleteDialogOpen}
+      />
+      <DemoEditDialog
+        id={selectedId}
+        open={isEditDialogOpen}
+        handleClose={() => setEditDialogOpen(false)}
       />
     </div>
   );

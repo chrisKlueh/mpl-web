@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import {
   Fab,
   Tooltip,
@@ -64,39 +64,45 @@ const DemoDialogBase = (props) => {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Upload demo</DialogTitle>
-        <DialogContent>
-          <Stepper activeStep={activeStep} className={styles.stepper}>
-            {steps.map((label, index) => {
-              const stepProps = {};
-              const labelProps = {};
-              return (
-                <Step
-                  key={label}
-                  {...stepProps}
-                  onClick={() => handleOpenStep(index)}
-                >
-                  <StepLabel {...labelProps}>{label}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-          {activeStep === 0 ? (
-            <UploadDropzone
-              handleClose={handleClose}
-              handleNext={() => handleOpenStep(1)}
-              disableNext={!checkFirstStepComplete()}
-              files={files}
-              setFiles={setFiles}
-            />
-          ) : (
-            <DemoDetailsForm
-              handleClose={handleClose}
-              handleSubmit={handleSubmit}
-              demoFiles={files}
-            />
-          )}
-        </DialogContent>
+        {isLoading ? (
+          <div>loading</div>
+        ) : (
+          <Fragment>
+            <DialogTitle id="form-dialog-title">Upload demo</DialogTitle>
+            <DialogContent>
+              <Stepper activeStep={activeStep} className={styles.stepper}>
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+                  return (
+                    <Step
+                      key={label}
+                      {...stepProps}
+                      onClick={() => handleOpenStep(index)}
+                    >
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+              {activeStep === 0 ? (
+                <UploadDropzone
+                  handleClose={handleClose}
+                  handleNext={() => handleOpenStep(1)}
+                  disableNext={!checkFirstStepComplete()}
+                  files={files}
+                  setFiles={setFiles}
+                />
+              ) : (
+                <DemoDetailsForm
+                  handleClose={handleClose}
+                  handleSubmit={handleSubmit}
+                  demoFiles={files}
+                />
+              )}
+            </DialogContent>
+          </Fragment>
+        )}
       </Dialog>
     </div>
   );

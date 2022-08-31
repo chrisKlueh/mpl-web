@@ -30,3 +30,34 @@ export const uploadDemoReq = async (
       });
   });
 };
+
+export const editDemoReq = async (
+  id,
+  created_by,
+  title,
+  short_desc,
+  detail_desc,
+  file
+) => {
+  let formData = new FormData();
+  formData.append("created_by", created_by);
+  formData.append("title", title);
+  formData.append("short_desc", short_desc);
+  formData.append("detail_desc", detail_desc);
+  formData.append("file", file);
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "put",
+      url: `${API_URL}demos/${id}`,
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
