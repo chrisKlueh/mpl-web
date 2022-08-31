@@ -1,16 +1,5 @@
 from django.db import models
-
-# Create your models here.
-
-#class Student(models.Model):
-#    name = models.CharField("Name", max_length=240)
-#    email = models.EmailField()
-#    document = models.CharField("Document", max_length=20)
-#    phone = models.CharField(max_length=20)
-#    registrationDate = models.DateField("Registration Date", auto_now_add=True)
-#
-#    def __str__(self):
-#        return self.name
+from django.core.validators import FileExtensionValidator
 
 class User(models.Model):
     id = models.AutoField("user_id", primary_key=True)
@@ -30,9 +19,7 @@ class Demo(models.Model):
     title = models.CharField("title", max_length=240, unique=True)
     short_desc = models.CharField("short_desc", max_length=240)
     detail_desc = models.CharField("detail_desc", max_length=240)
-    #temporary solution until upload is actually implemented
-    # file_path = models.CharField("file_path", max_length=240)
-    file = models.FileField(upload_to='demo_files')
+    file = models.FileField(upload_to='demo_files', validators=[FileExtensionValidator( ['py'] ) ])
     
     def __str__(self):
         return self.id
