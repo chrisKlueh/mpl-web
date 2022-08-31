@@ -16,8 +16,6 @@ import UploadDropzone from "./UploadDropzone";
 import DemoDetailsForm from "./DemoDetailsForm";
 import styles from "./DemoDialogBase.module.css";
 
-const steps = ["Upload demo files", "Edit demo details"];
-
 const DemoDialogBase = (props) => {
   const {
     hasFab,
@@ -29,6 +27,8 @@ const DemoDialogBase = (props) => {
     files,
     setFiles,
     initValues,
+    title,
+    stepTitles,
   } = props;
 
   const checkFirstStepComplete = () => files.length > 0;
@@ -48,7 +48,7 @@ const DemoDialogBase = (props) => {
   return (
     <div>
       {hasFab && (
-        <Tooltip title="Upload a demo">
+        <Tooltip title="Upload a new demo">
           <Fab
             size="medium"
             color="primary"
@@ -66,14 +66,17 @@ const DemoDialogBase = (props) => {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Edit demo</DialogTitle>
+        <DialogTitle id="form-dialog-title">{title}</DialogTitle>
         <DialogContent>
           {isLoading ? (
-            <CircularProgress />
+            <div className={styles.spinnerContainer}>
+              <p>Loading demo details...</p>
+              <CircularProgress className={styles.spinner} />
+            </div>
           ) : (
             <Fragment>
               <Stepper activeStep={activeStep} className={styles.stepper}>
-                {steps.map((label, index) => {
+                {stepTitles.map((label, index) => {
                   const stepProps = {};
                   const labelProps = {};
                   return (

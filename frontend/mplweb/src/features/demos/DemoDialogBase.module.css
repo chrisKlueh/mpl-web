@@ -3,6 +3,11 @@
   margin: 0 10px 5px 0;
 }
 
+.spinnerContainer {
+  text-align: center;
+  width: 400px;
+}
+
 .stepper {
   margin-bottom: 20px;
 }

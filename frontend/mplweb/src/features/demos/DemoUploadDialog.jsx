@@ -35,6 +35,8 @@ const DemoUploadDialog = (props) => {
 
   return (
     <DemoDialogBase
+      title={"Upload Demo"}
+      stepTitles={["Provide demo files", "Enter demo details"]}
       hasFab
       isLoading={isUploadingDemo}
       open={open}

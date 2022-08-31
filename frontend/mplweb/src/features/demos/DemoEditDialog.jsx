@@ -34,6 +34,8 @@ const DemoEditDialog = (props) => {
 
   return (
     <DemoDialogBase
+      title={"Edit Demo"}
+      stepTitles={["Provide updated demo files", "Edit demo details"]}
       hasFab={false}
       isLoading={isLoading}
       open={open}
@@ -49,7 +51,7 @@ const DemoEditDialog = (props) => {
 };
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.demo.isGettingDemo || state.demo.isUploadingDemo,
+    isLoading: state.demo.isGettingDemo,
     demo: state.demo.demo,
   };
 };
