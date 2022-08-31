@@ -28,6 +28,7 @@ const DemoDialogBase = (props) => {
     handleSubmit,
     files,
     setFiles,
+    initValues,
   } = props;
 
   const checkFirstStepComplete = () => files.length > 0;
@@ -98,7 +99,7 @@ const DemoDialogBase = (props) => {
                 <DemoDetailsForm
                   handleClose={handleClose}
                   handleSubmit={handleSubmit}
-                  demoFiles={files}
+                  initValues={initValues}
                 />
               )}
             </Fragment>

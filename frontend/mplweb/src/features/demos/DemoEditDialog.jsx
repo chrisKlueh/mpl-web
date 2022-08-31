@@ -8,8 +8,7 @@ const DemoEditDialog = (props) => {
   const [demoFiles, setDemoFiles] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
 
-  const { id, open, handleClose, isLoading } = props;
-
+  const { id, open, handleClose, isLoading, demo } = props;
   const resetStepper = () => setActiveStep(0);
 
   const closeDialog = () => {
@@ -43,12 +42,14 @@ const DemoEditDialog = (props) => {
       handleOpenStep={(index) => setActiveStep(index)}
       files={demoFiles}
       setFiles={(files) => setDemoFiles(files)}
+      initValues={demo}
     />
   );
 };
 const mapStateToProps = (state) => {
   return {
     isLoading: state.demo.isGettingDemo || state.demo.isUploadingDemo,
+    demo: state.demo.demo,
   };
 };
 

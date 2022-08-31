@@ -7,13 +7,13 @@ import { validateAll } from "../../helpers/demoDetailsValidationHelper";
 import styles from "./DemoDetailsForm.module.css";
 
 const DemoDetailsForm = (props) => {
-  const { handleSubmit, handleClose } = props;
+  const { handleSubmit, handleClose, initValues } = props;
   return (
     <Formik
       initialValues={{
-        title: "",
-        short_desc: "",
-        detail_desc: "",
+        title: initValues ? initValues.title : "",
+        short_desc: initValues ? initValues.short_desc : "",
+        detail_desc: initValues ? initValues.detail_desc : "",
       }}
       validate={(values) => validateAll(values)}
       onSubmit={(values, { resetForm }) => {
