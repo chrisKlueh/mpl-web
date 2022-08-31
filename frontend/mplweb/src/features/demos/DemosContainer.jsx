@@ -50,7 +50,10 @@ class DemosContainer extends Component {
 const mapStateToProps = (state) => {
   return {
     demos: state.demos.demos,
-    isLoading: state.demos.isGettingDemos,
+    isLoading:
+      state.demos.isGettingDemos ||
+      state.demos.isDeletingDemo ||
+      state.demo.isUploadingDemo,
   };
 };
 
