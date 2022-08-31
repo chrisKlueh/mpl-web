@@ -1,9 +1,9 @@
-# import os
+import os
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, pre_save
 from django.dispatch.dispatcher import receiver
 
 #from .models import Student
@@ -129,3 +129,10 @@ def login(request):
 @receiver(pre_delete, sender=Demo)
 def demo_file_delete(sender, instance, **kwargs):
     instance.file.delete(False)
+
+@receiver(pre_save, sender=Demo)
+def demo_file_delete_outdated(sender, instance, **kwargs):
+    #delete old file if instance already exists (= update)
+    if instance.pk != None:
+        demo = Demo.objects.get(pk=instance.pk)
+        demo.file.delete(False)
