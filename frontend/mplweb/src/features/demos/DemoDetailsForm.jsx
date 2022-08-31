@@ -16,12 +16,12 @@ const DemoDetailsForm = (props) => {
         detail_desc: "",
       }}
       validate={(values) => validateAll(values)}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
+      onSubmit={(values, { resetForm }) => {
         handleSubmit(values.title, values.short_desc, values.detail_desc);
         resetForm();
       }}
     >
-      {({ submitForm }) => (
+      {({ submitForm, values }) => (
         <Form>
           <Grid container className={styles.container}>
             <Grid item>
@@ -65,7 +65,13 @@ const DemoDetailsForm = (props) => {
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={submitForm} color="primary">
+            <Button
+              disabled={
+                !values.title || !values.short_desc || !values.detail_desc
+              }
+              onClick={submitForm}
+              color="primary"
+            >
               Upload
             </Button>
           </DialogActions>
