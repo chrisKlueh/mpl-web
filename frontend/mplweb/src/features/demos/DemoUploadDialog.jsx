@@ -20,18 +20,14 @@ import styles from "./DemoUploadDialog.module.css";
 const steps = ["Upload demo files", "Enter demo details"];
 
 const DemoUploadDialog = (props) => {
-  const [open, setOpen] = React.useState(false);
   const [demoFiles, setDemoFiles] = React.useState([]);
   const [activeStep, setActiveStep] = React.useState(0);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const resetStepper = () => setActiveStep(0);
 
   const handleClose = () => {
-    setOpen(false);
+    const { handleClose } = props;
+    handleClose();
     setDemoFiles([]);
     resetStepper();
   };
@@ -59,7 +55,7 @@ const DemoUploadDialog = (props) => {
     }
   };
 
-  const { isUploadingDemo } = props;
+  const { isUploadingDemo, handleOpen, open } = props;
   return (
     <div>
       <Tooltip title="Upload a demo">
@@ -67,7 +63,7 @@ const DemoUploadDialog = (props) => {
           size="medium"
           color="primary"
           aria-label="add"
-          onClick={handleClickOpen}
+          onClick={handleOpen}
           style={{ float: "right", margin: "0 10px 5px 0" }}
           disabled={isUploadingDemo}
         >
