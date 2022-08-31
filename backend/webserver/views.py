@@ -1,6 +1,10 @@
+# import os
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
 
 #from .models import Student
 from .models import User, Demo, Instance, Host, FeedbackType, Feedback
@@ -127,3 +131,8 @@ def login(request):
         return Response(status=status.HTTP_201_CREATED)
 
         #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+
+
+@receiver(pre_delete, sender=Demo)
+def demo_file_delete(sender, instance, **kwargs):
+    instance.file.delete(False)
