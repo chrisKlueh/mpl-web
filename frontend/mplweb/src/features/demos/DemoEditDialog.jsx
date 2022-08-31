@@ -9,7 +9,7 @@ const DemoEditDialog = (props) => {
   const [activeStep, setActiveStep] = useState(0);
 
   const { id, open, handleClose, isLoading } = props;
-  console.log(id);
+
   const resetStepper = () => setActiveStep(0);
 
   const closeDialog = () => {
@@ -48,7 +48,7 @@ const DemoEditDialog = (props) => {
 };
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.demos.isGettingDemo || state.demos.isUploadingDemo,
+    isLoading: state.demo.isGettingDemo || state.demo.isUploadingDemo,
   };
 };
 

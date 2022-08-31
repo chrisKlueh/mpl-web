@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { Fragment } from "react";
 import {
   Fab,
   Tooltip,
@@ -8,6 +8,7 @@ import {
   Stepper,
   Step,
   StepLabel,
+  CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -15,7 +16,7 @@ import UploadDropzone from "./UploadDropzone";
 import DemoDetailsForm from "./DemoDetailsForm";
 import styles from "./DemoDialogBase.module.css";
 
-const steps = ["Upload demo files", "Enter demo details"];
+const steps = ["Upload demo files", "Edit demo details"];
 
 const DemoDialogBase = (props) => {
   const {
@@ -64,12 +65,12 @@ const DemoDialogBase = (props) => {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        {isLoading ? (
-          <div>loading</div>
-        ) : (
-          <Fragment>
-            <DialogTitle id="form-dialog-title">Upload demo</DialogTitle>
-            <DialogContent>
+        <DialogTitle id="form-dialog-title">Edit demo</DialogTitle>
+        <DialogContent>
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            <Fragment>
               <Stepper activeStep={activeStep} className={styles.stepper}>
                 {steps.map((label, index) => {
                   const stepProps = {};
@@ -100,9 +101,9 @@ const DemoDialogBase = (props) => {
                   demoFiles={files}
                 />
               )}
-            </DialogContent>
-          </Fragment>
-        )}
+            </Fragment>
+          )}
+        </DialogContent>
       </Dialog>
     </div>
   );

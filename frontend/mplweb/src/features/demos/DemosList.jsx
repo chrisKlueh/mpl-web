@@ -18,6 +18,7 @@ import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import Placeholder from "../general/Placeholder";
 import { deleteDemoRequest } from "../../slices/demosSlice";
+import { showDemoRequest } from "../../slices/demoSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { truncateString } from "../../helpers/listHelper";
 import styles from "./DemosList.module.css";
@@ -30,7 +31,8 @@ const DemosList = (props) => {
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
 
   const navigate = useNavigate();
-  const { isGettingDemos, listItems, deleteDemoRequest } = props;
+  const { isGettingDemos, listItems, showDemoRequest, deleteDemoRequest } =
+    props;
 
   const updateSelectedAndOpenDialog = (id, dialog) => {
     setSelectedId(id);
@@ -39,6 +41,7 @@ const DemosList = (props) => {
         setDeleteDialogOpen(true);
         break;
       case "EDIT":
+        showDemoRequest(id);
         setEditDialogOpen(true);
         break;
       default:
@@ -161,6 +164,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     deleteDemoRequest: (id) => dispatch(deleteDemoRequest(id)),
+    showDemoRequest: (id) => dispatch(showDemoRequest(id)),
   };
 };
 

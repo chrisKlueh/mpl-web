@@ -1,6 +1,21 @@
 import axios from "axios";
 import { API_URL } from "../constants/index";
 
+export const showDemoReq = async (id) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: `${API_URL}demos/${id}`,
+    })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 export const uploadDemoReq = async (
   created_by,
   title,
