@@ -43,7 +43,7 @@ const DemoUploadDialog = (props) => {
       title: title,
       short_desc: short_desc,
       detail_desc: detail_desc,
-      file: demoFiles,
+      file: demoFiles[0],
     });
     handleClose();
     resetStepper();

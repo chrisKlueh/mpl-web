@@ -31,7 +31,8 @@ class Demo(models.Model):
     short_desc = models.CharField("short_desc", max_length=240)
     detail_desc = models.CharField("detail_desc", max_length=240)
     #temporary solution until upload is actually implemented
-    file_path = models.CharField("file_path", max_length=240)
+    # file_path = models.CharField("file_path", max_length=240)
+    file = models.FileField(upload_to='demo_files')
     
     def __str__(self):
         return self.id

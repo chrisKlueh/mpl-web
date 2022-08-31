@@ -17,6 +17,7 @@ export const uploadDemoReq = async (
   console.log(short_desc);
   console.log(detail_desc);
   console.log(file);
+  console.log(file[0]);
   // return new Promise((resolve, reject) => {
   //   axios
   //     .post(`${API_URL}demos/`, {

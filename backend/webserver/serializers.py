@@ -11,7 +11,7 @@ class DemoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Demo 
-        fields = ('id', 'created_at', 'created_by', 'title', 'short_desc', 'detail_desc', 'file_path')
+        fields = ('id', 'created_at', 'created_by', 'title', 'short_desc', 'detail_desc', 'file')
 
 class HostSerializer(serializers.ModelSerializer):
 
