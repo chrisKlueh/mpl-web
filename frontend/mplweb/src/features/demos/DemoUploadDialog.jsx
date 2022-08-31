@@ -49,10 +49,10 @@ const DemoUploadDialog = (props) => {
     resetStepper();
   };
 
-  const step1Complete = () => demoFiles.length > 0;
+  const checkFirstStepComplete = () => demoFiles.length > 0;
 
-  const handleForward = (index) => {
-    if (step1Complete()) {
+  const handleOpenStep = (index) => {
+    if (checkFirstStepComplete()) {
       setActiveStep(index);
     }
   };
@@ -87,7 +87,7 @@ const DemoUploadDialog = (props) => {
                 <Step
                   key={label}
                   {...stepProps}
-                  onClick={() => handleForward(index)}
+                  onClick={() => handleOpenStep(index)}
                 >
                   <StepLabel {...labelProps}>{label}</StepLabel>
                 </Step>
@@ -97,6 +97,8 @@ const DemoUploadDialog = (props) => {
           {activeStep === 0 ? (
             <UploadDropzone
               handleClose={handleClose}
+              handleNext={() => handleOpenStep(1)}
+              disableNext={!checkFirstStepComplete()}
               files={demoFiles}
               setFiles={setDemoFiles}
             />

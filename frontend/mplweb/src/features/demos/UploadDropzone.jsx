@@ -4,8 +4,9 @@ import { DialogActions, Button } from "@mui/material";
 
 import styles from "./UploadDropzone.module.css";
 
-const Dropzone = (props) => {
-  const { handleClose, files } = props;
+const UploadDropzone = (props) => {
+  const { handleClose, handleNext, disableNext, files } = props;
+
   const onDrop = useCallback(
     (acceptedFiles) => {
       const { setFiles } = props;
@@ -40,12 +41,12 @@ const Dropzone = (props) => {
         <Button onClick={handleClose} color="primary">
           Cancel
         </Button>
-        <Button disabled color="primary">
-          Upload
+        <Button onClick={handleNext} disabled={disableNext} color="primary">
+          Next Step
         </Button>
       </DialogActions>
     </Fragment>
   );
 };
 
-export default Dropzone;
+export default UploadDropzone;
