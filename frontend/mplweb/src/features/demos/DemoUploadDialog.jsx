@@ -15,13 +15,13 @@ import AddIcon from "@mui/icons-material/Add";
 import { uploadDemoRequest } from "../../slices/demoSlice";
 import UploadDropzone from "./UploadDropzone";
 import DemoDetailsForm from "./DemoDetailsForm";
-import styles from "./UploadDemoDialog.module.css";
+import styles from "./DemoUploadDialog.module.css";
 
 const steps = ["Upload demo files", "Enter demo details"];
 
 const DemoUploadDialog = (props) => {
   const [open, setOpen] = React.useState(false);
-  const [demoFiles, setDemoFile] = React.useState([]);
+  const [demoFiles, setDemoFiles] = React.useState([]);
   const [activeStep, setActiveStep] = React.useState(0);
 
   const handleClickOpen = () => {
@@ -32,7 +32,7 @@ const DemoUploadDialog = (props) => {
 
   const handleClose = () => {
     setOpen(false);
-    setDemoFile([]);
+    setDemoFiles([]);
     resetStepper();
   };
 
@@ -97,7 +97,8 @@ const DemoUploadDialog = (props) => {
           {activeStep === 0 ? (
             <UploadDropzone
               handleClose={handleClose}
-              onChange={(files) => setDemoFile((prev) => [...prev, ...files])}
+              files={demoFiles}
+              setFiles={setDemoFiles}
             />
           ) : (
             <DemoDetailsForm

@@ -5,12 +5,10 @@ import { DialogActions, Button } from "@mui/material";
 import styles from "./UploadDropzone.module.css";
 
 const Dropzone = (props) => {
-  const [files, setFiles] = React.useState([]);
-  const { handleClose } = props;
+  const { handleClose, files } = props;
   const onDrop = useCallback(
     (acceptedFiles) => {
-      const { onChange } = props;
-      onChange(acceptedFiles);
+      const { setFiles } = props;
       setFiles((prev) => [...prev, ...acceptedFiles]);
     },
     [props]
