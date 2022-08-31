@@ -5,6 +5,7 @@ import {
   uploadDemoSuccess,
   uploadDemoError,
 } from "../slices/demoSlice";
+import { showDemosRequest } from "../slices/demosSlice";
 
 export function* workerUploadDemo({ payload }) {
   console.log(payload);
@@ -12,6 +13,7 @@ export function* workerUploadDemo({ payload }) {
   try {
     yield call(uploadDemoReq, created_by, title, short_desc, detail_desc, file);
     yield put(uploadDemoSuccess());
+    yield put(showDemosRequest());
   } catch (error) {
     yield put(uploadDemoError());
   }
