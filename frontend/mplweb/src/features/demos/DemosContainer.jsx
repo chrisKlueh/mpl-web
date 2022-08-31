@@ -7,10 +7,6 @@ import DemosList from "./DemosList";
 import DemoUploadDialog from "./DemoUploadDialog";
 
 class DemosContainer extends Component {
-  state = {
-    isUploadDialogOpen: false,
-  };
-
   componentDidMount() {
     this.handleShowDemos();
   }
@@ -45,11 +41,7 @@ class DemosContainer extends Component {
     return (
       <WrapperContainer pageTitle="Available Demos">
         <DemosList listItems={demos} isGettingDemos={isLoading} />
-        <DemoUploadDialog
-          open={this.state.isUploadDialogOpen}
-          handleClose={() => this.setState({ isUploadDialogOpen: false })}
-          handleOpen={() => this.setState({ isUploadDialogOpen: true })}
-        />
+        <DemoUploadDialog />
       </WrapperContainer>
     );
   }

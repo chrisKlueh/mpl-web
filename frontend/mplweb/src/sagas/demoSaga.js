@@ -8,7 +8,6 @@ import {
 import { showDemosRequest } from "../slices/demosSlice";
 
 export function* workerUploadDemo({ payload }) {
-  console.log(payload);
   const { created_by, title, short_desc, detail_desc, file } = payload;
   try {
     yield call(uploadDemoReq, created_by, title, short_desc, detail_desc, file);

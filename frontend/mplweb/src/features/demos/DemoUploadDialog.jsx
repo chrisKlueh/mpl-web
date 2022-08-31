@@ -1,38 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import {
-  Fab,
-  Tooltip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Stepper,
-  Step,
-  StepLabel,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 
 import { uploadDemoRequest } from "../../slices/demoSlice";
-import UploadDropzone from "./UploadDropzone";
-import DemoDetailsForm from "./DemoDetailsForm";
-import styles from "./DemoUploadDialog.module.css";
-
-const steps = ["Upload demo files", "Enter demo details"];
+import DemoDialogBase from "./DemoDialogBase";
 
 const DemoUploadDialog = (props) => {
-  const [demoFiles, setDemoFiles] = React.useState([]);
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [open, setOpen] = useState(false);
+  const [demoFiles, setDemoFiles] = useState([]);
+  const [activeStep, setActiveStep] = useState(0);
+
+  const { isUploadingDemo } = props;
 
   const resetStepper = () => setActiveStep(0);
 
-  const handleClose = () => {
-    const { handleClose } = props;
-    handleClose();
+  const closeDialog = () => {
+    setOpen(false);
     setDemoFiles([]);
     resetStepper();
   };
 
-  const handleSubmit = (title, short_desc, detail_desc) => {
+  const submitRequest = (title, short_desc, detail_desc) => {
     const { uploadDemoRequest } = props;
     uploadDemoRequest({
       //wegen mangelndem login-verfahren gibts aktuell keine userid zurück,
@@ -43,73 +30,22 @@ const DemoUploadDialog = (props) => {
       detail_desc: detail_desc,
       file: demoFiles[0],
     });
-    handleClose();
-    resetStepper();
+    closeDialog();
   };
 
-  const checkFirstStepComplete = () => demoFiles.length > 0;
-
-  const handleOpenStep = (index) => {
-    if (checkFirstStepComplete()) {
-      setActiveStep(index);
-    }
-  };
-
-  const { isUploadingDemo, handleOpen, open } = props;
   return (
-    <div>
-      <Tooltip title="Upload a demo">
-        <Fab
-          size="medium"
-          color="primary"
-          aria-label="add"
-          onClick={handleOpen}
-          style={{ float: "right", margin: "0 10px 5px 0" }}
-          disabled={isUploadingDemo}
-        >
-          <AddIcon />
-        </Fab>
-      </Tooltip>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">Upload demo</DialogTitle>
-        <DialogContent>
-          <Stepper activeStep={activeStep} className={styles.stepper}>
-            {steps.map((label, index) => {
-              const stepProps = {};
-              const labelProps = {};
-              return (
-                <Step
-                  key={label}
-                  {...stepProps}
-                  onClick={() => handleOpenStep(index)}
-                >
-                  <StepLabel {...labelProps}>{label}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-          {activeStep === 0 ? (
-            <UploadDropzone
-              handleClose={handleClose}
-              handleNext={() => handleOpenStep(1)}
-              disableNext={!checkFirstStepComplete()}
-              files={demoFiles}
-              setFiles={setDemoFiles}
-            />
-          ) : (
-            <DemoDetailsForm
-              handleClose={handleClose}
-              handleSubmit={handleSubmit}
-              demoFiles={demoFiles}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+    <DemoDialogBase
+      hasFab
+      isLoading={isUploadingDemo}
+      open={open}
+      handleOpen={() => setOpen(true)}
+      handleClose={closeDialog}
+      handleSubmit={submitRequest}
+      activeStep={activeStep}
+      handleOpenStep={(index) => setActiveStep(index)}
+      files={demoFiles}
+      setFiles={(files) => setDemoFiles(files)}
+    />
   );
 };
 const mapStateToProps = (state) => {

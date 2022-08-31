@@ -26,13 +26,23 @@ const DemosList = (props) => {
   //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
   const [selectedId, setSelectedId] = useState(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
 
   const navigate = useNavigate();
   const { isGettingDemos, listItems, deleteDemoRequest } = props;
 
-  const updateSelectedAndOpenDialog = (id) => {
+  const updateSelectedAndOpenDialog = (id, dialog) => {
     setSelectedId(id);
-    setDeleteDialogOpen(true);
+    switch (dialog) {
+      case "DELETE":
+        setDeleteDialogOpen(true);
+        break;
+      case "EDIT":
+        setEditDialogOpen(true);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSpawnInstance = (id) => {
@@ -85,7 +95,13 @@ const DemosList = (props) => {
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Edit demo">
-                  <IconButton edge="end" aria-label="edit">
+                  <IconButton
+                    edge="end"
+                    aria-label="edit"
+                    onClick={() =>
+                      updateSelectedAndOpenDialog(listItem.id, "EDIT")
+                    }
+                  >
                     <Edit />
                   </IconButton>
                 </Tooltip>
@@ -93,7 +109,9 @@ const DemosList = (props) => {
                   <IconButton
                     edge="end"
                     aria-label="delete"
-                    onClick={() => updateSelectedAndOpenDialog(listItem.id)}
+                    onClick={() =>
+                      updateSelectedAndOpenDialog(listItem.id, "DELETE")
+                    }
                   >
                     <Delete />
                   </IconButton>
