@@ -22,7 +22,8 @@ const DemoEditDialog = (props) => {
     editDemoRequest({
       //wegen mangelndem login-verfahren gibts aktuell keine userid zurück,
       //daher hier eine statische userid als temporäre lösung
-      created_by: id,
+      id: id,
+      created_by: 12,
       title: title,
       short_desc: short_desc,
       detail_desc: detail_desc,
