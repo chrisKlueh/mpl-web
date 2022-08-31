@@ -1,3 +1,6 @@
+import axios from "axios";
+import { API_URL } from "../constants/index";
+
 export const uploadDemoReq = async (
   created_by,
   title,
@@ -5,29 +8,25 @@ export const uploadDemoReq = async (
   detail_desc,
   file
 ) => {
-  const formData = new FormData();
+  let formData = new FormData();
   formData.append("created_by", created_by);
   formData.append("title", title);
   formData.append("short_desc", short_desc);
   formData.append("detail_desc", detail_desc);
-  formData.append("file", file[0]);
+  formData.append("file", file);
 
-  console.log(created_by);
-  console.log(title);
-  console.log(short_desc);
-  console.log(detail_desc);
-  console.log(file);
-  console.log(file[0]);
-  // return new Promise((resolve, reject) => {
-  //   axios
-  //     .post(`${API_URL}demos/`, {
-  //       formData,
-  //     })
-  //     .then((response) => {
-  //       resolve(response);
-  //     })
-  //     .catch((error) => {
-  //       reject(error);
-  //     });
-  // });
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "post",
+      url: `${API_URL}demos/`,
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 };

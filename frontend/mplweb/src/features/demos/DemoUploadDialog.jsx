@@ -39,7 +39,9 @@ const DemoUploadDialog = (props) => {
   const handleSubmit = (title, short_desc, detail_desc) => {
     const { uploadDemoRequest } = props;
     uploadDemoRequest({
-      created_by: 1,
+      //wegen mangelndem login-verfahren gibts aktuell keine userid zurück,
+      //daher hier eine statische userid als temporäre lösung
+      created_by: 12,
       title: title,
       short_desc: short_desc,
       detail_desc: detail_desc,
