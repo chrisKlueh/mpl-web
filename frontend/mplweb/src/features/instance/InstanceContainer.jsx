@@ -46,7 +46,7 @@ const InstanceContainer = (props) => {
 
   const { isLoading, instance, demo } = props;
   return (
-    <WrapperContainer pageTitle="InstanceContainer">
+    <WrapperContainer pageTitle={isLoading ? "Instance" : demo.title}>
       {renderInstance(isLoading, instance)}
       {renderDemo(isLoading, demo)}
     </WrapperContainer>
