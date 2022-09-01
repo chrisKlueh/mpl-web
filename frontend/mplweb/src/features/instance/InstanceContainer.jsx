@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import styles from "./InstanceContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
 import InstanceDescription from "./InstanceDescription";
+import PlotControlBar from "./PlotControlBar";
 import {
   showInstanceRequest,
   resetInstanceState,
@@ -56,6 +57,7 @@ const InstanceContainer = (props) => {
         <div className={styles.videoContainer}>
           <video />
         </div>
+        <PlotControlBar />
       </div>
     </WrapperContainer>
   );

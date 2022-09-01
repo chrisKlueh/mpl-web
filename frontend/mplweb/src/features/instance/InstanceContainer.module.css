@@ -6,6 +6,7 @@
 .videoContainer video {
   width: 500px;
   height: 350px;
+  border: 2px solid whitesmoke;
   background-image: url("https://matplotlib.org/stable/_images/sphx_glr_cohere_001_2_0x.png");
   background-size: cover;
 }
