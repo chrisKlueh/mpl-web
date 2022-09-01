@@ -14,15 +14,17 @@ import {
 import { Delete, Edit, Monitor, PlayArrow } from "@mui/icons-material";
 import { connect } from "react-redux";
 
+import styles from "./DemosList.module.css";
+import DemoEditDialog from "./DemoEditDialog";
+import LoadingDialog from "../general/LoadingDialog";
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import Placeholder from "../general/Placeholder";
 import { deleteDemoRequest } from "../../slices/demosSlice";
 import { showDemoRequest } from "../../slices/demoSlice";
+import { spawnInstanceRequest } from "../../slices/instanceSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { truncateString } from "../../helpers/listHelper";
-import styles from "./DemosList.module.css";
-import DemoEditDialog from "./DemoEditDialog";
 
 const DemosList = (props) => {
   //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
@@ -31,8 +33,13 @@ const DemosList = (props) => {
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
 
   const navigate = useNavigate();
-  const { isGettingDemos, listItems, showDemoRequest, deleteDemoRequest } =
-    props;
+  const {
+    isGettingDemos,
+    listItems,
+    showDemoRequest,
+    deleteDemoRequest,
+    isSpawningInstance,
+  } = props;
 
   const updateSelectedAndOpenDialog = (id, dialog) => {
     setSelectedId(id);
@@ -50,10 +57,10 @@ const DemosList = (props) => {
   };
 
   const handleSpawnInstance = (id) => {
+    const { spawnInstanceRequest } = props;
     setSelectedId(id);
-    //todo:
-    //spawn instance request (liefert zu öffnende instance id zurück)
-    navigate(`/instance/${1}`);
+    spawnInstanceRequest(id);
+    // navigate(`/instance/${id}`);
   };
 
   const handleDeleteDemo = (id) => {
@@ -153,15 +160,23 @@ const DemosList = (props) => {
         open={isEditDialogOpen}
         handleClose={() => setEditDialogOpen(false)}
       />
+      <LoadingDialog open={isSpawningInstance} />
     </div>
   );
+};
+
+const mapStateToProps = (state) => {
+  return {
+    isSpawningInstance: state.instance.isSpawningInstance,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     deleteDemoRequest: (id) => dispatch(deleteDemoRequest(id)),
     showDemoRequest: (id) => dispatch(showDemoRequest(id)),
+    spawnInstanceRequest: (id) => dispatch(spawnInstanceRequest(id)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(DemosList);
+export default connect(mapStateToProps, mapDispatchToProps)(DemosList);

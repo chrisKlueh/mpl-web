@@ -6,6 +6,7 @@ import loginReducer from "./slices/loginSlice";
 import demosReducer from "./slices/demosSlice";
 import demoReducer from "./slices/demoSlice";
 import feedbackReducer from "./slices/feedbackSlice";
+import instanceReducer from "./slices/instanceSlice";
 import rootSaga from "./sagas/sagas";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -17,6 +18,7 @@ const store = configureStore({
     demos: demosReducer,
     demo: demoReducer,
     feedback: feedbackReducer,
+    instance: instanceReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(middleware),
