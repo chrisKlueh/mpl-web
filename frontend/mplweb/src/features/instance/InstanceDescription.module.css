@@ -1,0 +1,22 @@
+.root {
+  text-align: start;
+  background-color: blanchedalmond;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 10px;
+  flex-grow: 1;
+}
+
+.shortDesc {
+  font-weight: bold;
+}
+
+.detailsHeading {
+  margin-top: 10px;
+}
+
+.detailsContainer {
+  padding: 5px 10px;
+  background-color: lightyellow;
+  border-radius: 5px;
+}

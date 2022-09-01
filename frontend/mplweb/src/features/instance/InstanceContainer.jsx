@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
+import styles from "./InstanceContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
+import InstanceDescription from "./InstanceDescription";
 import {
   showInstanceRequest,
   resetInstanceState,
@@ -47,8 +49,14 @@ const InstanceContainer = (props) => {
   const { isLoading, instance, demo } = props;
   return (
     <WrapperContainer pageTitle={isLoading ? "Instance" : demo.title}>
-      {renderInstance(isLoading, instance)}
-      {renderDemo(isLoading, demo)}
+      {/* {renderInstance(isLoading, instance)}
+      {renderDemo(isLoading, demo)} */}
+      <div className={styles.root}>
+        <InstanceDescription isLoading={isLoading} description={demo} />
+        <div className={styles.videoContainer}>
+          <video />
+        </div>
+      </div>
     </WrapperContainer>
   );
 };
