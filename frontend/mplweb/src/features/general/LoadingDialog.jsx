@@ -13,7 +13,7 @@ const ConfirmationDialog = (props) => {
       aria-describedby="alert-dialog-description"
     >
       <DialogContent>
-        <LoadingFragment message={"Spawning Instance"} />
+        <LoadingFragment message={"Spawning instance.."} />
       </DialogContent>
     </Dialog>
   );

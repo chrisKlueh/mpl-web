@@ -8,13 +8,13 @@ import {
   Stepper,
   Step,
   StepLabel,
-  CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
+import styles from "./DemoDialogBase.module.css";
 import UploadDropzone from "./UploadDropzone";
 import DemoDetailsForm from "./DemoDetailsForm";
-import styles from "./DemoDialogBase.module.css";
+import LoadingFragment from "../general/LoadingFragment";
 
 const DemoDialogBase = (props) => {
   const {
@@ -69,10 +69,7 @@ const DemoDialogBase = (props) => {
         <DialogTitle id="form-dialog-title">{title}</DialogTitle>
         <DialogContent>
           {isLoading ? (
-            <div className={styles.spinnerContainer}>
-              <p>Loading demo details...</p>
-              <CircularProgress className={styles.spinner} />
-            </div>
+            <LoadingFragment message={"Loading demo details.."} />
           ) : (
             <Fragment>
               <Stepper activeStep={activeStep} className={styles.stepper}>
