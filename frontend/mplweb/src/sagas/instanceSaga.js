@@ -24,8 +24,10 @@ export function* watcherShowInstance() {
 
 export function* workerSpawnInstance({ payload }) {
   try {
-    let res = yield call(spawnInstanceReq, payload);
+    const { id, navigate } = payload;
+    let res = yield call(spawnInstanceReq, id);
     yield put(spawnInstanceSuccess(res.data));
+    yield put(navigate(`/instance/${res.data.id}`));
   } catch (error) {
     yield put(spawnInstanceError());
   }

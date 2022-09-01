@@ -3,10 +3,16 @@ import { connect } from "react-redux";
 
 import WrapperContainer from "../general/WrapperContainer";
 // import { showDemoDetailsRequest } from "../../slices/demoDetailsSlice";
+import { resetInstanceState } from "../../slices/instanceSlice";
 
 class InstanceContainer extends Component {
   componentDidMount() {
     // this.handleShowDemoDetails();
+  }
+
+  componentWillUnmount() {
+    const { resetInstanceState } = this.props;
+    resetInstanceState();
   }
 
   handleShowDemoDetails = () => {
@@ -29,6 +35,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    resetInstanceState: () => dispatch(resetInstanceState()),
     // showDemoDetailsRequest: () => dispatch(showDemoDetailsRequest()),
   };
 };

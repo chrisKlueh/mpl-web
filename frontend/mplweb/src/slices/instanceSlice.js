@@ -29,6 +29,9 @@ export const instanceSlice = createSlice({
     spawnInstanceError: (state, action) => {
       state.isSpawningInstance = false;
     },
+    resetInstanceState: (state, action) => {
+      state.instance = initialState.instance;
+    },
   },
 });
 export const {
@@ -38,6 +41,7 @@ export const {
   spawnInstanceRequest,
   spawnInstanceSuccess,
   spawnInstanceError,
+  resetInstanceState,
 } = instanceSlice.actions;
 
 export default instanceSlice.reducer;

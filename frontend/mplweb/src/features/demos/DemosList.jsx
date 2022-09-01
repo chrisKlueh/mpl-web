@@ -59,8 +59,7 @@ const DemosList = (props) => {
   const handleSpawnInstance = (id) => {
     const { spawnInstanceRequest } = props;
     setSelectedId(id);
-    spawnInstanceRequest(id);
-    // navigate(`/instance/${id}`);
+    spawnInstanceRequest({ id, navigate });
   };
 
   const handleDeleteDemo = (id) => {
@@ -175,7 +174,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     deleteDemoRequest: (id) => dispatch(deleteDemoRequest(id)),
     showDemoRequest: (id) => dispatch(showDemoRequest(id)),
-    spawnInstanceRequest: (id) => dispatch(spawnInstanceRequest(id)),
+    spawnInstanceRequest: (payload) => dispatch(spawnInstanceRequest(payload)),
   };
 };
 

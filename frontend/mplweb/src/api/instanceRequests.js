@@ -19,7 +19,7 @@ export const spawnInstanceReq = async (id) => {
       () =>
         resolve({
           data: {
-            instance_id: 1,
+            id: 1,
           },
         }),
       3000
@@ -45,9 +45,9 @@ export const showInstanceReq = async (id) => {
       () =>
         resolve({
           data: {
-            instance_id: 1,
-            demo_id: 1,
-            user_id: 1,
+            id: 1,
+            demo: 1,
+            user: 1,
             host: "192.168.2.118",
             port: "8080",
           },
