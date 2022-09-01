@@ -1,42 +1,70 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
 import WrapperContainer from "../general/WrapperContainer";
-// import { showDemoDetailsRequest } from "../../slices/demoDetailsSlice";
-import { resetInstanceState } from "../../slices/instanceSlice";
+import {
+  showInstanceRequest,
+  resetInstanceState,
+} from "../../slices/instanceSlice";
 
-class InstanceContainer extends Component {
-  componentDidMount() {
-    // this.handleShowDemoDetails();
-  }
+const InstanceContainer = (props) => {
+  const { showInstanceRequest, resetInstanceState } = props;
+  useEffect(() => {
+    //equals componentDidMount
+    showInstanceRequest();
+    //return statement equals componentWillUnmount
+    return () => {
+      resetInstanceState();
+    };
+  }, [showInstanceRequest, resetInstanceState]);
 
-  componentWillUnmount() {
-    const { resetInstanceState } = this.props;
-    resetInstanceState();
-  }
-
-  handleShowDemoDetails = () => {
-    // const { showDemoDetailsRequest } = this.props;
-    // showDemoDetailsRequest();
+  const renderInstance = (isLoading, instanceObj) => {
+    return isLoading ? (
+      <div>isLoading</div>
+    ) : (
+      <div>
+        <p>
+          {instanceObj.id} {instanceObj.user} {instanceObj.demo}{" "}
+          {instanceObj.host} {instanceObj.port}
+        </p>
+      </div>
+    );
   };
 
-  render() {
-    // const { isLoading, details } = this.props;
-    return <WrapperContainer pageTitle="InstanceContainer"></WrapperContainer>;
-  }
-}
+  const renderDemo = (isLoading, demoObj) => {
+    return isLoading ? (
+      <div>isLoading</div>
+    ) : (
+      <div>
+        <p>
+          {demoObj.id} {demoObj.created_at} {demoObj.created_by} {demoObj.title}{" "}
+          {demoObj.short_desc} {demoObj.detail_desc}
+        </p>
+      </div>
+    );
+  };
+
+  const { isLoading, instance, demo } = props;
+  return (
+    <WrapperContainer pageTitle="InstanceContainer">
+      {renderInstance(isLoading, instance)}
+      {renderDemo(isLoading, demo)}
+    </WrapperContainer>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
-    // details: state.demodetails.details,
-    // isLoading: state.demodetails.isGettingDemoDetails,
+    instance: state.instance.instance,
+    demo: state.demo.demo,
+    isLoading: state.instance.isGettingInstance || state.demo.isGettingDemo,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     resetInstanceState: () => dispatch(resetInstanceState()),
-    // showDemoDetailsRequest: () => dispatch(showDemoDetailsRequest()),
+    showInstanceRequest: (id) => dispatch(showInstanceRequest(id)),
   };
 };
 

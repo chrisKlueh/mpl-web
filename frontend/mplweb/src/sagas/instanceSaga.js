@@ -8,11 +8,14 @@ import {
   spawnInstanceSuccess,
   spawnInstanceError,
 } from "../slices/instanceSlice";
+import { showDemoRequest } from "../slices/demoSlice";
 
 export function* workerShowInstance({ payload }) {
   try {
     let res = yield call(showInstanceReq, payload);
+    console.log(res.data);
     yield put(showInstanceSuccess(res.data));
+    yield put(showDemoRequest(res.data.demo));
   } catch (error) {
     yield put(showInstanceError());
   }
@@ -27,7 +30,7 @@ export function* workerSpawnInstance({ payload }) {
     const { id, navigate } = payload;
     let res = yield call(spawnInstanceReq, id);
     yield put(spawnInstanceSuccess(res.data));
-    yield put(navigate(`/instance/${res.data.id}`));
+    yield navigate(`/instance/${res.data.id}`);
   } catch (error) {
     yield put(spawnInstanceError());
   }

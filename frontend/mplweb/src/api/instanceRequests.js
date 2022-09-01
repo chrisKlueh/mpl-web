@@ -1,5 +1,5 @@
-import axios from "axios";
-import { API_URL } from "../constants/index";
+// import axios from "axios";
+// import { API_URL } from "../constants/index";
 
 export const spawnInstanceReq = async (id) => {
   //   return new Promise((resolve, reject) => {
@@ -46,8 +46,8 @@ export const showInstanceReq = async (id) => {
         resolve({
           data: {
             id: 1,
-            demo: 1,
-            user: 1,
+            demo: 59,
+            user: 12,
             host: "192.168.2.118",
             port: "8080",
           },
