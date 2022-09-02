@@ -1,5 +1,11 @@
+.appTitleContainer {
+  display: flex;
+  text-decoration: none;
+  color: white;
+}
+
 .logo {
-  margin-right: 10px;
+  margin: auto 10px auto 0px;
 }
 
 .appTitle {

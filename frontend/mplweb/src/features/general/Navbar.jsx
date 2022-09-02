@@ -37,8 +37,8 @@ const Navbar = (props) => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <TimelineIcon className={styles.logo} />
-          <Link to="/demos" style={{ textDecoration: "none", color: "white" }}>
+          <Link to="/demos" className={styles.appTitleContainer}>
+            <TimelineIcon className={styles.logo} />
             <Typography variant="h6" noWrap className={styles.appTitle}>
               mplWEB
             </Typography>
