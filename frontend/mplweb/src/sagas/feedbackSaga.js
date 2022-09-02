@@ -1,9 +1,16 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
-import { showFeedbackReq, deleteFeedbackReq } from "../api/feedbackRequests";
+import {
+  showFeedbackReq,
+  submitFeedbackReq,
+  deleteFeedbackReq,
+} from "../api/feedbackRequests";
 import {
   showFeedbackRequest,
   showFeedbackSuccess,
   showFeedbackError,
+  submitFeedbackRequest,
+  submitFeedbackSuccess,
+  submitFeedbackError,
   deleteFeedbackRequest,
   deleteFeedbackSuccess,
   deleteFeedbackError,
@@ -22,6 +29,20 @@ export function* watcherShowFeedback() {
   yield takeEvery(showFeedbackRequest, workerShowFeedback);
 }
 
+export function* workerSubmitFeedback({ payload }) {
+  try {
+    const { feedbackType, feedback, demoId } = payload;
+    yield call(submitFeedbackReq, feedbackType, feedback, demoId);
+    yield put(submitFeedbackSuccess());
+  } catch (error) {
+    yield put(submitFeedbackError());
+  }
+}
+
+export function* watcherSubmitFeedback() {
+  yield takeEvery(submitFeedbackRequest, workerSubmitFeedback);
+}
+
 export function* workerDeleteFeedback({ payload }) {
   try {
     yield call(deleteFeedbackReq, payload);
@@ -37,5 +58,9 @@ export function* watcherDeleteFeedback() {
 }
 
 export default function* rootSaga() {
-  yield all([fork(watcherShowFeedback), fork(watcherDeleteFeedback)]);
+  yield all([
+    fork(watcherShowFeedback),
+    fork(watcherSubmitFeedback),
+    fork(watcherDeleteFeedback),
+  ]);
 }

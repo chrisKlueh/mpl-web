@@ -11,6 +11,7 @@ import {
   showInstanceRequest,
   resetInstanceState,
 } from "../../slices/instanceSlice";
+import { submitFeedbackRequest } from "../../slices/feedbackSlice";
 
 const InstanceContainer = (props) => {
   const [isFeedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
@@ -26,7 +27,16 @@ const InstanceContainer = (props) => {
 
   const handleTerminate = () => console.log("terminating webrtc stream");
   const handleSave = () => console.log("saving current plot");
-  const handleSubmitFeedback = () => console.log("submitting feedback :)");
+  const handleSubmitFeedback = (feedbackType, feedback) => {
+    const { submitFeedbackRequest, demo } = props;
+    const { id } = demo;
+    console.log(id);
+    submitFeedbackRequest({
+      feedbackType: feedbackType,
+      feedback: feedback,
+      demoId: id,
+    });
+  };
 
   const { isLoading, demo } = props;
   return (
@@ -70,6 +80,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     resetInstanceState: () => dispatch(resetInstanceState()),
     showInstanceRequest: (id) => dispatch(showInstanceRequest(id)),
+    submitFeedbackRequest: (feedbackType, feedback, id) =>
+      dispatch(submitFeedbackRequest(feedbackType, feedback, id)),
   };
 };
 

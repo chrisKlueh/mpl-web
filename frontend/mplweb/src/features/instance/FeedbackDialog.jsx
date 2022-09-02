@@ -21,9 +21,8 @@ const FeedbackDialog = (props) => {
       <DialogTitle id="alert-dialog-title">Leave Feedback</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          {
-            "Feel free to report a bug or just leave a comment. Please select the feedback type accordingly."
-          }
+          Feel free to report a bug or just leave a comment. <br />
+          Please select the feedback type accordingly.
         </DialogContentText>
         <FeedbackForm handleSubmit={handleSubmit} handleClose={handleClose} />
       </DialogContent>

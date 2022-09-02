@@ -13,7 +13,6 @@ import { showDemoRequest } from "../slices/demoSlice";
 export function* workerShowInstance({ payload }) {
   try {
     let res = yield call(showInstanceReq, payload);
-    console.log(res.data);
     yield put(showInstanceSuccess(res.data));
     yield put(showDemoRequest(res.data.demo));
   } catch (error) {

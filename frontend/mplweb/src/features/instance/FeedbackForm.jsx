@@ -4,7 +4,7 @@ import { Formik, Form, Field } from "formik";
 import { TextField, Select } from "formik-mui";
 
 import { validateAll } from "../../helpers/feedbackValidationHelper";
-import styles from "../demos/DemoDetailsForm.module.css";
+import styles from "./FeedbackForm.module.css";
 
 const FeedbackForm = (props) => {
   const { handleSubmit, handleClose } = props;
@@ -21,7 +21,7 @@ const FeedbackForm = (props) => {
       }}
     >
       {({ submitForm, values }) => (
-        <Form>
+        <Form className={styles.root}>
           <Grid container className={styles.container}>
             <Grid item>
               <Field
@@ -31,8 +31,8 @@ const FeedbackForm = (props) => {
                 type="text"
                 label="Feedback type"
               >
-                <MenuItem value={0}>Bug Report</MenuItem>
-                <MenuItem value={1}>Comment</MenuItem>
+                <MenuItem value={1}>Bug Report</MenuItem>
+                <MenuItem value={2}>Comment</MenuItem>
               </Field>
             </Grid>
           </Grid>
@@ -45,6 +45,8 @@ const FeedbackForm = (props) => {
                 type="text"
                 label="Feedback"
                 placeholder="Enter your feedback here"
+                multiline={true}
+                minRows={4}
               />
             </Grid>
           </Grid>
@@ -54,7 +56,10 @@ const FeedbackForm = (props) => {
             </Button>
             <Button
               disabled={!values.feedback || !values.feedbackType}
-              onClick={submitForm}
+              onClick={() => {
+                submitForm();
+                handleClose();
+              }}
               color="primary"
             >
               Submit

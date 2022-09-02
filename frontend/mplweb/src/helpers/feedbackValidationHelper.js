@@ -1,5 +1,4 @@
 export const validateType = (values) => {
-  console.log(values);
   const errors = {};
   if (!values.feedbackType) {
     errors.feedbackType = "Required";
@@ -8,7 +7,6 @@ export const validateType = (values) => {
 };
 
 export const validateFeedback = (values) => {
-  console.log(values);
   const errors = {};
   if (!values.feedback) {
     errors.feedback = "Required";
@@ -19,7 +17,6 @@ export const validateFeedback = (values) => {
 };
 
 export const validateAll = (values) => {
-  console.log(values);
   const feedbackTypeErrors = validateType(values);
   const feedbackErrors = validateFeedback(values);
 

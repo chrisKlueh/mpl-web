@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isGettingFeedback: false,
+  isSubmittingFeedback: false,
   isDeletingFeedback: false,
   feedback: [],
 };
@@ -19,6 +20,15 @@ export const feedbackSlice = createSlice({
     showFeedbackError: (state, action) => {
       state.isGettingFeedback = false;
     },
+    submitFeedbackRequest: (state, action) => {
+      state.isSubmittingFeedback = true;
+    },
+    submitFeedbackSuccess: (state, action) => {
+      state.isSubmittingFeedback = false;
+    },
+    submitFeedbackError: (state, action) => {
+      state.isSubmittingFeedback = false;
+    },
     deleteFeedbackRequest: (state, action) => {
       state.isDeletingFeedback = true;
     },
@@ -34,6 +44,9 @@ export const {
   showFeedbackRequest,
   showFeedbackSuccess,
   showFeedbackError,
+  submitFeedbackRequest,
+  submitFeedbackSuccess,
+  submitFeedbackError,
   deleteFeedbackRequest,
   deleteFeedbackSuccess,
   deleteFeedbackError,
