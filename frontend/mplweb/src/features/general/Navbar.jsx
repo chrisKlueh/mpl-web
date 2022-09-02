@@ -39,12 +39,7 @@ const Navbar = (props) => {
         <Toolbar disableGutters>
           <TimelineIcon className={styles.logo} />
           <Link to="/demos" style={{ textDecoration: "none", color: "white" }}>
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              className={styles.appTitle}
-            >
+            <Typography variant="h6" noWrap className={styles.appTitle}>
               mplWEB
             </Typography>
           </Link>
