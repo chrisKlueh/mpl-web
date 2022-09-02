@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Typography } from "@mui/material";
 
 import styles from "./InstanceDescription.module.css";
@@ -10,33 +10,41 @@ const InstanceDescription = (props) => {
 
   const renderDetailDesc = (detailDescString) => {
     const lines = detailDescString.split("\n");
+    let key = 0;
     return (
       <div className={styles.detailsContainer}>
         {lines.map((line) => {
+          key++;
           return line === "\r" ? (
-            <br />
+            <br key={key} />
           ) : (
-            <Typography variant="body1">{line}</Typography>
+            <Typography key={key} variant="body1">
+              {line}
+            </Typography>
           );
         })}
       </div>
     );
   };
-
+  console.log(props.description);
   return isLoading ? (
     <div>Skeleton goes here</div>
   ) : (
     <div className={styles.root}>
-      <Typography variant="subtitle2">
-        {`created at ${formatIsoDate(created_at)} by ${created_by}`}
-      </Typography>
-      <Typography variant="h6" className={styles.shortDesc}>
-        {short_desc}
-      </Typography>
-      <Typography className={styles.detailsHeading} variant="h6">
-        Details
-      </Typography>
-      {renderDetailDesc(detail_desc)}
+      {detail_desc !== undefined && (
+        <Fragment>
+          <Typography variant="subtitle2">
+            {`created at ${formatIsoDate(created_at)} by ${created_by}`}
+          </Typography>
+          <Typography variant="h6" className={styles.shortDesc}>
+            {short_desc}
+          </Typography>
+          <Typography className={styles.detailsHeading} variant="h6">
+            Details
+          </Typography>
+          {renderDetailDesc(detail_desc)}
+        </Fragment>
+      )}
     </div>
   );
 };
