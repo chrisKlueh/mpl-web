@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 
 import FeedbackForm from "./FeedbackForm";
+import styles from "./FeedbackDialog.module.css";
 
 const FeedbackDialog = (props) => {
   const { open, handleClose, handleSubmit } = props;
@@ -20,9 +21,14 @@ const FeedbackDialog = (props) => {
     >
       <DialogTitle id="alert-dialog-title">Leave Feedback</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          Feel free to report a bug or just leave a comment. <br />
-          Please select the feedback type accordingly.
+        <DialogContentText
+          id="alert-dialog-description"
+          className={styles.dialogContentText}
+        >
+          Feel free to report a bug or just leave a comment. Please select the
+          feedback type accordingly. <br />
+          Your feedback is anonymous and will only be linked to the demo this
+          instance is based on.
         </DialogContentText>
         <FeedbackForm handleSubmit={handleSubmit} handleClose={handleClose} />
       </DialogContent>
