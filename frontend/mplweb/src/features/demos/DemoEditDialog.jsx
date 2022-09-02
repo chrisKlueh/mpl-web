@@ -18,12 +18,10 @@ const DemoEditDialog = (props) => {
   };
 
   const submitRequest = (title, short_desc, detail_desc) => {
-    const { editDemoRequest } = props;
+    const { editDemoRequest, userId } = props;
     editDemoRequest({
-      //wegen mangelndem login-verfahren gibts aktuell keine userid zurück,
-      //daher hier eine statische userid als temporäre lösung
       id: id,
-      created_by: 12,
+      created_by: userId,
       title: title,
       short_desc: short_desc,
       detail_desc: detail_desc,
@@ -53,6 +51,7 @@ const mapStateToProps = (state) => {
   return {
     isLoading: state.demo.isGettingDemo,
     demo: state.demo.demo,
+    userId: state.login.userId,
   };
 };
 

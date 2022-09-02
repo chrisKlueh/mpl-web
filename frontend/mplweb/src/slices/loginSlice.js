@@ -16,10 +16,10 @@ export const loginSlice = createSlice({
       state.isLoggingIn = true;
     },
     loginSuccess: (state, action) => {
-      const { userId, name, created_at, is_admin } = action.payload;
+      const { id, name, created_at, is_admin } = action.payload;
       state.isLoggingIn = false;
       state.isLoggedIn = true;
-      state.userId = userId;
+      state.userId = id;
       state.userName = name;
       state.createdAt = created_at;
       state.isAdmin = is_admin;
