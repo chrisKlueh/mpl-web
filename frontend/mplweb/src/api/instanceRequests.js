@@ -22,7 +22,7 @@ export const spawnInstanceReq = async (id) => {
             id: 1,
           },
         }),
-      3000
+      2000
     );
   });
 };
@@ -53,7 +53,7 @@ export const showInstanceReq = async (id) => {
             port: "8080",
           },
         }),
-      3000
+      2000
     );
   });
 };
