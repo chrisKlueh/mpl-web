@@ -32,7 +32,7 @@ const Navbar = (props) => {
     handleCloseUserMenu();
   };
 
-  const { isLoggedIn, isAdmin } = props;
+  const { isLoggedIn, isAdmin, userName } = props;
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -45,62 +45,65 @@ const Navbar = (props) => {
           </Link>
 
           {isLoggedIn && (
-            <Box className={styles.more}>
-              <Tooltip title="More">
-                <IconButton
-                  onClick={handleOpenUserMenu}
-                  className={styles.iconButton}
-                >
-                  <Avatar />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                className={styles.menu}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                <MenuItem key={"demos"} onClick={handleCloseUserMenu}>
-                  <Link
-                    to="/demos"
-                    style={{
-                      textDecoration: "none",
-                      color: "black",
-                      textAlign: "center",
-                    }}
+            <div className={styles.rightContainer}>
+              <p className={styles.userName}>{userName}</p>
+              <Box className={styles.more}>
+                <Tooltip title="More">
+                  <IconButton
+                    onClick={handleOpenUserMenu}
+                    className={styles.iconButton}
                   >
-                    Demos
-                  </Link>
-                </MenuItem>
-                {isAdmin && (
-                  <MenuItem key={"feedback"} onClick={handleCloseUserMenu}>
+                    <Avatar />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  className={styles.menu}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  <MenuItem key={"demos"} onClick={handleCloseUserMenu}>
                     <Link
-                      to="/feedback"
+                      to="/demos"
                       style={{
                         textDecoration: "none",
                         color: "black",
                         textAlign: "center",
                       }}
                     >
-                      Feedback
+                      Demos
                     </Link>
                   </MenuItem>
-                )}
-                <MenuItem key={"logout"} onClick={handleLogout}>
-                  <Typography className={styles.logout}>Logout</Typography>
-                </MenuItem>
-              </Menu>
-            </Box>
+                  {isAdmin && (
+                    <MenuItem key={"feedback"} onClick={handleCloseUserMenu}>
+                      <Link
+                        to="/feedback"
+                        style={{
+                          textDecoration: "none",
+                          color: "black",
+                          textAlign: "center",
+                        }}
+                      >
+                        Feedback
+                      </Link>
+                    </MenuItem>
+                  )}
+                  <MenuItem key={"logout"} onClick={handleLogout}>
+                    <Typography className={styles.logout}>Logout</Typography>
+                  </MenuItem>
+                </Menu>
+              </Box>
+            </div>
           )}
         </Toolbar>
       </Container>
