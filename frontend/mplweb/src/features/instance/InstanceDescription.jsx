@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Typography } from "@mui/material";
 
 import styles from "./InstanceDescription.module.css";
+import InstanceDescriptionSkeleton from "./InstanceDescriptionSkeleton";
 import { formatIsoDate } from "../../helpers/formatHelper";
 
 const InstanceDescription = (props) => {
@@ -26,9 +27,9 @@ const InstanceDescription = (props) => {
       </div>
     );
   };
-  console.log(props.description);
+
   return isLoading ? (
-    <div>Skeleton goes here</div>
+    <InstanceDescriptionSkeleton />
   ) : (
     <div className={styles.root}>
       {detail_desc !== undefined && (

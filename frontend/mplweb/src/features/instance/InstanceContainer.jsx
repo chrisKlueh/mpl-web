@@ -23,6 +23,8 @@ const InstanceContainer = (props) => {
     };
   }, [showInstanceRequest, resetInstanceState]);
 
+  const handleTerminate = () => console.log("terminating webrtc stream");
+  const handleSave = () => console.log("saving current plot");
   const handleSubmitFeedback = () => console.log("submitting feedback :)");
 
   const { isLoading, demo } = props;
@@ -33,7 +35,11 @@ const InstanceContainer = (props) => {
         <div className={styles.videoContainer}>
           <video />
         </div>
-        <PlotControlBar handleComment={() => setFeedbackDialogOpen(true)} />
+        <PlotControlBar
+          handleTerminate={handleTerminate}
+          handleSave={handleSave}
+          handleComment={() => setFeedbackDialogOpen(true)}
+        />
       </div>
       <FeedbackDialog
         open={isFeedbackDialogOpen}

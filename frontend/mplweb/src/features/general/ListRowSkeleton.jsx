@@ -10,8 +10,20 @@ const createSkeleton = (rows, styling) => {
     res.push(
       <Fragment key={i}>
         <ListItem button className={styles.item} id={i}>
-          <Skeleton animation="wave" variant="circle" width={40} height={40} />
-          <Skeleton animation="wave" variant="rect" width={"95%"} height={40} />
+          <Skeleton
+            className={styles.skeletonIcon}
+            animation="wave"
+            variant="circular"
+            width={40}
+            height={40}
+          />
+          <Skeleton
+            className={styles.skeletonRow}
+            animation="wave"
+            variant="rectangular"
+            width={"95%"}
+            height={40}
+          />
         </ListItem>
         <Divider />
       </Fragment>

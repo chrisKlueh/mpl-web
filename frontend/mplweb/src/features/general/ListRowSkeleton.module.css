@@ -2,3 +2,11 @@
   height: 60px;
   padding: 0 10px;
 }
+
+.skeletonIcon {
+  margin: 0 5px 0 0;
+}
+
+.skeletonRow {
+  border-radius: 5px;
+}
