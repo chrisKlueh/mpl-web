@@ -5,7 +5,7 @@ import { PowerSettingsNew, SaveAs, Feedback } from "@mui/icons-material";
 import styles from "./PlotControlBar.module.css";
 
 const PlotControlBar = (props) => {
-  const { isLoading, handleTerminate, handleSave, handleComment } = props;
+  const { disabled, handleTerminate, handleSave, handleComment } = props;
 
   return (
     <div className={styles.root}>
@@ -15,7 +15,7 @@ const PlotControlBar = (props) => {
           color="primary"
           aria-label="add"
           onClick={handleTerminate}
-          disabled={isLoading}
+          disabled={disabled}
           className={styles.fab}
         >
           <PowerSettingsNew />
@@ -27,7 +27,7 @@ const PlotControlBar = (props) => {
           color="primary"
           aria-label="add"
           onClick={handleSave}
-          disabled={isLoading}
+          disabled={disabled}
           className={styles.fab}
         >
           <SaveAs />
@@ -39,7 +39,7 @@ const PlotControlBar = (props) => {
           color="primary"
           aria-label="add"
           onClick={handleComment}
-          disabled={isLoading}
+          disabled={disabled}
           className={styles.fab}
         >
           <Feedback />

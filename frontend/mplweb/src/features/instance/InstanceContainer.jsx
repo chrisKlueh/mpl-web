@@ -46,6 +46,7 @@ const InstanceContainer = (props) => {
           handleTerminate={handleTerminate}
           handleSave={handleSave}
           handleComment={() => setFeedbackDialogOpen(true)}
+          disabled={isLoading}
         />
       </div>
       <FeedbackDialog
