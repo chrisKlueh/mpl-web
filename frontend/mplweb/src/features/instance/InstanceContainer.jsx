@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import styles from "./InstanceContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
+import LoadingFragment from "../general/LoadingFragment";
 import InstanceDescription from "./InstanceDescription";
 import PlotControlBar from "./PlotControlBar";
 import FeedbackDialog from "./FeedbackDialog";
@@ -33,7 +34,13 @@ const InstanceContainer = (props) => {
       <div className={styles.root}>
         <InstanceDescription isLoading={isLoading} description={demo} />
         <div className={styles.videoContainer}>
-          <video />
+          {isLoading ? (
+            <div className={styles.loadingFragment}>
+              <LoadingFragment message="Establishing connection.." />
+            </div>
+          ) : (
+            <video />
+          )}
         </div>
         <PlotControlBar
           handleTerminate={handleTerminate}
