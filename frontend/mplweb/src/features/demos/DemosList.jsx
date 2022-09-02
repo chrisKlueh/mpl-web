@@ -39,6 +39,7 @@ const DemosList = (props) => {
     showDemoRequest,
     deleteDemoRequest,
     isSpawningInstance,
+    isAdmin,
   } = props;
 
   const updateSelectedAndOpenDialog = (id, dialog) => {
@@ -104,28 +105,32 @@ const DemosList = (props) => {
                     <PlayArrow />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Edit demo">
-                  <IconButton
-                    edge="end"
-                    aria-label="edit"
-                    onClick={() =>
-                      updateSelectedAndOpenDialog(listItem.id, "EDIT")
-                    }
-                  >
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete demo">
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() =>
-                      updateSelectedAndOpenDialog(listItem.id, "DELETE")
-                    }
-                  >
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
+                {isAdmin && (
+                  <Tooltip title="Edit demo">
+                    <IconButton
+                      edge="end"
+                      aria-label="edit"
+                      onClick={() =>
+                        updateSelectedAndOpenDialog(listItem.id, "EDIT")
+                      }
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {isAdmin && (
+                  <Tooltip title="Delete demo">
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() =>
+                        updateSelectedAndOpenDialog(listItem.id, "DELETE")
+                      }
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                )}
               </ListItemSecondaryAction>
             </ListItem>
             <Divider />

@@ -37,11 +37,15 @@ class DemosContainer extends Component {
   };
 
   render() {
-    const { isLoading, demos } = this.props;
+    const { isLoading, demos, isAdmin } = this.props;
     return (
       <WrapperContainer pageTitle="Available Demos">
-        <DemosList listItems={demos} isGettingDemos={isLoading} />
-        <DemoUploadDialog />
+        <DemosList
+          listItems={demos}
+          isGettingDemos={isLoading}
+          isAdmin={isAdmin}
+        />
+        {isAdmin && <DemoUploadDialog />}
       </WrapperContainer>
     );
   }
@@ -54,6 +58,7 @@ const mapStateToProps = (state) => {
       state.demos.isGettingDemos ||
       state.demos.isDeletingDemo ||
       state.demo.isUploadingDemo,
+    isAdmin: state.login.isAdmin,
   };
 };
 
