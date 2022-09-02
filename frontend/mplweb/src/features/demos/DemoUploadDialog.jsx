@@ -20,11 +20,11 @@ const DemoUploadDialog = (props) => {
   };
 
   const submitRequest = (title, short_desc, detail_desc) => {
-    const { uploadDemoRequest } = props;
+    const { uploadDemoRequest, userId } = props;
     uploadDemoRequest({
       //wegen mangelndem login-verfahren gibts aktuell keine userid zurück,
       //daher hier eine statische userid als temporäre lösung
-      created_by: 12,
+      created_by: userId,
       title: title,
       short_desc: short_desc,
       detail_desc: detail_desc,
@@ -53,6 +53,7 @@ const DemoUploadDialog = (props) => {
 const mapStateToProps = (state) => {
   return {
     isUploadingDemo: state.demos.isUploadingDemo,
+    userId: state.login.userId,
   };
 };
 

@@ -5,8 +5,9 @@ import { loginRequest, loginSuccess, loginError } from "../slices/loginSlice";
 export function* workerLogin({ payload }) {
   const { username, password } = payload;
   try {
-    yield call(loginReq, username, password);
-    yield put(loginSuccess({ userId: 1, loginToken: "hans" }));
+    const res = yield call(loginReq, username, password);
+    console.log(res.data);
+    yield put(loginSuccess(res.data));
   } catch (error) {
     yield put(loginError());
   }

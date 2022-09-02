@@ -117,14 +117,14 @@ def feedback_detail(request, pk):
 #todo
 @api_view(['POST'])
 def login(request):
+    try:
+        print(request.data["username"])
+        user = User.objects.get(name=request.data["username"])
+    except Feedback.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'POST':
-        # serializer = FeedbackSerializer(data=request.data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        return Response(status=status.HTTP_201_CREATED)
-
-        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
-
+        serializer = UserSerializer(user, context={'request': request})
+        return Response(serializer.data)
 
 @receiver(pre_delete, sender=Demo)
 def demo_file_delete(sender, instance, **kwargs):
