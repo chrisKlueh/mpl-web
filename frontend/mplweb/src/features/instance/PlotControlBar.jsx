@@ -10,40 +10,46 @@ const PlotControlBar = (props) => {
   return (
     <div className={styles.root}>
       <Tooltip title="Terminate instance">
-        <Fab
-          size="medium"
-          color="primary"
-          aria-label="add"
-          onClick={handleTerminate}
-          disabled={disabled}
-          className={styles.fab}
-        >
-          <PowerSettingsNew />
-        </Fab>
+        <span>
+          <Fab
+            size="medium"
+            color="primary"
+            aria-label="add"
+            onClick={handleTerminate}
+            disabled={disabled}
+            className={styles.fab}
+          >
+            <PowerSettingsNew />
+          </Fab>
+        </span>
       </Tooltip>
       <Tooltip title="Save current plot">
-        <Fab
-          size="medium"
-          color="primary"
-          aria-label="add"
-          onClick={handleSave}
-          disabled={disabled}
-          className={styles.fab}
-        >
-          <SaveAs />
-        </Fab>
+        <span>
+          <Fab
+            size="medium"
+            color="primary"
+            aria-label="add"
+            onClick={handleSave}
+            disabled={disabled}
+            className={styles.fab}
+          >
+            <SaveAs />
+          </Fab>
+        </span>
       </Tooltip>
       <Tooltip title="Report issue/ Leave comment">
-        <Fab
-          size="medium"
-          color="primary"
-          aria-label="add"
-          onClick={handleComment}
-          disabled={disabled}
-          className={styles.fab}
-        >
-          <Feedback />
-        </Fab>
+        <span>
+          <Fab
+            size="medium"
+            color="primary"
+            aria-label="add"
+            onClick={handleComment}
+            disabled={disabled}
+            className={styles.fab}
+          >
+            <Feedback />
+          </Fab>
+        </span>
       </Tooltip>
     </div>
   );
