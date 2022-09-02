@@ -46,8 +46,8 @@ export const showInstanceReq = async (id) => {
         resolve({
           data: {
             id: 1,
-            //59 & 65 exist atm
-            demo: 66,
+            //67 exists atm
+            demo: 67,
             user: 13,
             host: "192.168.2.118",
             port: "8080",

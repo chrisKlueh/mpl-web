@@ -32,7 +32,7 @@ const Navbar = (props) => {
     handleCloseUserMenu();
   };
 
-  const { isLoggedIn } = props;
+  const { isLoggedIn, isAdmin } = props;
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -70,18 +70,32 @@ const Navbar = (props) => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                <MenuItem key={"feedback"} onClick={handleCloseUserMenu}>
+                <MenuItem key={"demos"} onClick={handleCloseUserMenu}>
                   <Link
-                    to="/feedback"
+                    to="/demos"
                     style={{
                       textDecoration: "none",
                       color: "black",
                       textAlign: "center",
                     }}
                   >
-                    Feedback
+                    Demos
                   </Link>
                 </MenuItem>
+                {isAdmin && (
+                  <MenuItem key={"feedback"} onClick={handleCloseUserMenu}>
+                    <Link
+                      to="/feedback"
+                      style={{
+                        textDecoration: "none",
+                        color: "black",
+                        textAlign: "center",
+                      }}
+                    >
+                      Feedback
+                    </Link>
+                  </MenuItem>
+                )}
                 <MenuItem key={"logout"} onClick={handleLogout}>
                   <Typography className={styles.logout}>Logout</Typography>
                 </MenuItem>

@@ -7,11 +7,11 @@ import Navbar from "./Navbar";
 import styles from "./WrapperContainer.module.css";
 
 const WrapperContainer = (props) => {
-  const { isLoggedIn, pageTitle } = props;
+  const { isLoggedIn, isAdmin, pageTitle } = props;
 
   return isLoggedIn ? (
     <div className={styles.root}>
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar isLoggedIn={isLoggedIn} isAdmin={isAdmin} />
       <Paper className={styles.paper}>
         <Typography
           variant={"h5"}
@@ -33,6 +33,7 @@ const WrapperContainer = (props) => {
 const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.login.isLoggedIn,
+    isAdmin: state.login.isAdmin,
   };
 };
 
