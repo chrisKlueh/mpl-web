@@ -1,11 +1,22 @@
 import React from "react";
 import { Tooltip, Fab } from "@mui/material";
-import { PowerSettingsNew, SaveAs, Feedback } from "@mui/icons-material";
+import {
+  PowerSettingsNew,
+  RestartAlt,
+  SaveAs,
+  Feedback,
+} from "@mui/icons-material";
 
 import styles from "./PlotControlBar.module.css";
 
 const PlotControlBar = (props) => {
-  const { disabled, handleTerminate, handleSave, handleComment } = props;
+  const {
+    disabled,
+    handleTerminate,
+    handleSave,
+    handleComment,
+    handleRestart,
+  } = props;
 
   return (
     <div className={styles.root}>
@@ -20,6 +31,20 @@ const PlotControlBar = (props) => {
             className={styles.fab}
           >
             <PowerSettingsNew />
+          </Fab>
+        </span>
+      </Tooltip>
+      <Tooltip title="Restart instance">
+        <span>
+          <Fab
+            size="medium"
+            color="primary"
+            aria-label="add"
+            onClick={handleRestart}
+            disabled={disabled}
+            className={styles.fab}
+          >
+            <RestartAlt />
           </Fab>
         </span>
       </Tooltip>

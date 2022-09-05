@@ -27,6 +27,8 @@ const InstanceContainer = (props) => {
 
   const handleTerminate = () => console.log("terminating webrtc stream");
   const handleSave = () => console.log("saving current plot");
+  const handleRestart = () => console.log("restarting instance");
+
   const handleSubmitFeedback = (feedbackType, feedback) => {
     const { submitFeedbackRequest, demo } = props;
     const { id } = demo;
@@ -56,6 +58,7 @@ const InstanceContainer = (props) => {
           handleTerminate={handleTerminate}
           handleSave={handleSave}
           handleComment={() => setFeedbackDialogOpen(true)}
+          handleRestart={handleRestart}
           disabled={isLoading}
         />
       </div>
