@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import styles from "./InstanceContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
 import LoadingFragment from "../general/LoadingFragment";
+import ConfirmationDialog from "../general/ConfirmationDialog";
 import InstanceDescription from "./InstanceDescription";
 import PlotControlBar from "./PlotControlBar";
 import FeedbackDialog from "./FeedbackDialog";
@@ -15,6 +16,8 @@ import { submitFeedbackRequest } from "../../slices/feedbackSlice";
 
 const InstanceContainer = (props) => {
   const [isFeedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
+  const [isTerminateDialogOpen, setTerminateDialogOpen] = useState(false);
+  const [isRestartDialogOpen, setRestartDialogOpen] = useState(false);
   const { showInstanceRequest, resetInstanceState } = props;
   useEffect(() => {
     //equals componentDidMount
@@ -55,10 +58,10 @@ const InstanceContainer = (props) => {
           )}
         </div>
         <PlotControlBar
-          handleTerminate={handleTerminate}
+          handleTerminate={() => setTerminateDialogOpen(true)}
           handleSave={handleSave}
           handleComment={() => setFeedbackDialogOpen(true)}
-          handleRestart={handleRestart}
+          handleRestart={() => setRestartDialogOpen(true)}
           disabled={isLoading}
         />
       </div>
@@ -66,6 +69,20 @@ const InstanceContainer = (props) => {
         open={isFeedbackDialogOpen}
         handleSubmit={handleSubmitFeedback}
         handleClose={() => setFeedbackDialogOpen(false)}
+      />
+      <ConfirmationDialog
+        title="Confirm instance termination"
+        description="Do you really want to terminate this instance?"
+        handleClose={() => setTerminateDialogOpen(false)}
+        handleConfirm={handleTerminate}
+        open={isTerminateDialogOpen}
+      />
+      <ConfirmationDialog
+        title="Confirm instance restart"
+        description="Do you really want to restart this instance?"
+        handleClose={() => setRestartDialogOpen(false)}
+        handleConfirm={handleRestart}
+        open={isRestartDialogOpen}
       />
     </WrapperContainer>
   );
