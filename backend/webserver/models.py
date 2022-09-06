@@ -18,6 +18,7 @@ class Demo(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField("title", max_length=240, unique=True)
     short_desc = models.CharField("short_desc", max_length=240)
+    #detail_desc should be models.TextField?
     detail_desc = models.CharField("detail_desc", max_length=240)
     file = models.FileField(upload_to='demo_files', validators=[FileExtensionValidator( ['py'] ) ])
     
@@ -56,6 +57,7 @@ class FeedbackType(models.Model):
 class Feedback(models.Model):
     id = models.AutoField("feedback_id", primary_key=True)
     created_at = models.DateTimeField("created_at", auto_now_add=True)
+    #details should be models.TextField?
     details = models.CharField("name", max_length=240)
     type = models.ForeignKey(FeedbackType, on_delete=models.CASCADE)
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
