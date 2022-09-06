@@ -6,7 +6,7 @@ import InstanceDescriptionSkeleton from "./InstanceDescriptionSkeleton";
 import { formatIsoDate } from "../../helpers/formatHelper";
 
 const InstanceDescription = (props) => {
-  const { created_at, created_by, short_desc, detail_desc } = props.description;
+  const { created_at, name, short_desc, detail_desc } = props.description;
   const { isLoading } = props;
 
   const renderDetailDesc = (detailDescString) => {
@@ -35,7 +35,7 @@ const InstanceDescription = (props) => {
       {detail_desc !== undefined && (
         <Fragment>
           <Typography variant="subtitle2">
-            {`created at ${formatIsoDate(created_at)} by ${created_by}`}
+            {`created at ${formatIsoDate(created_at)} by ${name}`}
           </Typography>
           <Typography variant="h6" className={styles.shortDesc}>
             {short_desc}

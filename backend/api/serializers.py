@@ -9,9 +9,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DemoSerializer(serializers.ModelSerializer):
     file = serializers.FileField(write_only=True)
+    name = serializers.SerializerMethodField()
+
+    def get_name(self, demo):
+        return(demo.created_by.name)
+        
     class Meta:
         model = Demo 
-        fields = ('id', 'created_at', 'created_by', 'title', 'short_desc', 'detail_desc', 'file')
+        fields = ('id', 'name', 'created_at', 'created_by', 'title', 'short_desc', 'detail_desc', 'file')
 
 class HostSerializer(serializers.ModelSerializer):
 
