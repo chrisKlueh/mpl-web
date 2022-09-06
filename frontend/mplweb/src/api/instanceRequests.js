@@ -47,7 +47,7 @@ export const showInstanceReq = async (id) => {
           data: {
             id: 1,
             //67 exists atm
-            demo: 67,
+            demo: 73,
             user: 13,
             host: "192.168.2.118",
             port: "8080",

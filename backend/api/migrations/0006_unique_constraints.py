@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('webserver', '0005_alter_demo_title_alter_feedbacktype_name_and_more'),
+        ('api', '0005_alter_demo_title_alter_feedbacktype_name_and_more'),
     ]
 
     operations = [

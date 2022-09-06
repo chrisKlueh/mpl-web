@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('webserver', '0006_unique_constraints'),
+        ('api', '0006_unique_constraints'),
     ]
 
     operations = [

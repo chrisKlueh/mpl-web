@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('webserver', '0002_students'),
+        ('api', '0002_students'),
     ]
 
     operations = [
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='feedback_id')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created_at')),
                 ('details', models.CharField(max_length=240, verbose_name='name')),
-                ('demo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='webserver.demo')),
+                ('demo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.demo')),
             ],
         ),
         migrations.CreateModel(
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='instance_id')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created_at')),
                 ('port', models.IntegerField(verbose_name='port')),
-                ('host', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='webserver.host')),
+                ('host', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.host')),
             ],
         ),
         migrations.CreateModel(
@@ -72,16 +72,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='instance',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='webserver.user'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.user'),
         ),
         migrations.AddField(
             model_name='feedback',
             name='type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='webserver.feedbacktype'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.feedbacktype'),
         ),
         migrations.AddField(
             model_name='demo',
             name='created_by',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='webserver.user'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.user'),
         ),
     ]

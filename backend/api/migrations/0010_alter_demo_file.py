@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('webserver', '0009_remove_demo_file_path_demo_file'),
+        ('api', '0009_remove_demo_file_path_demo_file'),
     ]
 
     operations = [

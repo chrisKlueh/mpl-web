@@ -3,13 +3,13 @@
 from django.db import migrations
 
 def create_data(apps, schema_editor):
-    User = apps.get_model('webserver', 'User')
+    User = apps.get_model('api', 'User')
     User(name="Hans User", password="mysecretpassword", is_admin=True).save()
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('webserver', '0003_demo_feedback_feedbacktype_host_instance_user_and_more'),
+        ('api', '0003_demo_feedback_feedbacktype_host_instance_user_and_more'),
     ]
 
     operations = [
