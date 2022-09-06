@@ -10,7 +10,7 @@ class User(models.Model):
     is_admin = models.BooleanField("is_admin")
     
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class Demo(models.Model):
     id = models.AutoField("demo_id", primary_key=True)
@@ -23,7 +23,7 @@ class Demo(models.Model):
     file = models.FileField(upload_to='demo_files', validators=[FileExtensionValidator( ['py'] ) ])
     
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class Host(models.Model):
     id = models.AutoField("host_id", primary_key=True)
@@ -31,7 +31,7 @@ class Host(models.Model):
     ip_address = models.GenericIPAddressField("host", unique=True)
     
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class Instance(models.Model):
     id = models.AutoField("instance_id", primary_key=True)
@@ -44,7 +44,7 @@ class Instance(models.Model):
         unique_together = ("host", "port")
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class FeedbackType(models.Model):
     id = models.AutoField("type_id", primary_key=True)
@@ -52,7 +52,7 @@ class FeedbackType(models.Model):
     name = models.CharField("name", max_length=240, unique=True)
     
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class Feedback(models.Model):
     id = models.AutoField("feedback_id", primary_key=True)
@@ -63,5 +63,5 @@ class Feedback(models.Model):
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.id
+        return str(self.id)
 
