@@ -41,7 +41,7 @@ def user_detail(request, pk):
 
     elif request.method == 'DELETE':
         user.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'POST'])
 def demo_list(request):
@@ -80,7 +80,7 @@ def demo_detail(request, pk):
 
     elif request.method == 'DELETE':
         demo.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'POST'])
 def feedback_list(request):
@@ -112,7 +112,7 @@ def feedback_detail(request, pk):
 
     elif request.method == 'DELETE':
         feedback.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 #todo
 @api_view(['POST'])
