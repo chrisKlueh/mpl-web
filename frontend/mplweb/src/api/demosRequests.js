@@ -14,10 +14,17 @@ export const showDemosReq = () => {
   });
 };
 
-export const deleteDemoReq = (id) => {
+export const deleteDemoReq = async (user_id, demo_id) => {
+  let formData = new FormData();
+  formData.append("user_id", user_id);
+
   return new Promise((resolve, reject) => {
-    axios
-      .delete(`${API_URL}demos/${id}`)
+    axios({
+      method: "delete",
+      url: `${API_URL}demos/${demo_id}`,
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
       .then((response) => {
         resolve(response);
       })

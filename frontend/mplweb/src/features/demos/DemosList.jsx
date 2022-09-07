@@ -63,9 +63,9 @@ const DemosList = (props) => {
     spawnInstanceRequest({ id, navigate });
   };
 
-  const handleDeleteDemo = (id) => {
-    // setSelectedId(id);
-    deleteDemoRequest(id);
+  const handleDeleteDemo = (demoId) => {
+    const { userId } = props;
+    deleteDemoRequest({ user_id: userId, demo_id: demoId });
   };
 
   const createListItems = (listItemArray) => {
@@ -172,6 +172,7 @@ const DemosList = (props) => {
 const mapStateToProps = (state) => {
   return {
     isSpawningInstance: state.instance.isSpawningInstance,
+    userId: state.login.userId,
   };
 };
 

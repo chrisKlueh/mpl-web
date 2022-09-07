@@ -24,7 +24,8 @@ export function* watcherShowDemos() {
 
 export function* workerDeleteDemo({ payload }) {
   try {
-    yield call(deleteDemoReq, payload);
+    const { user_id, demo_id } = payload;
+    yield call(deleteDemoReq, user_id, demo_id);
     yield put(deleteDemoSuccess());
     yield put(showDemosRequest());
   } catch (error) {
