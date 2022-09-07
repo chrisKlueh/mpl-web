@@ -21,7 +21,7 @@ const DemoEditDialog = (props) => {
     const { editDemoRequest, userId } = props;
     editDemoRequest({
       id: id,
-      created_by: userId,
+      user_id: userId,
       title: title,
       short_desc: short_desc,
       detail_desc: detail_desc,

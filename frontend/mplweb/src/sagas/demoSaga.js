@@ -42,17 +42,9 @@ export function* watcherUploadDemo() {
 }
 
 export function* workerEditDemo({ payload }) {
-  const { id, created_by, title, short_desc, detail_desc, file } = payload;
+  const { id, user_id, title, short_desc, detail_desc, file } = payload;
   try {
-    yield call(
-      editDemoReq,
-      id,
-      created_by,
-      title,
-      short_desc,
-      detail_desc,
-      file
-    );
+    yield call(editDemoReq, id, user_id, title, short_desc, detail_desc, file);
     yield put(editDemoSuccess());
     yield put(showDemosRequest());
   } catch (error) {
