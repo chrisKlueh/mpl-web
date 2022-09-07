@@ -27,9 +27,9 @@ export function* watcherShowDemo() {
 }
 
 export function* workerUploadDemo({ payload }) {
-  const { created_by, title, short_desc, detail_desc, file } = payload;
+  const { user_id, title, short_desc, detail_desc, file } = payload;
   try {
-    yield call(uploadDemoReq, created_by, title, short_desc, detail_desc, file);
+    yield call(uploadDemoReq, user_id, title, short_desc, detail_desc, file);
     yield put(uploadDemoSuccess());
     yield put(showDemosRequest());
   } catch (error) {

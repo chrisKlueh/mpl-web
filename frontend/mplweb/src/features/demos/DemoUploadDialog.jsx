@@ -22,7 +22,7 @@ const DemoUploadDialog = (props) => {
   const submitRequest = (title, short_desc, detail_desc) => {
     const { uploadDemoRequest, userId } = props;
     uploadDemoRequest({
-      created_by: userId,
+      user_id: userId,
       title: title,
       short_desc: short_desc,
       detail_desc: detail_desc,

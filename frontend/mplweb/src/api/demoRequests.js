@@ -17,14 +17,14 @@ export const showDemoReq = async (id) => {
 };
 
 export const uploadDemoReq = async (
-  created_by,
+  user_id,
   title,
   short_desc,
   detail_desc,
   file
 ) => {
   let formData = new FormData();
-  formData.append("created_by", created_by);
+  formData.append("user_id", user_id);
   formData.append("title", title);
   formData.append("short_desc", short_desc);
   formData.append("detail_desc", detail_desc);

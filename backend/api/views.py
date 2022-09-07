@@ -72,7 +72,7 @@ class UserDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DemoList(APIView):
-    permission_classes = [partial(OnlyAdminPermission, 'created_by', ['POST'])]
+    permission_classes = [partial(OnlyAdminPermission, 'user_id', ['POST'])]
     def get(self, request, format=None):
         
         demoList = Demo.objects.all()
