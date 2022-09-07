@@ -71,8 +71,8 @@ const FeedbackList = (props) => {
                 className={styles.genericListItem}
               />
               <ListItemText
-                primary={`Demo: ${listItem.demo}`}
-                className={styles.genericListItem}
+                primary={listItem.demo_title}
+                className={styles.demoTitle}
               />
               <ListItemText
                 primary={truncateString(listItem.details, 40)}

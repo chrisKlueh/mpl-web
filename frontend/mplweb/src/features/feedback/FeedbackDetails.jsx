@@ -36,7 +36,7 @@ const FeedbackDetails = (props) => {
                 {feedbackDetails.type === 1 ? "Bug Report" : "Comment"}
               </Typography>
               <Typography sx={{ typography: "subtitle2" }}>
-                {`Demo: ${feedbackDetails.demo}, ${formatIsoDate(
+                {`${feedbackDetails.demo_title}, ${formatIsoDate(
                   feedbackDetails.created_at
                 )}`}
               </Typography>

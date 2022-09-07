@@ -37,7 +37,11 @@ class FeedbackTypeSerializer(serializers.ModelSerializer):
         fields = ('id', 'created_at', 'name')
 
 class FeedbackSerializer(serializers.ModelSerializer):
+    demo_title = serializers.SerializerMethodField()
+
+    def get_demo_title(self, feedback):
+            return(feedback.demo.title)
 
     class Meta:
         model = Feedback
-        fields = ('id', 'created_at', 'details', 'type', 'demo')
+        fields = ('id', 'created_at', 'details', 'type', 'demo', 'demo_title')
