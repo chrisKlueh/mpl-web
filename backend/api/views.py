@@ -14,9 +14,8 @@ from .models import User, Demo, Instance, Host, FeedbackType, Feedback
 from .serializers import *
 
 class OnlyAdminPermission(BasePermission):
-    def __init__(self, key, restricted_methods):
+    def __init__(self, restricted_methods):
         super().__init__()
-        self.key = key
         self.restricted_methods = restricted_methods
         
     def has_permission(self, request, view):
@@ -24,7 +23,7 @@ class OnlyAdminPermission(BasePermission):
         print(request.data)
         if request.method in self.restricted_methods:
             try:
-                user = User.objects.get(pk=request.data[self.key])
+                user = User.objects.get(pk=request.data['user_id'])
                 if not user.is_admin:
                     raise exceptions.PermissionDenied(detail="Only admins can perform this action.")
                 else:
@@ -73,7 +72,7 @@ class UserDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DemoList(APIView):
-    permission_classes = [partial(OnlyAdminPermission, 'user_id', ['POST'])]
+    permission_classes = [partial(OnlyAdminPermission, ['POST'])]
     def get(self, request, format=None):
         
         demoList = Demo.objects.all()
@@ -88,7 +87,7 @@ class DemoList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DemoDetail(APIView):
-    permission_classes = [partial(OnlyAdminPermission, 'user_id', ['PUT', 'DELETE'])]
+    permission_classes = [partial(OnlyAdminPermission, ['PUT', 'DELETE'])]
     def get_object(self, pk):
         try:
             return Demo.objects.get(pk=pk)
@@ -128,7 +127,7 @@ class FeedbackList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FeedbackDetail(APIView):
-    permission_classes = [partial(OnlyAdminPermission, 'user_id', ['GET', 'DELETE'])]
+    permission_classes = [partial(OnlyAdminPermission, ['DELETE'])]
     def get_object(self, pk):
         try:
             return Feedback.objects.get(pk=pk)

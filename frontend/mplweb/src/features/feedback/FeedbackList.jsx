@@ -45,7 +45,7 @@ const FeedbackList = (props) => {
 
   const handleDeleteFeedback = (feedbackId) => {
     const { userId } = props;
-    deleteFeedbackRequest(userId, feedbackId);
+    deleteFeedbackRequest({ user_id: userId, feedback_id: feedbackId });
   };
 
   const createListItems = (listItemArray) => {
