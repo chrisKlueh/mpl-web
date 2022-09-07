@@ -1,128 +1,161 @@
-import os
+from functools import partial
+from django.http import Http404
+
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from rest_framework import status
+from rest_framework import status, exceptions, generics
+from rest_framework.permissions import BasePermission
 
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch.dispatcher import receiver
 
-#from .models import Student
 from .models import User, Demo, Instance, Host, FeedbackType, Feedback
 from .serializers import *
 
-@api_view(['GET', 'POST'])
-def user_list(request):
-    if request.method == 'GET':
-        #data = User.objects.all()
-        data = User.objects.values('name', 'id', 'created_at', 'is_admin')
+class OnlyAdminPermission(BasePermission):
+    def __init__(self, key, restricted_methods):
+        super().__init__()
+        self.key = key
+        self.restricted_methods = restricted_methods
+        
+    def has_permission(self, request, view):
+        print("checking for has_permission")
+        if request.method in self.restricted_methods:
+            try:
+                user = User.objects.get(pk=request.data[self.key])
+                if not user.is_admin:
+                    raise exceptions.PermissionDenied(detail="Only admins can perform this action.")
+                else:
+                    return user.is_admin
+            except User.DoesNotExist:
+                raise exceptions.NotFound(detail="User does not exist.")
+        else:
+            return True
 
-        serializer = UserSerializer(data, context={'request': request}, many=True)
-
+    #not called for list views
+    def has_object_permission(self, request, view, obj):
+        print("checking for has_object_permission")
+        print(request)
+        print(view)
+        print(obj)
+        return True
+class UserList(APIView):
+    def get(self, request, format=None):
+        
+        userList = User.objects.values('name', 'id', 'created_at', 'is_admin')
+        serializer = UserSerializer(userList, context={'request': request}, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'DELETE'])
-def user_detail(request, pk):
-    try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+class UserDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
+    def get(self, request, pk, format=None):
+        user = self.get_object(pk)
         serializer = UserSerializer(user, context={'request': request})
         return Response(serializer.data)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET', 'POST'])
-def demo_list(request):
-    if request.method == 'GET':
-        data = Demo.objects.all()
-
-        serializer = DemoSerializer(data, context={'request': request}, many=True)
-
+class DemoList(APIView):
+    permission_classes = [partial(OnlyAdminPermission, 'created_by', ['POST'])]
+    def get(self, request, format=None):
+        
+        demoList = Demo.objects.all()
+        serializer = DemoSerializer(demoList, context={'request': request}, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         serializer = DemoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def demo_detail(request, pk):
-    try:
-        demo = Demo.objects.get(pk=pk)
-    except Demo.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+class DemoDetail(APIView):
+    permission_classes = [partial(OnlyAdminPermission, 'user_id', ['PUT', 'DELETE'])]
+    def get_object(self, pk):
+        try:
+            return Demo.objects.get(pk=pk)
+        except Demo.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
+    def get(self, request, pk, format=None):
+        demo = self.get_object(pk)
         serializer = DemoSerializer(demo, context={'request': request})
         return Response(serializer.data)
 
-    if request.method == 'PUT':
+    def put(self, request, pk, format=None):
+        demo = self.get_object(pk)
         serializer = DemoSerializer(demo, data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        demo = self.get_object(pk)
         demo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET', 'POST'])
-def feedback_list(request):
-    if request.method == 'GET':
-        data = Feedback.objects.all()
-
-        serializer = FeedbackSerializer(data, context={'request': request}, many=True)
-
+class FeedbackList(APIView):
+    permission_classes = [partial(OnlyAdminPermission, 'user_id', ['GET'])]
+    def get(self, request, format=None):
+        
+        feedbackList = Feedback.objects.all()
+        serializer = FeedbackSerializer(feedbackList, context={'request': request}, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         serializer = FeedbackSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'DELETE'])
-def feedback_detail(request, pk):
-    try:
-        feedback = Feedback.objects.get(pk=pk)
-    except Feedback.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+class FeedbackDetail(APIView):
+    permission_classes = [partial(OnlyAdminPermission, 'user_id', ['GET', 'DELETE'])]
+    def get_object(self, pk):
+        try:
+            return Feedback.objects.get(pk=pk)
+        except Feedback.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
-        serializer = FeedbackSerializer(feedback, context={'request': request})
+    def get(self, request, pk, format=None):
+        feedbackDetail = self.get_object(pk)
+        serializer = FeedbackSerializer(feedbackDetail, context={'request': request})
         return Response(serializer.data)
 
-    elif request.method == 'DELETE':
-        feedback.delete()
+    def delete(self, request, pk, format=None):
+        feedbackDetail = self.get_object(pk)
+        feedbackDetail.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 #todo
-@api_view(['POST'])
-def login(request):
-    try:
-        print(request.data["username"])
-        user = User.objects.get(name=request.data["username"])
-    except Feedback.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    if request.method == 'POST':
+class Login(APIView):
+    def get_object(self, name):
+        try:
+            return User.objects.get(name=name)
+        except User.DoesNotExist:
+            raise Http404
+
+    def post(self, request, format=None):
+        print(request.data)
+        user = self.get_object(request.data["username"])
         serializer = UserSerializer(user, context={'request': request})
         return Response(serializer.data)
 
