@@ -21,6 +21,7 @@ class OnlyAdminPermission(BasePermission):
         
     def has_permission(self, request, view):
         print("checking for has_permission")
+        print(request.data)
         if request.method in self.restricted_methods:
             try:
                 user = User.objects.get(pk=request.data[self.key])
@@ -113,7 +114,6 @@ class DemoDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class FeedbackList(APIView):
-    permission_classes = [partial(OnlyAdminPermission, 'user_id', ['GET'])]
     def get(self, request, format=None):
         
         feedbackList = Feedback.objects.all()

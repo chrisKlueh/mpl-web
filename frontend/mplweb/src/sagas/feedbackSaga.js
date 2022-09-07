@@ -45,7 +45,8 @@ export function* watcherSubmitFeedback() {
 
 export function* workerDeleteFeedback({ payload }) {
   try {
-    yield call(deleteFeedbackReq, payload);
+    const { user_id, feedback_id } = payload;
+    yield call(deleteFeedbackReq, user_id, feedback_id);
     yield put(deleteFeedbackSuccess());
     yield put(showFeedbackRequest());
   } catch (error) {

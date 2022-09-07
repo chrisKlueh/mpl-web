@@ -43,8 +43,9 @@ const FeedbackList = (props) => {
     }
   };
 
-  const handleDeleteFeedback = (id) => {
-    deleteFeedbackRequest(id);
+  const handleDeleteFeedback = (feedbackId) => {
+    const { userId } = props;
+    deleteFeedbackRequest(userId, feedbackId);
   };
 
   const createListItems = (listItemArray) => {
@@ -131,10 +132,16 @@ const FeedbackList = (props) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    userId: state.login.userId,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     deleteFeedbackRequest: (id) => dispatch(deleteFeedbackRequest(id)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(FeedbackList);
+export default connect(mapStateToProps, mapDispatchToProps)(FeedbackList);
