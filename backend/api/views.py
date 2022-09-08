@@ -134,12 +134,15 @@ class InstanceList(APIView):
         portRange = range(8080, 8099)
         # hostId = Host.objects.get(ip_address=ip_address).id
         demoFile = Demo.objects.get(pk=demoId).file
-        print(demoFile)
+        demoFileString = str(demoFile).split("/")[1]
+        print(demoFileString)
+        demoFileString = demoFileString[:len(demoFileString) - 3]
+        print(demoFileString)
         takenPorts = Instance.objects.filter(host=hostId).values_list('port', flat=True)
         for portCandidate in portRange:
             if portCandidate not in takenPorts:
                 print("Found available port: " , portCandidate)
-                p = subprocess.Popen(('python ./api/' + str(demoFile) + " --port " + str(portCandidate) + " --demo dummy").split(), shell=False)
+                p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --port " + str(portCandidate) + " --demo " + str(demoFileString)).split(), shell=False)
                 return portCandidate, hostId, p.pid
         raise Exception("All available ports taken.")
     

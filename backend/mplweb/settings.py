@@ -130,4 +130,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT = 'D:/GitHub/mpl-web/backend/api/'
+#MEDIA_ROOT = 'D:/GitHub/mpl-web/backend/api/'
+MEDIA_ROOT = './api/'
