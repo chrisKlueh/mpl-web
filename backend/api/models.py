@@ -28,7 +28,7 @@ class Demo(models.Model):
 class Host(models.Model):
     id = models.AutoField("host_id", primary_key=True)
     created_at = models.DateTimeField("created_at", auto_now_add=True)
-    ip_address = models.GenericIPAddressField("host", unique=True)
+    ip_address = models.GenericIPAddressField("ip_address", unique=True)
     
     def __str__(self):
         return str(self.id)
@@ -37,11 +37,13 @@ class Instance(models.Model):
     id = models.AutoField("instance_id", primary_key=True)
     created_at = models.DateTimeField("created_at", auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
     host = models.ForeignKey(Host, on_delete=models.CASCADE)
     port = models.IntegerField("port")
+    pid = models.IntegerField("pid")
     
     class Meta:
-        unique_together = ("host", "port")
+        unique_together = ("host", "port", "pid")
 
     def __str__(self):
         return str(self.id)

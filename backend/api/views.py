@@ -1,3 +1,5 @@
+import subprocess
+
 from functools import partial
 from django.http import Http404
 
@@ -126,6 +128,53 @@ class FeedbackList(APIView):
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class InstanceList(APIView):
+    def spawnInstance(self, demoId):
+        hostId = 2
+        portRange = range(8080, 8099)
+        # hostId = Host.objects.get(ip_address=ip_address).id
+        demoFile = Demo.objects.get(pk=demoId).file
+        print(demoFile)
+        takenPorts = Instance.objects.filter(host=hostId).values_list('port', flat=True)
+        for portCandidate in portRange:
+            if portCandidate not in takenPorts:
+                print("Found available port: " , portCandidate)
+                p = subprocess.Popen(('python ./api/' + str(demoFile) + " --port " + str(portCandidate) + " --demo dummy").split(), shell=False)
+                return portCandidate, hostId, p.pid
+        raise Exception("All available ports taken.")
+    
+    def get(self, request, format=None):
+        
+        instanceList = Instance.objects.all()
+        serializer = InstanceSerializer(instanceList, context={'request': request}, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        instanceData = {'user': request.data["user"], 'demo': request.data["demo"]}
+        try:
+            port, host, pid = self.spawnInstance(instanceData['demo'])
+            instanceData['port'] = port
+            instanceData['host'] = host
+            instanceData['pid'] = pid
+            serializer = InstanceSerializer(data=instanceData)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+class InstanceDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Instance.objects.get(pk=pk)
+        except Instance.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        instance = self.get_object(pk)
+        serializer = InstanceSerializer(instance, context={'request': request})
+        return Response(serializer.data)
 class FeedbackDetail(APIView):
     permission_classes = [partial(OnlyAdminPermission, ['DELETE'])]
     def get_object(self, pk):
