@@ -130,22 +130,17 @@ class FeedbackList(APIView):
 
 class InstanceList(APIView):
     def spawnInstance(self, demoId):
+        sigHost = "localhost"
+        sigPort = 8080
         hostId = 2
-        portRange = range(8080, 8099)
-        # hostId = Host.objects.get(ip_address=ip_address).id
         demoFile = Demo.objects.get(pk=demoId).file
         demoFileString = str(demoFile).split("/")[1]
         print(demoFileString)
         demoFileString = demoFileString[:len(demoFileString) - 3]
         print(demoFileString)
-        takenPorts = Instance.objects.filter(host=hostId).values_list('port', flat=True)
-        for portCandidate in portRange:
-            if portCandidate not in takenPorts:
-                print("Found available port: " , portCandidate)
-                p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --port " + str(portCandidate) + " --demo " + str(demoFileString)).split(), shell=False)
-                return portCandidate, hostId, p.pid
-        raise Exception("All available ports taken.")
-    
+        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --sig_host " + str(sigHost) + " --sig_port " + str(sigPort) + " --instance_host_id " + str(hostId) + " --demo " + str(demoFileString)).split(), shell=False)
+        return hostId, p.pid
+        
     def get(self, request, format=None):
         
         instanceList = Instance.objects.all()
@@ -155,8 +150,7 @@ class InstanceList(APIView):
     def post(self, request, format=None):
         instanceData = {'user': request.data["user"], 'demo': request.data["demo"]}
         try:
-            port, host, pid = self.spawnInstance(instanceData['demo'])
-            instanceData['port'] = port
+            host, pid = self.spawnInstance(instanceData['demo'])
             instanceData['host'] = host
             instanceData['pid'] = pid
             serializer = InstanceSerializer(data=instanceData)

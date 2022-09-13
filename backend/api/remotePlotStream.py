@@ -12,6 +12,7 @@ import logging
 import os
 import ssl
 import io
+import socketio
 
 from importlib import import_module
 from aiohttp import web
@@ -29,14 +30,46 @@ ROOT = os.path.dirname(__file__)
 use("Agg")
 
 class RemotePlotStream(object):
-    def __init__(self, demo) -> None:
+    def __init__(self, demo, sig_host, sig_port, instance_host_id) -> None:
+        self.establishSocketConnection(sig_host, sig_port, instance_host_id)
+        self.pcs = set()
+        self.initDemo(demo)
+            
+    def establishSocketConnection(self, sig_host, sig_port, instance_host_id):
+        loop = asyncio.get_event_loop()
+        self.sio = socketio.Client()
+        self.sig_room = "instance_" + str(instance_host_id) + "-" + str(os.getpid())
+        sigaling_server_url = "http://" + sig_host + ":" + sig_port
+        try:
+            self.sio.connect(sigaling_server_url)
+            print("Connected with socket " + sigaling_server_url)
+            self.sio.emit("join_room", {"room": self.sig_room})
+            print("Joined room " + self.sig_room)
+
+            @self.sio.event
+            def connect():
+                print("Reconnected with socket " + sigaling_server_url)
+
+            @self.sio.event
+            def disconnect():
+                print("Disconnected from socket " + sigaling_server_url)
+
+            @self.sio.event
+            def sdp_offer(data):
+                answer = loop.run_until_complete(self.offer(data))
+                self.sio.emit("send_answer", {"room": "room-1", "data": answer})
+                loop.run_forever()
+        
+        except socketio.exceptions.ConnectionError as error:
+            print(error)
+        
+    def initDemo(self, demo):
         self.demo = demo
         self.demoFig = self.demo.getFig()
         self.plotWidth, self.plotHeight = self.demoFig.canvas.get_width_height()
-        self.pcs = set()
         # subscribe to the draw event
         self.cid = self.demoFig.canvas.mpl_connect('draw_event', self.onUpdatePlot)
-        
+
     def force_codec(self, pc, sender, forced_codec):
         kind = forced_codec.split("/")[0]
         codecs = RTCRtpSender.getCapabilities(kind).codecs
@@ -45,19 +78,9 @@ class RemotePlotStream(object):
         transceiver.setCodecPreferences(
             [codec for codec in codecs if codec.mimeType == forced_codec]
         )
-    
-    async def index(self, request):
-        content = open(os.path.join(ROOT, "static/index.html"), "r").read()
-        return web.Response(content_type="text/html", text=content)
 
-    async def javascript(self, request):
-        content = open(os.path.join(ROOT, "static/client.js"), "r").read()
-        return web.Response(content_type="application/javascript", text=content)
-
-    async def offer(self, request):
-        params = await request.json()
-        offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
-
+    async def offer(self, message):
+        offer = RTCSessionDescription(sdp=message["data"]["sdp"], type=message["data"]["type"])
         pc = RTCPeerConnection()
         self.pcs.add(pc)
 
@@ -68,7 +91,6 @@ class RemotePlotStream(object):
 
             @channel.on("message")
             def on_message(message):
-                #self.channel_log(channel, "Channel received:", message)
                 if isinstance(message, str):
                     messageObj = json.loads(message)
                     self.handleMessage(messageObj)
@@ -83,14 +105,18 @@ class RemotePlotStream(object):
             if pc.connectionState == "failed":
                 await pc.close()
                 self.pcs.discard(pc)
+            elif pc.connectionState == "closed":
+                os._exit(0)
             elif pc.connectionState == "connected":
+                #leave room
+                self.sio.emit("leave_room", {"room": self.sig_room})
                 #start video stream by adding the first frame to its queue
                 self.onUpdatePlot(None)
                 
-        
         self.imageRenderingTrack = ImageRenderingTrack()
         print(f"\nRecording plot with {self.plotWidth}x{self.plotHeight}@{FRAMERATE}fps\n")
         video_sender = pc.addTrack(self.imageRenderingTrack)
+        
         if args.video_codec:
             self.force_codec(pc, video_sender, args.video_codec)
         elif args.play_without_decoding:
@@ -98,22 +124,10 @@ class RemotePlotStream(object):
                 "You must specify the video codec using --video-codec")
 
         await pc.setRemoteDescription(offer)
-
         answer = await pc.createAnswer()
         await pc.setLocalDescription(answer)
-
-        return web.Response(
-            content_type="application/json",
-            text=json.dumps(
-                {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
-            ),
-        )
-
-    async def on_shutdown(self, app):
-        # close peer connections
-        coros = [pc.close() for pc in self.pcs]
-        await asyncio.gather(*coros)
-        self.pcs.clear()
+        
+        return json.dumps({"sdp": pc.localDescription.sdp, "type": pc.localDescription.type})
 
     def channel_log(self, channel, t, message):
         print("channel(%s) %s %s" % (channel.label, t, message))
@@ -160,7 +174,8 @@ class RemotePlotStream(object):
         # subscribe to the draw event once again
         self.cid = self.demoFig.canvas.mpl_connect('draw_event', self.onUpdatePlot)
 
-if __name__ == "__main__":
+
+def add_args():
     parser = argparse.ArgumentParser(description="WebRTC webcam demo")
     parser.add_argument("--cert-file", help="SSL certificate file (for HTTPS)")
     parser.add_argument("--key-file", help="SSL key file (for HTTPS)")
@@ -188,8 +203,14 @@ if __name__ == "__main__":
         "--video-codec", help="Force a specific video codec (e.g. video/H264)"
     )
     parser.add_argument("--demo", help="The filename of the demo (without .py)", required=True)
+    parser.add_argument("--sig_host", help="Signaling server host", required=True)
+    parser.add_argument("--sig_port", help="Signaling server port", required=True)
+    parser.add_argument("--instance_host_id", help="The instance's host id", required=True)
 
-    args = parser.parse_args()
+    return parser.parse_args()
+
+if __name__ == "__main__":
+    args = add_args()
 
     if args.verbose:
         logging.basicConfig(level=logging.DEBUG)
@@ -202,14 +223,7 @@ if __name__ == "__main__":
     else:
         ssl_context = None
 
-    
     demoModule = import_module("." + args.demo, "demo_files")
     demo = demoModule.Demo(blocking=False)
-    remotePlotImg = RemotePlotStream(demo)
-
-    app = web.Application()
-    app.on_shutdown.append(remotePlotImg.on_shutdown)
-    app.router.add_get("/", remotePlotImg.index)
-    app.router.add_get("/static/client.js", remotePlotImg.javascript)
-    app.router.add_post("/offer", remotePlotImg.offer)
-    web.run_app(app, host=args.host, port=args.port, ssl_context=ssl_context)
+    
+    remotePlotStream = RemotePlotStream(demo, args.sig_host, args.sig_port, args.instance_host_id)

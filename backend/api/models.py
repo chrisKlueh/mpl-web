@@ -39,11 +39,10 @@ class Instance(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
     host = models.ForeignKey(Host, on_delete=models.CASCADE)
-    port = models.IntegerField("port")
     pid = models.IntegerField("pid")
     
     class Meta:
-        unique_together = ("host", "port", "pid")
+        unique_together = ("host", "pid")
 
     def __str__(self):
         return str(self.id)
