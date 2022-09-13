@@ -1,4 +1,6 @@
 import subprocess
+import os
+import signal
 
 from functools import partial
 from django.http import Http404
@@ -172,6 +174,22 @@ class InstanceDetail(APIView):
         instance = self.get_object(pk)
         serializer = InstanceSerializer(instance, context={'request': request})
         return Response(serializer.data)
+
+    def delete(self, request, pk, format=None):
+        print(request.data)
+        instance = self.get_object(pk)
+        host = instance.host
+        pid = instance.pid
+        if request.data["host"] == str(host) and request.data["pid"] == str(pid):
+            try:
+                os.kill(pid, signal.SIGSTOP)
+                instance.delete()
+            except:
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 class FeedbackDetail(APIView):
     permission_classes = [partial(OnlyAdminPermission, ['DELETE'])]
     def get_object(self, pk):
