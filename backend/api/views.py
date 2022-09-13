@@ -176,7 +176,6 @@ class InstanceDetail(APIView):
         return Response(serializer.data)
 
     def delete(self, request, pk, format=None):
-        print(request.data)
         instance = self.get_object(pk)
         host = instance.host
         pid = instance.pid
