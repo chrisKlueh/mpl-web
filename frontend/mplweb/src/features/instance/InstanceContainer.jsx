@@ -107,7 +107,7 @@ const mapStateToProps = (state) => {
     userId: state.login.userId,
     instance: state.instance.instance,
     demo: state.demo.demo,
-    isLoading: state.instance.isGettingInstance || state.demo.isGettingDemo,
+    isLoading: state.demo.isGettingDemo,
   };
 };
 
