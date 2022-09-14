@@ -43,7 +43,13 @@ const InstanceContainer = (props) => {
       });
       resetInstanceState();
     };
-  }, [showDemoRequest, resetInstanceState]);
+  }, [
+    showDemoRequest,
+    resetInstanceState,
+    deleteInstanceRequest,
+    userId,
+    instance,
+  ]);
 
   const handleTerminate = () => {
     navigate("/demos/");
