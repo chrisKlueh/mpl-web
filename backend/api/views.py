@@ -150,7 +150,7 @@ class InstanceList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        instanceData = {'user': request.data["user"], 'demo': request.data["demo"]}
+        instanceData = {'user_id': request.data["user_id"], 'demo': request.data["demo"]}
         try:
             host, pid = self.spawnInstance(instanceData['demo'])
             instanceData['host'] = host
@@ -177,9 +177,10 @@ class InstanceDetail(APIView):
 
     def delete(self, request, pk, format=None):
         instance = self.get_object(pk)
+        user_id = instance.user_id
         host = instance.host
         pid = instance.pid
-        if request.data["host"] == str(host) and request.data["pid"] == str(pid):
+        if request.data["host"] == str(host) and request.data["pid"] == str(pid) and request.data["user_id"] == str(user_id):
             try:
                 os.kill(pid, signal.SIGSTOP)
                 instance.delete()

@@ -3,7 +3,7 @@ import { API_URL } from "../constants/index";
 
 export const spawnInstanceReq = async (user_id, demo_id) => {
   let formData = new FormData();
-  formData.append("user", user_id);
+  formData.append("user_id", user_id);
   formData.append("demo", demo_id);
 
   return new Promise((resolve, reject) => {
@@ -69,7 +69,7 @@ export const deleteInstanceReq = async (user_id, instance_id, host_id, pid) => {
   console.log("deleteInstanceReq");
   console.log(user_id, instance_id, host_id, pid);
   let formData = new FormData();
-  formData.append("user", user_id);
+  formData.append("user_id", user_id);
   formData.append("host", host_id);
   formData.append("pid", pid);
 

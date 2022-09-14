@@ -28,7 +28,7 @@ class InstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Instance 
-        fields = ('id', 'created_at', 'user', 'demo', 'host', 'pid')
+        fields = ('id', 'created_at', 'user_id', 'demo', 'host', 'pid')
 
 class FeedbackTypeSerializer(serializers.ModelSerializer):
 

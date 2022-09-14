@@ -36,7 +36,7 @@ class Host(models.Model):
 class Instance(models.Model):
     id = models.AutoField("instance_id", primary_key=True)
     created_at = models.DateTimeField("created_at", auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
     host = models.ForeignKey(Host, on_delete=models.CASCADE)
     pid = models.IntegerField("pid")
