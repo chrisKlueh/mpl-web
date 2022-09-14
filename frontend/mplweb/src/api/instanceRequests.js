@@ -1,31 +1,38 @@
-// import axios from "axios";
-// import { API_URL } from "../constants/index";
+import axios from "axios";
+import { API_URL } from "../constants/index";
 
-export const spawnInstanceReq = async (id) => {
-  //   return new Promise((resolve, reject) => {
-  //     axios({
-  //       method: "get",
-  //       url: `${API_URL}instances/${id}`,
-  //     })
-  //       .then((response) => {
-  //         resolve(response);
-  //       })
-  //       .catch((error) => {
-  //         reject(error);
-  //       });
-  //   });
+export const spawnInstanceReq = async (user_id, demo_id) => {
+  let formData = new FormData();
+  formData.append("user", user_id);
+  formData.append("demo", demo_id);
+
   return new Promise((resolve, reject) => {
-    setTimeout(
-      () =>
-        resolve({
-          data: {
-            id: 1,
-          },
-        }),
-      2000
-    );
+    axios({
+      method: "post",
+      url: `${API_URL}instances/`,
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
   });
 };
+//   return new Promise((resolve, reject) => {
+//     setTimeout(
+//       () =>
+//         resolve({
+//           data: {
+//             id: 1,
+//           },
+//         }),
+//       2000
+//     );
+//   });
+// };
 
 export const showInstanceReq = async (id) => {
   //   return new Promise((resolve, reject) => {

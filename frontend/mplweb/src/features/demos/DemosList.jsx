@@ -57,10 +57,10 @@ const DemosList = (props) => {
     }
   };
 
-  const handleSpawnInstance = (id) => {
-    const { spawnInstanceRequest } = props;
-    setSelectedId(id);
-    spawnInstanceRequest({ id, navigate });
+  const handleSpawnInstance = (demoId) => {
+    const { spawnInstanceRequest, userId } = props;
+    setSelectedId(demoId);
+    spawnInstanceRequest({ userId, demoId, navigate });
   };
 
   const handleDeleteDemo = (demoId) => {
