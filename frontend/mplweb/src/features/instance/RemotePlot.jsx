@@ -1,9 +1,24 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
+import { connect } from "react-redux";
 
 import styles from "./RemotePlot.module.css";
 import LoadingFragment from "../general/LoadingFragment";
 
-export default function RemotePlot() {
+import { establishConnectionRequest } from "../../slices/remotePlotSlice";
+
+// import { establishSocketConnection } from "../../helpers/webRtcHelper";
+
+const RemotePlot = (props) => {
+  const { establishConnectionRequest, hostId, pid } = props;
+  useEffect(() => {
+    //equals componentDidMount
+    establishConnectionRequest({ hostId: hostId, pid: pid });
+    //return statement equals componentWillUnmount
+    return () => {
+      console.log("will unmount");
+    };
+  }, [establishConnectionRequest, hostId, pid]);
+
   let isLoading = true;
   return (
     <Fragment>
@@ -16,4 +31,19 @@ export default function RemotePlot() {
       )}
     </Fragment>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    isLoading: state.remotePlot.isEstablishingConnection,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    establishConnectionRequest: (payload) =>
+      dispatch(establishConnectionRequest(payload)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RemotePlot);

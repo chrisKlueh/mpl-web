@@ -74,7 +74,7 @@ const InstanceContainer = (props) => {
       <div className={styles.root}>
         <InstanceDescription isLoading={isLoading} description={demo} />
         <div className={styles.videoContainer}>
-          <RemotePlot />
+          <RemotePlot hostId={instance.host} pid={instance.pid} />
         </div>
         <PlotControlBar
           handleTerminate={() => setTerminateDialogOpen(true)}

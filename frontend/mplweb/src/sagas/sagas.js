@@ -4,6 +4,7 @@ import demosSaga from "./demosSaga";
 import demoSaga from "./demoSaga";
 import feedbackSaga from "./feedbackSaga";
 import instanceSaga from "./instanceSaga";
+import remotePlotSaga from "./remotePlotSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -12,5 +13,6 @@ export default function* rootSaga() {
     demoSaga(),
     feedbackSaga(),
     instanceSaga(),
+    remotePlotSaga(),
   ]);
 }

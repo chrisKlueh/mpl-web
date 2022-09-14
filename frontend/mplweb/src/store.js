@@ -7,6 +7,7 @@ import demosReducer from "./slices/demosSlice";
 import demoReducer from "./slices/demoSlice";
 import feedbackReducer from "./slices/feedbackSlice";
 import instanceReducer from "./slices/instanceSlice";
+import remotePlotReducer from "./slices/remotePlotSlice";
 import rootSaga from "./sagas/sagas";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -19,6 +20,7 @@ const store = configureStore({
     demo: demoReducer,
     feedback: feedbackReducer,
     instance: instanceReducer,
+    remotePlot: remotePlotReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(middleware),
