@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./InstanceContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
@@ -20,6 +21,7 @@ const InstanceContainer = (props) => {
   const [isTerminateDialogOpen, setTerminateDialogOpen] = useState(false);
   const [isRestartDialogOpen, setRestartDialogOpen] = useState(false);
 
+  const navigate = useNavigate();
   const {
     showDemoRequest,
     resetInstanceState,
@@ -32,17 +34,19 @@ const InstanceContainer = (props) => {
     showDemoRequest(instance.demo);
     //return statement equals componentWillUnmount
     return () => {
-      resetInstanceState();
       deleteInstanceRequest({
         userId: userId,
         instanceId: instance.id,
         hostId: instance.host,
         pid: instance.pid,
       });
+      resetInstanceState();
     };
   }, [showDemoRequest, resetInstanceState]);
 
-  const handleTerminate = () => console.log("terminating webrtc stream");
+  const handleTerminate = () => {
+    navigate("/demos/");
+  };
   const handleSave = () => console.log("saving current plot");
   const handleRestart = () => console.log("restarting instance");
 
