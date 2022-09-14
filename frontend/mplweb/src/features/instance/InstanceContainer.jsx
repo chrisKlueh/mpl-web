@@ -8,25 +8,24 @@ import ConfirmationDialog from "../general/ConfirmationDialog";
 import InstanceDescription from "./InstanceDescription";
 import PlotControlBar from "./PlotControlBar";
 import FeedbackDialog from "./FeedbackDialog";
-import {
-  showInstanceRequest,
-  resetInstanceState,
-} from "../../slices/instanceSlice";
+import { resetInstanceState } from "../../slices/instanceSlice";
+import { showDemoRequest } from "../../slices/demoSlice";
 import { submitFeedbackRequest } from "../../slices/feedbackSlice";
 
 const InstanceContainer = (props) => {
   const [isFeedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   const [isTerminateDialogOpen, setTerminateDialogOpen] = useState(false);
   const [isRestartDialogOpen, setRestartDialogOpen] = useState(false);
-  const { showInstanceRequest, resetInstanceState } = props;
+
+  const { showDemoRequest, resetInstanceState, instance } = props;
   useEffect(() => {
     //equals componentDidMount
-    showInstanceRequest();
+    showDemoRequest(instance.demo);
     //return statement equals componentWillUnmount
     return () => {
       resetInstanceState();
     };
-  }, [showInstanceRequest, resetInstanceState]);
+  }, [showDemoRequest, resetInstanceState]);
 
   const handleTerminate = () => console.log("terminating webrtc stream");
   const handleSave = () => console.log("saving current plot");
@@ -99,7 +98,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     resetInstanceState: () => dispatch(resetInstanceState()),
-    showInstanceRequest: (id) => dispatch(showInstanceRequest(id)),
+    showDemoRequest: (id) => dispatch(showDemoRequest(id)),
     submitFeedbackRequest: (feedbackType, feedback, id) =>
       dispatch(submitFeedbackRequest(feedbackType, feedback, id)),
   };
