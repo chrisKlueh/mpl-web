@@ -8,7 +8,10 @@ import ConfirmationDialog from "../general/ConfirmationDialog";
 import InstanceDescription from "./InstanceDescription";
 import PlotControlBar from "./PlotControlBar";
 import FeedbackDialog from "./FeedbackDialog";
-import { resetInstanceState } from "../../slices/instanceSlice";
+import {
+  resetInstanceState,
+  deleteInstanceRequest,
+} from "../../slices/instanceSlice";
 import { showDemoRequest } from "../../slices/demoSlice";
 import { submitFeedbackRequest } from "../../slices/feedbackSlice";
 
@@ -17,13 +20,25 @@ const InstanceContainer = (props) => {
   const [isTerminateDialogOpen, setTerminateDialogOpen] = useState(false);
   const [isRestartDialogOpen, setRestartDialogOpen] = useState(false);
 
-  const { showDemoRequest, resetInstanceState, instance } = props;
+  const {
+    showDemoRequest,
+    resetInstanceState,
+    deleteInstanceRequest,
+    instance,
+    userId,
+  } = props;
   useEffect(() => {
     //equals componentDidMount
     showDemoRequest(instance.demo);
     //return statement equals componentWillUnmount
     return () => {
       resetInstanceState();
+      deleteInstanceRequest({
+        userId: userId,
+        instanceId: instance.id,
+        hostId: instance.host,
+        pid: instance.pid,
+      });
     };
   }, [showDemoRequest, resetInstanceState]);
 
@@ -89,6 +104,7 @@ const InstanceContainer = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    userId: state.login.userId,
     instance: state.instance.instance,
     demo: state.demo.demo,
     isLoading: state.instance.isGettingInstance || state.demo.isGettingDemo,
@@ -98,9 +114,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     resetInstanceState: () => dispatch(resetInstanceState()),
+    deleteInstanceRequest: (payload) =>
+      dispatch(deleteInstanceRequest(payload)),
     showDemoRequest: (id) => dispatch(showDemoRequest(id)),
-    submitFeedbackRequest: (feedbackType, feedback, id) =>
-      dispatch(submitFeedbackRequest(feedbackType, feedback, id)),
+    submitFeedbackRequest: (payload) =>
+      dispatch(submitFeedbackRequest(payload)),
   };
 };
 

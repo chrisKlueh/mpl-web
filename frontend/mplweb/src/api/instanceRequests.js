@@ -64,3 +64,27 @@ export const showInstanceReq = async (id) => {
     );
   });
 };
+
+export const deleteInstanceReq = async (user_id, instance_id, host_id, pid) => {
+  console.log("deleteInstanceReq");
+  console.log(user_id, instance_id, host_id, pid);
+  let formData = new FormData();
+  formData.append("user", user_id);
+  formData.append("host", host_id);
+  formData.append("pid", pid);
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "delete",
+      url: `${API_URL}instances/${instance_id}`,
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};

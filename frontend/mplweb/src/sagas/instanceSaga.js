@@ -1,5 +1,9 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
-import { showInstanceReq, spawnInstanceReq } from "../api/instanceRequests";
+import {
+  showInstanceReq,
+  spawnInstanceReq,
+  deleteInstanceReq,
+} from "../api/instanceRequests";
 import {
   showInstanceRequest,
   showInstanceSuccess,
@@ -7,6 +11,9 @@ import {
   spawnInstanceRequest,
   spawnInstanceSuccess,
   spawnInstanceError,
+  deleteInstanceRequest,
+  deleteInstanceSuccess,
+  deleteInstanceError,
 } from "../slices/instanceSlice";
 import { showDemoRequest } from "../slices/demoSlice";
 
@@ -39,6 +46,24 @@ export function* watcherSpawnInstance() {
   yield takeEvery(spawnInstanceRequest, workerSpawnInstance);
 }
 
+export function* workerDeleteInstance({ payload }) {
+  try {
+    const { userId, instanceId, hostId, pid } = payload;
+    yield call(deleteInstanceReq, userId, instanceId, hostId, pid);
+    yield put(deleteInstanceSuccess());
+  } catch (error) {
+    yield put(deleteInstanceError());
+  }
+}
+
+export function* watcherDeleteInstance() {
+  yield takeEvery(deleteInstanceRequest, workerDeleteInstance);
+}
+
 export default function* rootSaga() {
-  yield all([fork(watcherShowInstance), fork(watcherSpawnInstance)]);
+  yield all([
+    fork(watcherShowInstance),
+    fork(watcherSpawnInstance),
+    fork(watcherDeleteInstance),
+  ]);
 }
