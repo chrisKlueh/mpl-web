@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 import styles from "./InstanceContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
-import LoadingFragment from "../general/LoadingFragment";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import InstanceDescription from "./InstanceDescription";
 import PlotControlBar from "./PlotControlBar";
 import FeedbackDialog from "./FeedbackDialog";
+import RemotePlot from "./RemotePlot";
+
 import {
   resetInstanceState,
   deleteInstanceRequest,
@@ -67,13 +68,7 @@ const InstanceContainer = (props) => {
       <div className={styles.root}>
         <InstanceDescription isLoading={isLoading} description={demo} />
         <div className={styles.videoContainer}>
-          {isLoading ? (
-            <div className={styles.loadingFragment}>
-              <LoadingFragment message="Establishing connection.." />
-            </div>
-          ) : (
-            <video />
-          )}
+          <RemotePlot />
         </div>
         <PlotControlBar
           handleTerminate={() => setTerminateDialogOpen(true)}

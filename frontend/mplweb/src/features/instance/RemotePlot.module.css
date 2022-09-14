@@ -1,0 +1,11 @@
+.loadingFragment {
+  flex-direction: row;
+  justify-content: center;
+}
+
+.plotVideo {
+  width: 100%;
+  height: 100%;
+  background-image: url("https://matplotlib.org/stable/_images/sphx_glr_cohere_001_2_0x.png");
+  background-size: cover;
+}
