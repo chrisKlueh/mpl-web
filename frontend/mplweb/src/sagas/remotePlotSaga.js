@@ -9,15 +9,20 @@ import {
   negotiateWebRtcRequest,
   negotiateWebRtcSuccess,
   negotiateWebRtcError,
+  stopPeerConnectionRequest,
+  stopPeerConnectionSuccess,
+  stopPeerConnectionError,
 } from "../slices/remotePlotSlice";
 import {
   establishSocketConnection,
+  stopPeerConnection,
   // startWebRtc,
   // negotiateWebRtc,
 } from "../helpers/webRtcHelper";
 
 export function* workerEstablishConnection({ payload }) {
-  const { client_io, hostId, pid, peerConnection, dataChannel } = payload;
+  const { client_io, hostId, pid, peerConnection, dataChannel, videoRef } =
+    payload;
   try {
     const res = yield call(
       establishSocketConnection,
@@ -25,18 +30,19 @@ export function* workerEstablishConnection({ payload }) {
       hostId,
       pid,
       peerConnection,
-      dataChannel
+      dataChannel,
+      videoRef
     );
     console.log(res);
     yield put(establishSocketConnectionSuccess());
-    yield put(
-      startWebRtcRequest({
-        socket: client_io,
-        peerConnection: peerConnection,
-        dataChannel: dataChannel,
-        myRoom: res,
-      })
-    );
+    // yield put(
+    //   startWebRtcRequest({
+    //     socket: client_io,
+    //     peerConnection: peerConnection,
+    //     dataChannel: dataChannel,
+    //     myRoom: res,
+    //   })
+    // );
   } catch (error) {
     yield put(establishSocketConnectionError());
   }
@@ -44,6 +50,21 @@ export function* workerEstablishConnection({ payload }) {
 
 export function* watcherEstablishConnection() {
   yield takeEvery(establishSocketConnectionRequest, workerEstablishConnection);
+}
+
+export function* workerStopPeerConnection({ payload }) {
+  const { peerConnection } = payload;
+  try {
+    const res = yield call(stopPeerConnection, peerConnection);
+    console.log("stop peer conn res:" + res);
+    yield put(stopPeerConnectionSuccess());
+  } catch (error) {
+    yield put(stopPeerConnectionError());
+  }
+}
+
+export function* watcherStopPeerConnection() {
+  yield takeEvery(stopPeerConnectionRequest, workerStopPeerConnection);
 }
 
 // export function* workerStartWebRtc({ payload }) {
@@ -92,6 +113,7 @@ export function* watcherEstablishConnection() {
 export default function* rootSaga() {
   yield all([
     fork(watcherEstablishConnection),
+    fork(watcherStopPeerConnection),
     // fork(watcherStartWebRtc),
     // fork(watcherNegotiateWebRtc),
   ]);

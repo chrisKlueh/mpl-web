@@ -3,6 +3,7 @@ const initialState = {
   isEstablishingSocketConnection: false,
   isStartingWebRtc: false,
   isNegotiatingWebRtc: false,
+  isStoppingPeerConnection: false,
 };
 
 export const remotePlotSlice = createSlice({
@@ -36,6 +37,15 @@ export const remotePlotSlice = createSlice({
     negotiateWebRtcError: (state, action) => {
       state.isNegotiatingWebRtc = false;
     },
+    stopPeerConnectionRequest: (state, action) => {
+      state.isStoppingPeerConnection = true;
+    },
+    stopPeerConnectionSuccess: (state, action) => {
+      state.isStoppingPeerConnection = false;
+    },
+    stopPeerConnectionError: (state, action) => {
+      state.isStoppingPeerConnection = false;
+    },
   },
 });
 export const {
@@ -48,6 +58,9 @@ export const {
   negotiateWebRtcRequest,
   negotiateWebRtcSuccess,
   negotiateWebRtcError,
+  stopPeerConnectionRequest,
+  stopPeerConnectionSuccess,
+  stopPeerConnectionError,
 } = remotePlotSlice.actions;
 
 export default remotePlotSlice.reducer;

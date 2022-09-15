@@ -1,17 +1,37 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { io } from "socket.io-client";
 
 import styles from "./RemotePlot.module.css";
 import LoadingFragment from "../general/LoadingFragment";
 
-import { establishSocketConnectionRequest } from "../../slices/remotePlotSlice";
+import {
+  establishSocketConnectionRequest,
+  stopPeerConnectionRequest,
+} from "../../slices/remotePlotSlice";
 
 // import { establishSocketConnection } from "../../helpers/webRtcHelper";
 
 const RemotePlot = (props) => {
-  const { establishSocketConnectionRequest, hostId, pid } = props;
+  // const [url, setUrl] = useState(null);
+  let videoRef = useRef(null);
+
+  // useEffect(() => {
+  //   console.log("VIDEOREF");
+  //   console.log(videoRef);
+  //   videoRef.current?.load();
+  // }, [videoRef]);
+
+  const {
+    establishSocketConnectionRequest,
+    stopPeerConnectionRequest,
+    hostId,
+    pid,
+    videoElement,
+    isLoading,
+  } = props;
   useEffect(() => {
+    console.log(videoElement);
     //equals componentDidMount
     console.log("did mount");
     let client_io = null;
@@ -23,14 +43,20 @@ const RemotePlot = (props) => {
       pid: pid,
       peerConnection: peerConnection,
       dataChannel: dataChannel,
+      videoRef: videoRef,
     });
     //return statement equals componentWillUnmount
     return () => {
       console.log("will unmount");
+      stopPeerConnectionRequest({ peerConnection: peerConnection });
     };
-  }, [establishSocketConnectionRequest, hostId, pid]);
+  }, [
+    establishSocketConnectionRequest,
+    stopPeerConnectionRequest,
+    hostId,
+    pid,
+  ]);
 
-  let isLoading = true;
   return (
     <Fragment>
       {isLoading ? (
@@ -38,7 +64,7 @@ const RemotePlot = (props) => {
           <LoadingFragment message="Establishing connection.." />
         </div>
       ) : (
-        <video id="video" className={styles.plotVideo} />
+        <video className={styles.plotVideo} ref={videoRef} autoPlay controls />
       )}
     </Fragment>
   );
@@ -46,7 +72,7 @@ const RemotePlot = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.remotePlot.isEstablishingConnection,
+    isLoading: state.remotePlot.isEstablishingSocketConnection,
   };
 };
 
@@ -54,6 +80,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     establishSocketConnectionRequest: (payload) =>
       dispatch(establishSocketConnectionRequest(payload)),
+    stopPeerConnectionRequest: (payload) =>
+      dispatch(stopPeerConnectionRequest(payload)),
   };
 };
 

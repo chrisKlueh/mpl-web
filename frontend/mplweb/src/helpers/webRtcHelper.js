@@ -5,7 +5,8 @@ export const establishSocketConnection = (
   hostId,
   pid,
   pc,
-  dataChannel
+  dataChannel,
+  videoRef
 ) => {
   return new Promise((resolve, reject) => {
     console.log("establishing socket connection");
@@ -27,7 +28,7 @@ export const establishSocketConnection = (
         console.log("I joined the room. Waiting for instance..");
       } else if (role === "instance") {
         console.log("Instance joined the room. Starting connection process..");
-        pc = start(client_io, pc, dataChannel, myRoom);
+        pc = start(client_io, pc, dataChannel, myRoom, videoRef);
 
         console.log("after start");
         console.log(pc);
@@ -43,7 +44,7 @@ export const establishSocketConnection = (
           }
         });
 
-        resolve(myRoom);
+        resolve("RESOLVE");
       }
     });
   });
@@ -87,7 +88,7 @@ const negotiate = (client_io, pc, myRoom) => {
     });
 };
 
-const start = (client_io, pc, dataChannel, myRoom) => {
+const start = (client_io, pc, dataChannel, myRoom, videoRef) => {
   const useStun = true;
 
   console.log("start");
@@ -109,11 +110,21 @@ const start = (client_io, pc, dataChannel, myRoom) => {
     // if (evt.track.kind == "video") {
     if (evt.track.kind === "video") {
       console.log(evt.streams[0]);
-      document.getElementById("video").srcObject = evt.streams[0];
+      // document.getElementById("video").srcObject = evt.streams[0];
+      console.log(videoRef.current);
+      console.log(
+        videoRef.srcObject === undefined ? "no src object before" : "wat"
+      );
+      videoRef.current.srcObject = evt.streams[0];
+      console.log(videoRef);
+
+      // videoRef.onloadedmetadata = function (e) {
+      //   console.log("onloadedmetadata");
+      //   videoRef.play();
+      // };
+
+      // videoRef.current.load();
     }
-    // else {
-    //   document.getElementById("audio").srcObject = evt.streams[0];
-    // }
   });
 
   dataChannel = pc.createDataChannel("inputchannel");
@@ -150,6 +161,17 @@ const start = (client_io, pc, dataChannel, myRoom) => {
   console.log(client_io, pc, dataChannel);
   negotiate(client_io, pc, myRoom);
   return pc;
+};
+
+export const stopPeerConnection = (pc) => {
+  console.log("stopPeerConnection was called");
+  return Promise((reject, resolve) => {
+    // close peer connection
+    console.log(pc);
+    console.log(pc.close());
+    console.log("closed peer connection");
+    resolve("stopped peer conn");
+  });
 };
 
 // export const negotiateWebRtc = (client_io, pc, myRoom) => {
@@ -257,15 +279,6 @@ const start = (client_io, pc, dataChannel, myRoom) => {
 //     // negotiate();}
 //   });
 // };
-
-// function stop() {
-//   document.getElementById("stop").style.display = "none";
-
-//   // close peer connection
-//   setTimeout(function () {
-//     pc.close();
-//   }, 500);
-// }
 
 // function send(evtObject) {
 //   let msg = JSON.stringify(evtObject);
