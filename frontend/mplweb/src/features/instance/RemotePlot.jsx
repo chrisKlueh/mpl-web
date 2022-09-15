@@ -45,6 +45,7 @@ const RemotePlot = (props) => {
       dataChannel: dataChannel,
       videoRef: videoRef,
     });
+    console.log(client_io, peerConnection, dataChannel);
     //return statement equals componentWillUnmount
     return () => {
       console.log("will unmount");

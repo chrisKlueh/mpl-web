@@ -28,23 +28,23 @@ export const establishSocketConnection = (
         console.log("I joined the room. Waiting for instance..");
       } else if (role === "instance") {
         console.log("Instance joined the room. Starting connection process..");
-        pc = start(client_io, pc, dataChannel, myRoom, videoRef);
+        let resObj = start(client_io, pc, dataChannel, myRoom, videoRef);
 
         console.log("after start");
-        console.log(pc);
+        console.log(resObj.peerConnection);
 
         client_io.on("sdp_answer", (data) => {
           try {
             console.log(data.data);
             let jsonData = JSON.parse(data.data);
             console.log(jsonData);
-            pc.setRemoteDescription(jsonData);
+            resObj.peerConnection.setRemoteDescription(jsonData);
+            console.log(client_io, resObj.peerConnection, resObj.dataChannel);
+            resolve("RESOLVE");
           } catch (error) {
             reject(error);
           }
         });
-
-        resolve("RESOLVE");
       }
     });
   });
@@ -160,7 +160,7 @@ const start = (client_io, pc, dataChannel, myRoom, videoRef) => {
   console.log("done starting");
   console.log(client_io, pc, dataChannel);
   negotiate(client_io, pc, myRoom);
-  return pc;
+  return { peerConnection: pc, dataChannel: dataChannel };
 };
 
 export const stopPeerConnection = (pc) => {
