@@ -43,7 +43,7 @@ class RemotePlotStream(object):
         try:
             self.sio.connect(sigaling_server_url)
             print("Connected with socket " + sigaling_server_url)
-            self.sio.emit("join_room", {"room": self.sig_room})
+            self.sio.emit("join_room", {"role": "instance", "room": self.sig_room})
             print("Joined room " + self.sig_room)
 
             @self.sio.event

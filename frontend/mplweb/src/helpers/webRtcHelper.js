@@ -11,11 +11,7 @@ export const establishSocketConnection = (
     console.log("establishing socket connection");
     const myRoom = `instance_${hostId}-${pid}`;
     client_io = io("http://192.168.2.118:8080");
-    client_io.emit("join_room", { room: myRoom });
-    pc = start(client_io, pc, dataChannel, myRoom);
-
-    console.log("after start");
-    console.log(pc);
+    client_io.emit("join_room", { role: "client", room: myRoom });
 
     client_io.on("connect", () => {
       console.log("connected");
@@ -25,20 +21,30 @@ export const establishSocketConnection = (
       console.log("disconnected");
     });
 
-    client_io.on("sdp_answer", (data) => {
-      try {
-        console.log(data.data);
-        let jsonData = JSON.parse(data.data);
-        console.log(jsonData);
-        pc.setRemoteDescription(jsonData);
-      } catch (error) {
-        reject(error);
-      }
-    });
+    client_io.on("joined_room", (data) => {
+      const role = data.role;
+      if (role === "client") {
+        console.log("I joined the room. Waiting for instance..");
+      } else if (role === "instance") {
+        console.log("Instance joined the room. Starting connection process..");
+        pc = start(client_io, pc, dataChannel, myRoom);
 
-    client_io.on("joined_room", () => {
-      console.log("joined room");
-      resolve(myRoom);
+        console.log("after start");
+        console.log(pc);
+
+        client_io.on("sdp_answer", (data) => {
+          try {
+            console.log(data.data);
+            let jsonData = JSON.parse(data.data);
+            console.log(jsonData);
+            pc.setRemoteDescription(jsonData);
+          } catch (error) {
+            reject(error);
+          }
+        });
+
+        resolve(myRoom);
+      }
     });
   });
 };
