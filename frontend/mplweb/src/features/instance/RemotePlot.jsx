@@ -1,23 +1,34 @@
 import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
+import { io } from "socket.io-client";
 
 import styles from "./RemotePlot.module.css";
 import LoadingFragment from "../general/LoadingFragment";
 
-import { establishConnectionRequest } from "../../slices/remotePlotSlice";
+import { establishSocketConnectionRequest } from "../../slices/remotePlotSlice";
 
 // import { establishSocketConnection } from "../../helpers/webRtcHelper";
 
 const RemotePlot = (props) => {
-  const { establishConnectionRequest, hostId, pid } = props;
+  const { establishSocketConnectionRequest, hostId, pid } = props;
   useEffect(() => {
     //equals componentDidMount
-    establishConnectionRequest({ hostId: hostId, pid: pid });
+    console.log("did mount");
+    let client_io = null;
+    let peerConnection = null;
+    let dataChannel = null;
+    establishSocketConnectionRequest({
+      client_io: client_io,
+      hostId: hostId,
+      pid: pid,
+      peerConnection: peerConnection,
+      dataChannel: dataChannel,
+    });
     //return statement equals componentWillUnmount
     return () => {
       console.log("will unmount");
     };
-  }, [establishConnectionRequest, hostId, pid]);
+  }, [establishSocketConnectionRequest, hostId, pid]);
 
   let isLoading = true;
   return (
@@ -27,7 +38,7 @@ const RemotePlot = (props) => {
           <LoadingFragment message="Establishing connection.." />
         </div>
       ) : (
-        <video className={styles.plotVideo} />
+        <video id="video" className={styles.plotVideo} />
       )}
     </Fragment>
   );
@@ -41,8 +52,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    establishConnectionRequest: (payload) =>
-      dispatch(establishConnectionRequest(payload)),
+    establishSocketConnectionRequest: (payload) =>
+      dispatch(establishSocketConnectionRequest(payload)),
   };
 };
 

@@ -1,27 +1,53 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  isEstablishingConnection: false,
+  isEstablishingSocketConnection: false,
+  isStartingWebRtc: false,
+  isNegotiatingWebRtc: false,
 };
 
 export const remotePlotSlice = createSlice({
   name: "remotePlot",
   initialState,
   reducers: {
-    establishConnectionRequest: (state, action) => {
-      state.isEstablishingConnection = true;
+    establishSocketConnectionRequest: (state, action) => {
+      state.isEstablishingSocketConnection = true;
     },
-    establishConnectionSuccess: (state, action) => {
-      state.isEstablishingConnection = false;
+    establishSocketConnectionSuccess: (state, action) => {
+      state.isEstablishingSocketConnection = false;
     },
-    establishConnectionError: (state, action) => {
-      state.isEstablishingConnection = false;
+    establishSocketConnectionError: (state, action) => {
+      state.isEstablishingSocketConnection = false;
+    },
+    startWebRtcRequest: (state, action) => {
+      state.isStartingWebRtc = true;
+    },
+    startWebRtcSuccess: (state, action) => {
+      state.isStartingWebRtc = false;
+    },
+    startWebRtcError: (state, action) => {
+      state.isStartingWebRtc = false;
+    },
+    negotiateWebRtcRequest: (state, action) => {
+      state.isNegotiatingWebRtc = true;
+    },
+    negotiateWebRtcSuccess: (state, action) => {
+      state.isNegotiatingWebRtc = false;
+    },
+    negotiateWebRtcError: (state, action) => {
+      state.isNegotiatingWebRtc = false;
     },
   },
 });
 export const {
-  establishConnectionRequest,
-  establishConnectionSuccess,
-  establishConnectionError,
+  establishSocketConnectionRequest,
+  establishSocketConnectionSuccess,
+  establishSocketConnectionError,
+  startWebRtcRequest,
+  startWebRtcSuccess,
+  startWebRtcError,
+  negotiateWebRtcRequest,
+  negotiateWebRtcSuccess,
+  negotiateWebRtcError,
 } = remotePlotSlice.actions;
 
 export default remotePlotSlice.reducer;
