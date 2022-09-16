@@ -10,7 +10,17 @@ import {
   stopPeerConnectionRequest,
 } from "../../slices/remotePlotSlice";
 
-// import { establishSocketConnection } from "../../helpers/webRtcHelper";
+import {
+  captureMouseDown,
+  captureMouseUp,
+  captureKeyDown,
+  captureKeyUp,
+  captureMouseMove,
+  captureMouseWheel,
+  captureFigureEnter,
+  captureFigureLeave,
+  handleContextMenu,
+} from "../../helpers/inputCaptureHelper";
 
 const RemotePlot = (props) => {
   const [socket, setSocket] = useState(null);
@@ -23,7 +33,6 @@ const RemotePlot = (props) => {
     ref.current = state;
     return () => ref.current;
   };
-
   const peerConnectionMonitor = useStateMonitor(peerConnection);
 
   const {
@@ -65,7 +74,66 @@ const RemotePlot = (props) => {
     };
   }, []);
 
-  console.log(socket, peerConnection, dataChannel);
+  const handleMouseDown = (event) => {
+    captureMouseDown(event, dataChannel);
+  };
+
+  const handleMouseUp = (event) => {
+    captureMouseUp(event, dataChannel);
+  };
+
+  const handleKeyDown = (event) => {
+    captureKeyDown(event, dataChannel);
+  };
+
+  const handleKeyUp = (event) => {
+    captureKeyUp(event, dataChannel);
+  };
+
+  const handleFigureEnter = (event) => {
+    captureFigureEnter(event, dataChannel);
+  };
+
+  const handleFigureLeave = (event) => {
+    captureFigureLeave(event, dataChannel);
+  };
+
+  const handleMouseMove = (event) => {
+    captureMouseMove(event, dataChannel);
+  };
+
+  const handleMouseWheel = (event) => {
+    captureMouseWheel(event, dataChannel);
+  };
+
+  const suppressContextMenu = (event) => {
+    handleContextMenu(event, dataChannel);
+  };
+
+  const addEventListeners = () => {
+    console.log("mouseenter: adding event listeners");
+    videoRef.current.addEventListener("mousedown", handleMouseDown);
+    videoRef.current.addEventListener("mouseup", handleMouseUp);
+    videoRef.current.addEventListener("keydown", handleKeyDown);
+    videoRef.current.addEventListener("keyup", handleKeyUp);
+    videoRef.current.addEventListener("mousemove", handleMouseMove);
+    videoRef.current.addEventListener("wheel", handleMouseWheel);
+    videoRef.current.addEventListener("contextmenu", suppressContextMenu);
+    videoRef.current.addEventListener("mouseenter", handleFigureEnter);
+    videoRef.current.addEventListener("mouseleave", handleFigureLeave);
+  };
+
+  const removeEventListeners = () => {
+    console.log("mouseleave: removing event listeners");
+    videoRef.current.removeEventListener("mousedown", handleMouseDown);
+    videoRef.current.removeEventListener("mouseup", handleMouseUp);
+    videoRef.current.removeEventListener("keydown", handleKeyDown);
+    videoRef.current.removeEventListener("keyup", handleKeyUp);
+    videoRef.current.removeEventListener("mousemove", handleMouseMove);
+    videoRef.current.removeEventListener("wheel", handleMouseWheel);
+    videoRef.current.removeEventListener("contextmenu", suppressContextMenu);
+  };
+
   return (
     <Fragment>
       {isLoading ? (
@@ -73,7 +141,13 @@ const RemotePlot = (props) => {
           <LoadingFragment message="Establishing connection.." />
         </div>
       ) : (
-        <video className={styles.plotVideo} ref={videoRef} autoPlay />
+        <video
+          className={styles.plotVideo}
+          ref={videoRef}
+          autoPlay
+          onMouseEnter={addEventListeners}
+          onMouseLeave={removeEventListeners}
+        />
       )}
     </Fragment>
   );
