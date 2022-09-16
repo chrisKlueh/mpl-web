@@ -51,7 +51,6 @@ const negotiate = (client_io, pc, myRoom) => {
   console.log("negotiate");
   console.log(client_io, pc, myRoom);
   pc.addTransceiver("video", { direction: "recvonly" });
-  // pc.addTransceiver("audio", { direction: "recvonly" });
   return pc
     .createOffer()
     .then(function (offer) {
@@ -76,7 +75,7 @@ const negotiate = (client_io, pc, myRoom) => {
       });
     })
     .then(function () {
-      var offer = pc.localDescription;
+      const offer = pc.localDescription;
       client_io.emit("send_offer", {
         room: myRoom,
         data: { sdp: offer.sdp, type: offer.type },
@@ -86,41 +85,28 @@ const negotiate = (client_io, pc, myRoom) => {
 };
 
 const start = (client_io, myRoom, videoRef) => {
-  const useStun = true;
-
   console.log("start");
-  var config = {
+  const config = {
     sdpSemantics: "unified-plan",
+    //always use stun servers
+    iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }],
   };
-
-  if (useStun) {
-    config.iceServers = [{ urls: ["stun:stun.l.google.com:19302"] }];
-  }
 
   let pc = new RTCPeerConnection(config);
 
-  // connect audio / video
+  // connect video
   pc.addEventListener("track", function (evt) {
     console.log("track");
     console.log(evt);
     console.log(evt.track.kind);
-    // if (evt.track.kind == "video") {
     if (evt.track.kind === "video") {
       console.log(evt.streams[0]);
-      // document.getElementById("video").srcObject = evt.streams[0];
       console.log(videoRef.current);
       console.log(
         videoRef.srcObject === undefined ? "no src object before" : "wat"
       );
       videoRef.current.srcObject = evt.streams[0];
       console.log(videoRef);
-
-      // videoRef.onloadedmetadata = function (e) {
-      //   console.log("onloadedmetadata");
-      //   videoRef.play();
-      // };
-
-      // videoRef.current.load();
     }
   });
 
@@ -171,112 +157,6 @@ export const stopPeerConnection = (peerConnection) => {
     }
   });
 };
-
-// export const negotiateWebRtc = (client_io, pc, myRoom) => {
-//   return new Promise((resolveNegotiate, rejectNegotiate) => {
-//     console.log("negotiate");
-//     console.log(client_io, pc, myRoom);
-//     pc.addTransceiver("video", { direction: "recvonly" });
-//     // pc.addTransceiver("audio", { direction: "recvonly" });
-//     return pc
-//       .createOffer()
-//       .then(function (offer) {
-//         console.log("offer created");
-//         return pc.setLocalDescription(offer);
-//       })
-//       .then(function () {
-//         // wait for ICE gathering to complete
-//         return new Promise(function (resolve) {
-//           if (pc.iceGatheringState === "complete") {
-//             console.log("ice gathering complete");
-//             resolve();
-//           } else {
-//             function checkState() {
-//               if (pc.iceGatheringState === "complete") {
-//                 pc.removeEventListener("icegatheringstatechange", checkState);
-//                 resolve();
-//               }
-//             }
-//             pc.addEventListener("icegatheringstatechange", checkState);
-//           }
-//         });
-//       })
-//       .then(function () {
-//         var offer = pc.localDescription;
-//         client_io.emit("send_offer", {
-//           room: myRoom,
-//           data: { sdp: offer.sdp, type: offer.type },
-//         });
-//         console.log("done negotiating");
-//         resolveNegotiate("negotiation is over");
-//       });
-//   });
-// };
-
-// export const startWebRtc = (client_io, pc, dataChannel, myRoom) => {
-//   const useStun = true;
-//   return new Promise((resolve, reject) => {
-//     console.log("start");
-//     var config = {
-//       sdpSemantics: "unified-plan",
-//     };
-
-//     if (useStun) {
-//       config.iceServers = [{ urls: ["stun:stun.l.google.com:19302"] }];
-//     }
-
-//     pc = new RTCPeerConnection(config);
-
-//     // connect audio / video
-//     pc.addEventListener("track", function (evt) {
-//       console.log("track");
-//       console.log(evt);
-//       console.log(evt.track.kind);
-//       if (evt.track.kind == "video") {
-//         console.log(evt.streams[0]);
-//         document.getElementById("video").srcObject = evt.streams[0];
-//       }
-//       // else {
-//       //   document.getElementById("audio").srcObject = evt.streams[0];
-//       // }
-//     });
-
-//     dataChannel = pc.createDataChannel("inputchannel");
-//     dataChannel.onerror = (error) => {
-//       console.log("data channel error:", error);
-//     };
-
-//     dataChannel.onmessage = (event) => {
-//       if (event.data instanceof Blob) {
-//         const blob = event.data;
-//         console.log(blob);
-//         //   renderImg(blob);
-//       } else {
-//         let message = JSON.parse(event.data);
-//         console.log("data channel message:", message);
-//         console.log(message.type);
-//       }
-//     };
-
-//     dataChannel.onopen = () => {
-//       console.log("data channel opened");
-//       const state = dataChannel.readyState;
-//       console.log("data channel state:" + state);
-//       // addEventListeners();
-//       client_io.emit("leave_room", { room: myRoom });
-//       console.log("data channel open: leaving room");
-//       // connectionResolve("data channel opened");
-//     };
-
-//     dataChannel.onclose = () => {
-//       console.log("data channel closed");
-//     };
-//     console.log("done starting");
-//     console.log(client_io, pc, dataChannel);
-//     resolve();
-//     // negotiate();}
-//   });
-// };
 
 // function send(evtObject) {
 //   let msg = JSON.stringify(evtObject);
