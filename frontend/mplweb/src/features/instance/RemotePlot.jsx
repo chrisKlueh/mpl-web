@@ -13,14 +13,11 @@ import {
 // import { establishSocketConnection } from "../../helpers/webRtcHelper";
 
 const RemotePlot = (props) => {
-  // const [url, setUrl] = useState(null);
-  let videoRef = useRef(null);
+  const [socket, setSocket] = useState(null);
+  const [peerConnection, setPeerConnection] = useState(null);
+  const [dataChannel, setDataChannel] = useState(null);
 
-  // useEffect(() => {
-  //   console.log("VIDEOREF");
-  //   console.log(videoRef);
-  //   videoRef.current?.load();
-  // }, [videoRef]);
+  let videoRef = useRef(null);
 
   const {
     establishSocketConnectionRequest,
@@ -30,34 +27,41 @@ const RemotePlot = (props) => {
     videoElement,
     isLoading,
   } = props;
-  useEffect(() => {
-    console.log(videoElement);
-    //equals componentDidMount
-    console.log("did mount");
-    let client_io = null;
-    let peerConnection = null;
-    let dataChannel = null;
+
+  const handleConnect = () => {
     establishSocketConnectionRequest({
-      client_io: client_io,
+      client_io: socket,
       hostId: hostId,
       pid: pid,
       peerConnection: peerConnection,
       dataChannel: dataChannel,
       videoRef: videoRef,
+      setSocket: setSocket,
+      setPeerConnection: setPeerConnection,
+      setDataChannel: setDataChannel,
     });
-    console.log(client_io, peerConnection, dataChannel);
+  };
+
+  const handleDisconnect = () => {
+    stopPeerConnectionRequest({ peerConnection: peerConnection });
+  };
+
+  useEffect(() => {
+    console.log(videoElement);
+    //equals componentDidMount
+    console.log("did mount");
+    handleConnect();
+  }, []);
+
+  useEffect(() => {
     //return statement equals componentWillUnmount
     return () => {
       console.log("will unmount");
-      stopPeerConnectionRequest({ peerConnection: peerConnection });
+      handleDisconnect();
     };
-  }, [
-    establishSocketConnectionRequest,
-    stopPeerConnectionRequest,
-    hostId,
-    pid,
-  ]);
+  });
 
+  console.log(socket, peerConnection, dataChannel);
   return (
     <Fragment>
       {isLoading ? (

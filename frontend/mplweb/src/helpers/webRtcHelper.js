@@ -40,7 +40,11 @@ export const establishSocketConnection = (
             console.log(jsonData);
             resObj.peerConnection.setRemoteDescription(jsonData);
             console.log(client_io, resObj.peerConnection, resObj.dataChannel);
-            resolve("RESOLVE");
+            resolve({
+              socket: client_io,
+              peerConnection: resObj.peerConnection,
+              dataChannel: resObj.dataChannel,
+            });
           } catch (error) {
             reject(error);
           }

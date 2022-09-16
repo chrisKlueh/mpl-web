@@ -21,8 +21,17 @@ import {
 } from "../helpers/webRtcHelper";
 
 export function* workerEstablishConnection({ payload }) {
-  const { client_io, hostId, pid, peerConnection, dataChannel, videoRef } =
-    payload;
+  const {
+    client_io,
+    hostId,
+    pid,
+    peerConnection,
+    dataChannel,
+    videoRef,
+    setSocket,
+    setPeerConnection,
+    setDataChannel,
+  } = payload;
   try {
     const res = yield call(
       establishSocketConnection,
@@ -34,6 +43,9 @@ export function* workerEstablishConnection({ payload }) {
       videoRef
     );
     console.log(res);
+    setSocket(res.socket);
+    setPeerConnection(res.peerConnection);
+    setDataChannel(res.dataChannel);
     yield put(establishSocketConnectionSuccess());
     // yield put(
     //   startWebRtcRequest({
@@ -55,6 +67,7 @@ export function* watcherEstablishConnection() {
 export function* workerStopPeerConnection({ payload }) {
   const { peerConnection } = payload;
   try {
+    console.log(peerConnection);
     const res = yield call(stopPeerConnection, peerConnection);
     console.log("stop peer conn res:" + res);
     yield put(stopPeerConnectionSuccess());
