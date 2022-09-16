@@ -17,7 +17,14 @@ const RemotePlot = (props) => {
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
 
-  let videoRef = useRef(null);
+  const videoRef = useRef(null);
+  const useStateMonitor = (state) => {
+    const ref = useRef();
+    ref.current = state;
+    return () => ref.current;
+  };
+
+  const peerConnectionMonitor = useStateMonitor(peerConnection);
 
   const {
     establishSocketConnectionRequest,
@@ -43,7 +50,7 @@ const RemotePlot = (props) => {
   };
 
   const handleDisconnect = () => {
-    stopPeerConnectionRequest({ peerConnection: peerConnection });
+    stopPeerConnectionRequest({ peerConnection: peerConnectionMonitor() });
   };
 
   useEffect(() => {
@@ -59,7 +66,7 @@ const RemotePlot = (props) => {
       console.log("will unmount");
       handleDisconnect();
     };
-  });
+  }, []);
 
   console.log(socket, peerConnection, dataChannel);
   return (
