@@ -67,6 +67,10 @@ class RemotePlotStream(object):
         self.demo = demo
         self.demoFig = self.demo.getFig()
         self.plotWidth, self.plotHeight = self.demoFig.canvas.get_width_height()
+        self.clientWidth = 0
+        self.clientHeight = 0
+        self.widthFactor = 1
+        self.heightFactor = 1
         # subscribe to the draw event
         self.cid = self.demoFig.canvas.mpl_connect('draw_event', self.onUpdatePlot)
 
@@ -138,20 +142,26 @@ class RemotePlotStream(object):
 
     def handleMessage(self, messageObj):
         if messageObj["type"] == MESSAGE_TYPES["MOUSE_MOVE"]:
-            self.demoFig.canvas.motion_notify_event(messageObj["normalizedX"], self.plotHeight - messageObj["normalizedY"])
+            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+            self.demoFig.canvas.motion_notify_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]))
         elif messageObj["type"] == MESSAGE_TYPES["MOUSE_DOWN"]:
-            self.demoFig.canvas.button_press_event(messageObj["normalizedX"], self.plotHeight - messageObj["normalizedY"], button=MPL_MOUSE_BTNS[messageObj["button"]])
+            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+            self.demoFig.canvas.button_press_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]), button=MPL_MOUSE_BTNS[messageObj["button"]])
         elif messageObj["type"] == MESSAGE_TYPES["MOUSE_UP"]:
-            self.demoFig.canvas.button_release_event(messageObj["normalizedX"], self.plotHeight - messageObj["normalizedY"], button=MPL_MOUSE_BTNS[messageObj["button"]])
+            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+            self.demoFig.canvas.button_release_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]), button=MPL_MOUSE_BTNS[messageObj["button"]])
         elif messageObj["type"] == MESSAGE_TYPES["KEY_DOWN"]:
             self.demoFig.canvas.key_press_event(messageObj["key"])
         elif messageObj["type"] == MESSAGE_TYPES["KEY_UP"]:
             self.demoFig.canvas.key_release_event(messageObj["key"])
         elif messageObj["type"] == MESSAGE_TYPES["WHEEL"]:
-            self.demoFig.canvas.scroll_event(messageObj["normalizedX"], self.plotHeight - messageObj["normalizedY"], step=self.calcStep(messageObj["deltaY"]))
+            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+            self.demoFig.canvas.scroll_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]), step=self.calcStep(messageObj["deltaY"]))
         elif messageObj["type"] == MESSAGE_TYPES["FIGURE_ENTER"]:
-            self.demoFig.canvas.enter_notify_event(xy=(messageObj["normalizedX"], self.plotHeight - messageObj["normalizedY"]))
+            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+            self.demoFig.canvas.enter_notify_event(xy=(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"])))
         elif messageObj["type"] == MESSAGE_TYPES["FIGURE_LEAVE"]:
+            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
             self.demoFig.canvas.leave_notify_event()
 
     def calcStep(self, deltaY):
@@ -159,6 +169,21 @@ class RemotePlotStream(object):
         if deltaY < 0:
             step = -1
         return step
+
+    def calcX(self, clientX):
+        return round(self.widthFactor * clientX)
+
+    def calcY(self, clientY):
+        return self.plotHeight - round(self.heightFactor * clientY)
+
+    def checkClientPlotDimensions(self, clientWidth, clientHeight):
+        if clientWidth == self.clientWidth and clientHeight == self.clientHeight:
+            pass
+        else:
+            self.clientWidth = clientWidth
+            self.clientHeight = clientHeight
+            self.widthFactor = self.plotWidth / self.clientWidth
+            self.heightFactor = self.plotHeight / self.clientHeight
 
     def onUpdatePlot(self, event):
         print("Plot has updated. Sending new image.\n")

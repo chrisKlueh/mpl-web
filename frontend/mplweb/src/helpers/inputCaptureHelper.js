@@ -22,6 +22,8 @@ const trimEvent = (event) => {
         type: event.type,
         normalizedX: event.normalizedX,
         normalizedY: event.normalizedY,
+        clientWidth: event.srcElement.clientWidth,
+        clientHeight: event.srcElement.clientHeight,
       };
       break;
     case "mousedown":
@@ -30,6 +32,8 @@ const trimEvent = (event) => {
         button: event.button,
         normalizedX: event.normalizedX,
         normalizedY: event.normalizedY,
+        clientWidth: event.srcElement.clientWidth,
+        clientHeight: event.srcElement.clientHeight,
       };
       break;
     case "mouseup":
@@ -38,6 +42,8 @@ const trimEvent = (event) => {
         button: event.button,
         normalizedX: event.normalizedX,
         normalizedY: event.normalizedY,
+        clientWidth: event.srcElement.clientWidth,
+        clientHeight: event.srcElement.clientHeight,
       };
       break;
     case "keydown":
@@ -60,6 +66,8 @@ const trimEvent = (event) => {
         deltaY: event.deltaY,
         normalizedX: event.normalizedX,
         normalizedY: event.normalizedY,
+        clientWidth: event.srcElement.clientWidth,
+        clientHeight: event.srcElement.clientHeight,
       };
       break;
     case "mouseenter":
@@ -67,6 +75,8 @@ const trimEvent = (event) => {
         type: event.type,
         normalizedX: event.normalizedX,
         normalizedY: event.normalizedY,
+        clientWidth: event.srcElement.clientWidth,
+        clientHeight: event.srcElement.clientHeight,
       };
       break;
     case "mouseleave":
@@ -74,6 +84,8 @@ const trimEvent = (event) => {
         type: event.type,
         normalizedX: event.normalizedX,
         normalizedY: event.normalizedY,
+        clientWidth: event.srcElement.clientWidth,
+        clientHeight: event.srcElement.clientHeight,
       };
       break;
     default:
