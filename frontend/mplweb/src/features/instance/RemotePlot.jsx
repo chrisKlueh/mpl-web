@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
-import { io } from "socket.io-client";
 
 import styles from "./RemotePlot.module.css";
 import LoadingFragment from "../general/LoadingFragment";

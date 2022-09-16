@@ -111,6 +111,7 @@ const start = (client_io, myRoom, videoRef) => {
     console.log("Data channel state:" + state);
     // addEventListeners();
     client_io.emit("leave_room", { room: myRoom });
+    client_io.disconnect();
   };
 
   dataChannel.onclose = () => {

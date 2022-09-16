@@ -116,6 +116,7 @@ class RemotePlotStream(object):
                 self.sio.emit("leave_room", {"room": self.sig_room})
                 #start video stream by adding the first frame to its queue
                 self.onUpdatePlot(None)
+                self.sio.disconnect()
                 
         self.imageRenderingTrack = ImageRenderingTrack()
         print(f"\nRecording plot with {self.plotWidth}x{self.plotHeight}@{FRAMERATE}fps\n")
