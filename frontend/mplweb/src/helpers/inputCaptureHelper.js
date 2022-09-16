@@ -93,7 +93,6 @@ const normalizeMousePos = (event) => {
 
 const sendPerDataChannel = (evtObject, dataChannel) => {
   let msg = JSON.stringify(evtObject);
-  console.log(msg);
   dataChannel.send(msg);
 };
 

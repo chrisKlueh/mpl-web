@@ -20,6 +20,15 @@ const RemotePlot = (props) => {
   const [socket, setSocket] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
+  const [eventListeners, setEventListeners] = useState([
+    { event: "mousedown", handlerBase: "mouse", listener: null },
+    { event: "mouseup", handlerBase: "mouse", listener: null },
+    { event: "mousemove", handlerBase: "mouse", listener: null },
+    { event: "wheel", handlerBase: "mouse", listener: null },
+    { event: "keydown", handlerBase: "key", listener: null },
+    { event: "keyup", handlerBase: "key", listener: null },
+    { event: "contextmenu", handlerBase: "context", listener: null },
+  ]);
 
   const videoRef = useRef(null);
   const useStateMonitor = (state) => {
@@ -56,33 +65,21 @@ const RemotePlot = (props) => {
   useEffect(() => {
     console.log(videoElement);
     //equals componentDidMount
-    console.log("did mount");
     handleConnect();
   }, []);
 
   useEffect(() => {
     //return statement equals componentWillUnmount
     return () => {
-      console.log("will unmount");
       handleDisconnect();
     };
   }, []);
 
-  const handleKeyDown = (event) => {
-    captureKeyRelated(event, dataChannel);
-  };
-
-  const handleKeyUp = (event) => {
-    captureKeyRelated(event, dataChannel);
-  };
-
-  const handleMouseDown = (event) => {
-    captureMouseRelated(event, dataChannel);
-  };
-
-  const handleMouseUp = (event) => {
-    captureMouseRelated(event, dataChannel);
-  };
+  useEffect(() => {
+    if (dataChannel !== null) {
+      generateEventListeners(eventListeners, dataChannel);
+    }
+  }, [dataChannel]);
 
   const handleFigureEnter = (event) => {
     captureMouseRelated(event, dataChannel);
@@ -92,40 +89,36 @@ const RemotePlot = (props) => {
     captureMouseRelated(event, dataChannel);
   };
 
-  const handleMouseMove = (event) => {
-    captureMouseRelated(event, dataChannel);
-  };
-
-  const handleMouseWheel = (event) => {
-    captureMouseRelated(event, dataChannel);
-  };
-
-  const suppressContextMenu = (event) => {
-    handleContextMenu(event, dataChannel);
+  const generateEventListeners = (eventList, dataChannel) => {
+    eventList.map((item) => {
+      switch (item.handlerBase) {
+        case "mouse":
+          item.listener = (event) => captureMouseRelated(event, dataChannel);
+          break;
+        case "key":
+          item.listener = (event) => captureKeyRelated(event, dataChannel);
+          break;
+        case "context":
+          item.listener = (event) => handleContextMenu(event, dataChannel);
+          break;
+        default:
+          break;
+      }
+    });
   };
 
   const addEventListeners = () => {
-    console.log("mouseenter: adding event listeners");
-    videoRef.current.addEventListener("mousedown", handleMouseDown);
-    videoRef.current.addEventListener("mouseup", handleMouseUp);
-    videoRef.current.addEventListener("keydown", handleKeyDown);
-    videoRef.current.addEventListener("keyup", handleKeyUp);
-    videoRef.current.addEventListener("mousemove", handleMouseMove);
-    videoRef.current.addEventListener("wheel", handleMouseWheel);
-    videoRef.current.addEventListener("contextmenu", suppressContextMenu);
+    eventListeners.map((item) => {
+      videoRef.current.addEventListener(item.event, item.listener);
+    });
     videoRef.current.addEventListener("mouseenter", handleFigureEnter);
     videoRef.current.addEventListener("mouseleave", handleFigureLeave);
   };
 
   const removeEventListeners = () => {
-    console.log("mouseleave: removing event listeners");
-    videoRef.current.removeEventListener("mousedown", handleMouseDown);
-    videoRef.current.removeEventListener("mouseup", handleMouseUp);
-    videoRef.current.removeEventListener("keydown", handleKeyDown);
-    videoRef.current.removeEventListener("keyup", handleKeyUp);
-    videoRef.current.removeEventListener("mousemove", handleMouseMove);
-    videoRef.current.removeEventListener("wheel", handleMouseWheel);
-    videoRef.current.removeEventListener("contextmenu", suppressContextMenu);
+    eventListeners.map((item) => {
+      videoRef.current.removeEventListener(item.event, item.listener);
+    });
   };
 
   return (
