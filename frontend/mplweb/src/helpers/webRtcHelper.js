@@ -167,18 +167,15 @@ const start = (client_io, pc, dataChannel, myRoom, videoRef) => {
   return { peerConnection: pc, dataChannel: dataChannel };
 };
 
-export const stopPeerConnection = (pc) => {
-  console.log("stopPeerConnection was called");
-  console.log(pc);
-  return Promise((resolve, reject) => {
+export const stopPeerConnection = (peerConnection) => {
+  return new Promise((resolve, reject) => {
     // close peer connection
-    setTimeout(function () {
-      console.log("timeout over");
-      console.log(pc);
-      pc.close();
-    }, 500).then(() => {
-      resolve("stopped peer conn");
-    });
+    peerConnection.close();
+    if (peerConnection.signalingState === "closed") {
+      resolve(peerConnection);
+    } else {
+      reject(peerConnection);
+    }
   });
 };
 

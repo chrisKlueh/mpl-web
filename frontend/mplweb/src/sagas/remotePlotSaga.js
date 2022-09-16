@@ -68,9 +68,7 @@ export function* workerStopPeerConnection({ payload }) {
   const { peerConnection } = payload;
   try {
     console.log(peerConnection);
-    // const res = yield call(stopPeerConnection, peerConnection);
-    // console.log("stop peer conn res:" + res);
-    peerConnection.close();
+    yield call(stopPeerConnection, peerConnection);
     yield put(stopPeerConnectionSuccess());
   } catch (error) {
     yield put(stopPeerConnectionError());
