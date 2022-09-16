@@ -2,7 +2,6 @@ import { io } from "socket.io-client";
 
 export const establishSocketConnection = (hostId, pid, videoRef) => {
   return new Promise((resolve, reject) => {
-    console.log("establishing socket connection");
     const myRoom = `instance_${hostId}-${pid}`;
     let client_io = io("http://192.168.2.118:8080");
     client_io.emit("join_room", { role: "client", room: myRoom });
@@ -21,22 +20,16 @@ export const establishSocketConnection = (hostId, pid, videoRef) => {
         console.log("I joined the room. Waiting for instance..");
       } else if (role === "instance") {
         console.log("Instance joined the room. Starting connection process..");
-        let resObj = start(client_io, myRoom, videoRef);
-
-        console.log("after start");
-        console.log(resObj.peerConnection);
+        let connectionObj = start(client_io, myRoom, videoRef);
 
         client_io.on("sdp_answer", (data) => {
           try {
-            console.log(data.data);
             let jsonData = JSON.parse(data.data);
-            console.log(jsonData);
-            resObj.peerConnection.setRemoteDescription(jsonData);
-            console.log(client_io, resObj.peerConnection, resObj.dataChannel);
+            connectionObj.peerConnection.setRemoteDescription(jsonData);
             resolve({
               socket: client_io,
-              peerConnection: resObj.peerConnection,
-              dataChannel: resObj.dataChannel,
+              peerConnection: connectionObj.peerConnection,
+              dataChannel: connectionObj.dataChannel,
             });
           } catch (error) {
             reject(error);
@@ -48,20 +41,17 @@ export const establishSocketConnection = (hostId, pid, videoRef) => {
 };
 
 const negotiate = (client_io, pc, myRoom) => {
-  console.log("negotiate");
-  console.log(client_io, pc, myRoom);
   pc.addTransceiver("video", { direction: "recvonly" });
   return pc
     .createOffer()
     .then(function (offer) {
-      console.log("offer created");
       return pc.setLocalDescription(offer);
     })
     .then(function () {
       // wait for ICE gathering to complete
       return new Promise(function (resolve) {
         if (pc.iceGatheringState === "complete") {
-          console.log("ice gathering complete");
+          console.log("ICE gathering complete");
           resolve();
         } else {
           function checkState() {
@@ -80,12 +70,10 @@ const negotiate = (client_io, pc, myRoom) => {
         room: myRoom,
         data: { sdp: offer.sdp, type: offer.type },
       });
-      console.log("done negotiating");
     });
 };
 
 const start = (client_io, myRoom, videoRef) => {
-  console.log("start");
   const config = {
     sdpSemantics: "unified-plan",
     //always use stun servers
@@ -93,26 +81,16 @@ const start = (client_io, myRoom, videoRef) => {
   };
 
   let pc = new RTCPeerConnection(config);
-
   // connect video
   pc.addEventListener("track", function (evt) {
-    console.log("track");
-    console.log(evt);
-    console.log(evt.track.kind);
     if (evt.track.kind === "video") {
-      console.log(evt.streams[0]);
-      console.log(videoRef.current);
-      console.log(
-        videoRef.srcObject === undefined ? "no src object before" : "wat"
-      );
       videoRef.current.srcObject = evt.streams[0];
-      console.log(videoRef);
     }
   });
-
   let dataChannel = pc.createDataChannel("inputchannel");
+
   dataChannel.onerror = (error) => {
-    console.log("data channel error:", error);
+    console.log("Data channel error:", error);
   };
 
   dataChannel.onmessage = (event) => {
@@ -122,26 +100,22 @@ const start = (client_io, myRoom, videoRef) => {
       //   renderImg(blob);
     } else {
       let message = JSON.parse(event.data);
-      console.log("data channel message:", message);
+      console.log("Data channel message:", message);
       console.log(message.type);
     }
   };
 
   dataChannel.onopen = () => {
-    console.log("data channel opened");
+    console.log("Data channel opened");
     const state = dataChannel.readyState;
-    console.log("data channel state:" + state);
+    console.log("Data channel state:" + state);
     // addEventListeners();
     client_io.emit("leave_room", { room: myRoom });
-    console.log("data channel open: leaving room");
-    // connectionResolve("data channel opened");
   };
 
   dataChannel.onclose = () => {
-    console.log("data channel closed");
+    console.log("Data channel closed");
   };
-  console.log("done starting");
-  console.log(client_io, pc, dataChannel);
   negotiate(client_io, pc, myRoom);
   return { peerConnection: pc, dataChannel: dataChannel };
 };
