@@ -37,15 +37,12 @@ const RemotePlot = (props) => {
 
   const handleConnect = () => {
     establishSocketConnectionRequest({
-      client_io: socket,
-      hostId: hostId,
-      pid: pid,
-      peerConnection: peerConnection,
-      dataChannel: dataChannel,
-      videoRef: videoRef,
       setSocket: setSocket,
       setPeerConnection: setPeerConnection,
       setDataChannel: setDataChannel,
+      hostId: hostId,
+      pid: pid,
+      videoRef: videoRef,
     });
   };
 

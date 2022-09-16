@@ -1,17 +1,10 @@
 import { io } from "socket.io-client";
 
-export const establishSocketConnection = (
-  client_io,
-  hostId,
-  pid,
-  pc,
-  dataChannel,
-  videoRef
-) => {
+export const establishSocketConnection = (hostId, pid, videoRef) => {
   return new Promise((resolve, reject) => {
     console.log("establishing socket connection");
     const myRoom = `instance_${hostId}-${pid}`;
-    client_io = io("http://192.168.2.118:8080");
+    let client_io = io("http://192.168.2.118:8080");
     client_io.emit("join_room", { role: "client", room: myRoom });
 
     client_io.on("connect", () => {
@@ -28,7 +21,7 @@ export const establishSocketConnection = (
         console.log("I joined the room. Waiting for instance..");
       } else if (role === "instance") {
         console.log("Instance joined the room. Starting connection process..");
-        let resObj = start(client_io, pc, dataChannel, myRoom, videoRef);
+        let resObj = start(client_io, myRoom, videoRef);
 
         console.log("after start");
         console.log(resObj.peerConnection);
@@ -92,7 +85,7 @@ const negotiate = (client_io, pc, myRoom) => {
     });
 };
 
-const start = (client_io, pc, dataChannel, myRoom, videoRef) => {
+const start = (client_io, myRoom, videoRef) => {
   const useStun = true;
 
   console.log("start");
@@ -104,7 +97,7 @@ const start = (client_io, pc, dataChannel, myRoom, videoRef) => {
     config.iceServers = [{ urls: ["stun:stun.l.google.com:19302"] }];
   }
 
-  pc = new RTCPeerConnection(config);
+  let pc = new RTCPeerConnection(config);
 
   // connect audio / video
   pc.addEventListener("track", function (evt) {
@@ -131,7 +124,7 @@ const start = (client_io, pc, dataChannel, myRoom, videoRef) => {
     }
   });
 
-  dataChannel = pc.createDataChannel("inputchannel");
+  let dataChannel = pc.createDataChannel("inputchannel");
   dataChannel.onerror = (error) => {
     console.log("data channel error:", error);
   };

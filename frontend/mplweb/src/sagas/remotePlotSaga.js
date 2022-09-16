@@ -22,26 +22,15 @@ import {
 
 export function* workerEstablishConnection({ payload }) {
   const {
-    client_io,
-    hostId,
-    pid,
-    peerConnection,
-    dataChannel,
-    videoRef,
     setSocket,
     setPeerConnection,
     setDataChannel,
+    hostId,
+    pid,
+    videoRef,
   } = payload;
   try {
-    const res = yield call(
-      establishSocketConnection,
-      client_io,
-      hostId,
-      pid,
-      peerConnection,
-      dataChannel,
-      videoRef
-    );
+    const res = yield call(establishSocketConnection, hostId, pid, videoRef);
     console.log(res);
     setSocket(res.socket);
     setPeerConnection(res.peerConnection);
