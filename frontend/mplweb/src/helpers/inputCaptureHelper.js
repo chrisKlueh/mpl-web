@@ -1,46 +1,10 @@
-export const captureKeyDown = (event, dataChannel) => {
+export const captureKeyRelated = (event, dataChannel) => {
   if (dataChannel !== null) {
     sendPerDataChannel(trimEvent(event), dataChannel);
   }
 };
 
-export const captureKeyUp = (event, dataChannel) => {
-  if (dataChannel !== null) {
-    sendPerDataChannel(trimEvent(event), dataChannel);
-  }
-};
-
-export const captureMouseDown = (event, dataChannel) => {
-  if (dataChannel !== null) {
-    sendPerDataChannel(trimEvent(normalizeMousePos(event)), dataChannel);
-  }
-};
-
-export const captureMouseUp = (event, dataChannel) => {
-  if (dataChannel !== null) {
-    sendPerDataChannel(trimEvent(normalizeMousePos(event)), dataChannel);
-  }
-};
-
-export const captureMouseMove = (event, dataChannel) => {
-  if (dataChannel !== null) {
-    sendPerDataChannel(trimEvent(normalizeMousePos(event)), dataChannel);
-  }
-};
-
-export const captureMouseWheel = (event, dataChannel) => {
-  if (dataChannel !== null) {
-    sendPerDataChannel(trimEvent(normalizeMousePos(event)), dataChannel);
-  }
-};
-
-export const captureFigureEnter = (event, dataChannel) => {
-  if (dataChannel !== null) {
-    sendPerDataChannel(trimEvent(normalizeMousePos(event)), dataChannel);
-  }
-};
-
-export const captureFigureLeave = (event, dataChannel) => {
+export const captureMouseRelated = (event, dataChannel) => {
   if (dataChannel !== null) {
     sendPerDataChannel(trimEvent(normalizeMousePos(event)), dataChannel);
   }

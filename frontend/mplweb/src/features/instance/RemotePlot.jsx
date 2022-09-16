@@ -11,14 +11,8 @@ import {
 } from "../../slices/remotePlotSlice";
 
 import {
-  captureMouseDown,
-  captureMouseUp,
-  captureKeyDown,
-  captureKeyUp,
-  captureMouseMove,
-  captureMouseWheel,
-  captureFigureEnter,
-  captureFigureLeave,
+  captureKeyRelated,
+  captureMouseRelated,
   handleContextMenu,
 } from "../../helpers/inputCaptureHelper";
 
@@ -74,36 +68,36 @@ const RemotePlot = (props) => {
     };
   }, []);
 
-  const handleMouseDown = (event) => {
-    captureMouseDown(event, dataChannel);
-  };
-
-  const handleMouseUp = (event) => {
-    captureMouseUp(event, dataChannel);
-  };
-
   const handleKeyDown = (event) => {
-    captureKeyDown(event, dataChannel);
+    captureKeyRelated(event, dataChannel);
   };
 
   const handleKeyUp = (event) => {
-    captureKeyUp(event, dataChannel);
+    captureKeyRelated(event, dataChannel);
+  };
+
+  const handleMouseDown = (event) => {
+    captureMouseRelated(event, dataChannel);
+  };
+
+  const handleMouseUp = (event) => {
+    captureMouseRelated(event, dataChannel);
   };
 
   const handleFigureEnter = (event) => {
-    captureFigureEnter(event, dataChannel);
+    captureMouseRelated(event, dataChannel);
   };
 
   const handleFigureLeave = (event) => {
-    captureFigureLeave(event, dataChannel);
+    captureMouseRelated(event, dataChannel);
   };
 
   const handleMouseMove = (event) => {
-    captureMouseMove(event, dataChannel);
+    captureMouseRelated(event, dataChannel);
   };
 
   const handleMouseWheel = (event) => {
-    captureMouseWheel(event, dataChannel);
+    captureMouseRelated(event, dataChannel);
   };
 
   const suppressContextMenu = (event) => {
