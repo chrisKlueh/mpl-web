@@ -177,12 +177,11 @@ class RemotePlotStream(object):
         return self.plotHeight - round(self.heightFactor * clientY)
 
     def checkClientPlotDimensions(self, clientWidth, clientHeight):
-        if clientWidth == self.clientWidth and clientHeight == self.clientHeight:
-            pass
-        else:
+        if not (self.clientWidth == clientWidth):
             self.clientWidth = clientWidth
-            self.clientHeight = clientHeight
             self.widthFactor = self.plotWidth / self.clientWidth
+        if not (self.clientHeight == clientHeight):
+            self.clientHeight = clientHeight
             self.heightFactor = self.plotHeight / self.clientHeight
 
     def onUpdatePlot(self, event):
