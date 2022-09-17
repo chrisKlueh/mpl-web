@@ -6,7 +6,6 @@ import styles from "./InstanceContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import InstanceDescription from "./InstanceDescription";
-import PlotControlBar from "./PlotControlBar";
 import FeedbackDialog from "./FeedbackDialog";
 import RemotePlot from "./RemotePlot";
 
@@ -73,15 +72,12 @@ const InstanceContainer = (props) => {
     <WrapperContainer pageTitle={isLoading ? "Instance" : demo.title}>
       <div className={styles.root}>
         <InstanceDescription isLoading={isLoading} description={demo} />
-        <div className={styles.videoContainer}>
-          <RemotePlot hostId={instance.host} pid={instance.pid} />
-        </div>
-        <PlotControlBar
+        <RemotePlot
+          hostId={instance.host}
+          pid={instance.pid}
           handleTerminate={() => setTerminateDialogOpen(true)}
-          handleSave={handleSave}
           handleComment={() => setFeedbackDialogOpen(true)}
           handleRestart={() => setRestartDialogOpen(true)}
-          disabled={isLoading}
         />
       </div>
       <FeedbackDialog

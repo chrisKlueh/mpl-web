@@ -2,13 +2,3 @@
   display: flex;
   justify-content: space-between;
 }
-
-.videoContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 50%;
-  /* height: 350px; */
-  border: 2px solid whitesmoke;
-  margin: 5px;
-}

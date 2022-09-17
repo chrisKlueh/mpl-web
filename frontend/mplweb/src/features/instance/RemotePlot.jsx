@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import styles from "./RemotePlot.module.css";
 import LoadingFragment from "../general/LoadingFragment";
+import PlotControlBar from "./PlotControlBar";
 
 import {
   establishPeerConnectionRequest,
@@ -91,6 +92,9 @@ const RemotePlot = (props) => {
     pid,
     videoElement,
     isLoading,
+    handleTerminate,
+    handleComment,
+    handleRestart,
   } = props;
 
   const handleConnect = () => {
@@ -135,12 +139,7 @@ const RemotePlot = (props) => {
     captureMouseRelated(event, dataChannel);
   };
 
-  const handleSavePlot = (event) => {
-    console.log(event.key);
-    if (event.key === "s") {
-      requestSnapshot(dataChannel);
-    }
-  };
+  const handleSavePlot = () => requestSnapshot(dataChannel);
 
   const generateEventListeners = (eventList, dataChannel) => {
     eventList.map((item) => {
@@ -166,7 +165,6 @@ const RemotePlot = (props) => {
     });
     videoRef.current.addEventListener("mouseenter", handleFigureEnter);
     videoRef.current.addEventListener("mouseleave", handleFigureLeave);
-    videoRef.current.addEventListener("keydown", handleSavePlot);
     if (DEBUG_MOCK_EVENT) {
       videoRef.current.addEventListener("mousedown", handleToggleMockedEvent);
       videoRef.current.addEventListener("mousedown", handleMockedEvent);
@@ -188,19 +186,28 @@ const RemotePlot = (props) => {
 
   return (
     <Fragment>
-      {isLoading ? (
-        <div className={styles.loadingFragment}>
-          <LoadingFragment message="Establishing connection.." />
-        </div>
-      ) : (
-        <video
-          className={styles.plotVideo}
-          ref={videoRef}
-          autoPlay
-          onMouseEnter={addEventListeners}
-          onMouseLeave={removeEventListeners}
-        />
-      )}
+      <div className={styles.videoContainer}>
+        {isLoading ? (
+          <div className={styles.loadingFragment}>
+            <LoadingFragment message="Establishing connection.." />
+          </div>
+        ) : (
+          <video
+            className={styles.plotVideo}
+            ref={videoRef}
+            autoPlay
+            onMouseEnter={addEventListeners}
+            onMouseLeave={removeEventListeners}
+          />
+        )}
+      </div>
+      <PlotControlBar
+        handleTerminate={handleTerminate}
+        handleSave={handleSavePlot}
+        handleComment={handleComment}
+        handleRestart={handleRestart}
+        disabled={isLoading}
+      />
     </Fragment>
   );
 };
