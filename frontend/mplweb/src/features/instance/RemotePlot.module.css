@@ -8,11 +8,14 @@
   flex-direction: column;
   justify-content: center;
   width: 50%;
-  /* height: 350px; */
-  border: 2px solid whitesmoke;
   margin: 5px;
+}
+
+.plotVideo:hover {
+  border: 2px solid rgb(190, 85, 85);
 }
 
 .plotVideo {
   width: 100%;
+  border: 2px solid whitesmoke;
 }

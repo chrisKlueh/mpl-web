@@ -128,6 +128,7 @@ const RemotePlot = (props) => {
   useEffect(() => {
     if (dataChannel !== null) {
       generateEventListeners(eventListeners, dataChannel);
+      addEventListeners();
     }
   }, [dataChannel]);
 
@@ -171,18 +172,18 @@ const RemotePlot = (props) => {
     }
   };
 
-  const removeEventListeners = () => {
-    eventListeners.map((item) => {
-      videoRef.current.removeEventListener(item.event, item.listener);
-    });
-    if (DEBUG_MOCK_EVENT) {
-      videoRef.current.removeEventListener(
-        "mousedown",
-        handleToggleMockedEvent
-      );
-      videoRef.current.removeEventListener("mousedown", handleMockedEvent);
-    }
-  };
+  // const removeEventListeners = () => {
+  //   eventListeners.map((item) => {
+  //     videoRef.current.removeEventListener(item.event, item.listener);
+  //   });
+  //   if (DEBUG_MOCK_EVENT) {
+  //     videoRef.current.removeEventListener(
+  //       "mousedown",
+  //       handleToggleMockedEvent
+  //     );
+  //     videoRef.current.removeEventListener("mousedown", handleMockedEvent);
+  //   }
+  // };
 
   return (
     <Fragment>
@@ -196,8 +197,8 @@ const RemotePlot = (props) => {
             className={styles.plotVideo}
             ref={videoRef}
             autoPlay
-            onMouseEnter={addEventListeners}
-            onMouseLeave={removeEventListeners}
+            // onMouseEnter={addEventListeners}
+            // onMouseLeave={removeEventListeners}
           />
         )}
       </div>
