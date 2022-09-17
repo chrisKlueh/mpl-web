@@ -16,6 +16,52 @@ import {
 } from "../../helpers/inputCaptureHelper";
 
 const RemotePlot = (props) => {
+  //to send a mocked mousedown event every mocketEventDelay ms
+  //mouse over plot and press middle mouse btn
+  //then leave plot
+  //then mouse over plot again and press left mouse btn
+  const DEBUG_MOCK_EVENT = false;
+  const [allowMockedEvent, setAllowMockedEvent] = useState(false);
+  const [hasMockedEvent, setHasMockedEvent] = useState(false);
+  const mockedEventDelay = 1000;
+  const handleToggleMockedEvent = (event) => {
+    console.log(event.buttons);
+    if (event.buttons === 4) {
+      setAllowMockedEvent(!allowMockedEvent);
+      console.log("toggled mockEvent");
+    }
+  };
+
+  const handleMockedEvent = (event) => {
+    console.log(event.buttons);
+    console.log(hasMockedEvent);
+    console.log(allowMockedEvent);
+    if (!hasMockedEvent && event.buttons === 1 && allowMockedEvent) {
+      setHasMockedEvent(true);
+      console.log("set first mouse down event");
+      console.log(event);
+      console.log("setting timeout");
+      setTimeout(() => {
+        sendMockedEvent(event);
+      }, mockedEventDelay);
+    }
+  };
+
+  const sendMockedEvent = (event) => {
+    console.log(dataChannel);
+    if (dataChannel.readyState !== "closed") {
+      captureMouseRelated(event, dataChannel);
+      console.log("sent mocket event");
+      setTimeout(() => {
+        sendMockedEvent(event);
+      }, mockedEventDelay);
+    } else {
+      console.log("stopped sending mocked events");
+    }
+  };
+
+  ///////////////////////////////////
+
   const [socket, setSocket] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
@@ -112,12 +158,23 @@ const RemotePlot = (props) => {
     });
     videoRef.current.addEventListener("mouseenter", handleFigureEnter);
     videoRef.current.addEventListener("mouseleave", handleFigureLeave);
+    if (DEBUG_MOCK_EVENT) {
+      videoRef.current.addEventListener("mousedown", handleToggleMockedEvent);
+      videoRef.current.addEventListener("mousedown", handleMockedEvent);
+    }
   };
 
   const removeEventListeners = () => {
     eventListeners.map((item) => {
       videoRef.current.removeEventListener(item.event, item.listener);
     });
+    if (DEBUG_MOCK_EVENT) {
+      videoRef.current.removeEventListener(
+        "mousedown",
+        handleToggleMockedEvent
+      );
+      videoRef.current.removeEventListener("mousedown", handleMockedEvent);
+    }
   };
 
   return (
