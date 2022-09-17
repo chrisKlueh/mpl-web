@@ -207,7 +207,7 @@ class RemotePlotStream(object):
         # calls of this eventHandler (caused by savefig)
         self.demo.fig.canvas.mpl_disconnect(self.cid)
         with io.BytesIO() as buff:
-            self.demo.fig.savefig(buff, format="jpeg")
+            self.demo.fig.savefig(buff, format="png")
             buff.seek(0)
             data = buff.getvalue()
         # subscribe to the draw event once again
