@@ -1,4 +1,9 @@
 import { io } from "socket.io-client";
+import { saveAs } from "file-saver";
+
+const saveBlobToFile = (blob) => {
+  saveAs(blob, "snapshot-" + new Date().toLocaleString("en-GB"));
+};
 
 export const establishSocketConnection = (hostId, pid, videoRef) => {
   return new Promise((resolve, reject) => {
@@ -97,6 +102,7 @@ const start = (client_io, myRoom, videoRef) => {
     if (event.data instanceof Blob) {
       const blob = event.data;
       console.log(blob);
+      saveBlobToFile(blob);
       //   renderImg(blob);
     } else {
       let message = JSON.parse(event.data);

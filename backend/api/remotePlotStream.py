@@ -138,7 +138,7 @@ class RemotePlotStream(object):
         print("channel(%s) %s %s" % (channel.label, t, message))
 
     def channel_send(self, channel, message):
-        self.channel_log(channel, ">", message)
+        #self.channel_log(channel, ">", message)
         channel.send(message)
 
     def handleMessage(self, messageObj):
@@ -164,6 +164,8 @@ class RemotePlotStream(object):
         elif messageObj["type"] == MESSAGE_TYPES["FIGURE_LEAVE"]:
             self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
             self.demoFig.canvas.leave_notify_event()
+        elif messageObj["type"] == MESSAGE_TYPES["REQUEST_SNAPSHOT"]:
+            self.onSaveSnapshot()
 
     def calcStep(self, deltaY):
         step = 1
@@ -186,7 +188,7 @@ class RemotePlotStream(object):
             self.heightFactor = self.plotHeight / self.clientHeight
 
     def onUpdatePlot(self, event):
-        print("Plot has updated. Sending new image.\n")
+        print("\nPlot has updated. Sending new image.\n")
         self.demoFig.canvas.mpl_disconnect(self.cid)
         with io.BytesIO() as imgBuff:
             self.demoFig.savefig(imgBuff, format="raw")
@@ -198,6 +200,20 @@ class RemotePlotStream(object):
             self.imageRenderingTrack.add_image(currentFrame)
         # subscribe to the draw event once again
         self.cid = self.demoFig.canvas.mpl_connect('draw_event', self.onUpdatePlot)
+
+    def onSaveSnapshot(self):
+        print("\nPlot snapshot requested. Sending blob.\n")
+        # stop listending to the draw event to prevent infinite 
+        # calls of this eventHandler (caused by savefig)
+        self.demo.fig.canvas.mpl_disconnect(self.cid)
+        with io.BytesIO() as buff:
+            self.demo.fig.savefig(buff, format="jpeg")
+            buff.seek(0)
+            data = buff.getvalue()
+        # subscribe to the draw event once again
+        self.cid = self.demo.fig.canvas.mpl_connect('draw_event', self.onUpdatePlot)
+        #send image via data channel
+        self.channel_send(self.channel, data)
 
 
 def add_args():

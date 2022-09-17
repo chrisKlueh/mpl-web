@@ -11,6 +11,7 @@ MESSAGE_TYPES = {
     "WHEEL": "wheel",
     "FIGURE_ENTER": "mouseenter",
     "FIGURE_LEAVE": "mouseleave",
+    "REQUEST_SNAPSHOT": "request_snapshot",
 }
 
 MPL_MOUSE_BTNS = {

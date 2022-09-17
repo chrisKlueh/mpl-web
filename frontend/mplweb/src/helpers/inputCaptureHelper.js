@@ -108,6 +108,10 @@ const sendPerDataChannel = (evtObject, dataChannel) => {
   dataChannel.send(msg);
 };
 
+export const requestSnapshot = (dataChannel) => {
+  sendPerDataChannel({ type: "request_snapshot" }, dataChannel);
+};
+
 // function closeDC() {
 //   console.log("closing data channel");
 //   dataChannel.close();

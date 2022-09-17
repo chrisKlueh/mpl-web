@@ -13,6 +13,7 @@ import {
   captureKeyRelated,
   captureMouseRelated,
   handleContextMenu,
+  requestSnapshot,
 } from "../../helpers/inputCaptureHelper";
 
 const RemotePlot = (props) => {
@@ -134,6 +135,13 @@ const RemotePlot = (props) => {
     captureMouseRelated(event, dataChannel);
   };
 
+  const handleSavePlot = (event) => {
+    console.log(event.key);
+    if (event.key === "s") {
+      requestSnapshot(dataChannel);
+    }
+  };
+
   const generateEventListeners = (eventList, dataChannel) => {
     eventList.map((item) => {
       switch (item.handlerBase) {
@@ -158,6 +166,7 @@ const RemotePlot = (props) => {
     });
     videoRef.current.addEventListener("mouseenter", handleFigureEnter);
     videoRef.current.addEventListener("mouseleave", handleFigureLeave);
+    videoRef.current.addEventListener("keydown", handleSavePlot);
     if (DEBUG_MOCK_EVENT) {
       videoRef.current.addEventListener("mousedown", handleToggleMockedEvent);
       videoRef.current.addEventListener("mousedown", handleMockedEvent);
