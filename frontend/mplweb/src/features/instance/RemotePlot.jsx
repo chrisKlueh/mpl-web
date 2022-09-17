@@ -5,7 +5,7 @@ import styles from "./RemotePlot.module.css";
 import LoadingFragment from "../general/LoadingFragment";
 
 import {
-  establishSocketConnectionRequest,
+  establishPeerConnectionRequest,
   stopPeerConnectionRequest,
 } from "../../slices/remotePlotSlice";
 
@@ -38,7 +38,7 @@ const RemotePlot = (props) => {
   const peerConnectionMonitor = useStateMonitor(peerConnection);
 
   const {
-    establishSocketConnectionRequest,
+    establishPeerConnectionRequest,
     stopPeerConnectionRequest,
     hostId,
     pid,
@@ -47,7 +47,7 @@ const RemotePlot = (props) => {
   } = props;
 
   const handleConnect = () => {
-    establishSocketConnectionRequest({
+    establishPeerConnectionRequest({
       setSocket: setSocket,
       setPeerConnection: setPeerConnection,
       setDataChannel: setDataChannel,
@@ -141,14 +141,14 @@ const RemotePlot = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.remotePlot.isEstablishingSocketConnection,
+    isLoading: state.remotePlot.isEstablishingPeerConnection,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    establishSocketConnectionRequest: (payload) =>
-      dispatch(establishSocketConnectionRequest(payload)),
+    establishPeerConnectionRequest: (payload) =>
+      dispatch(establishPeerConnectionRequest(payload)),
     stopPeerConnectionRequest: (payload) =>
       dispatch(stopPeerConnectionRequest(payload)),
   };

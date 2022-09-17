@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  isEstablishingSocketConnection: false,
-  isStartingWebRtc: false,
-  isNegotiatingWebRtc: false,
+  isEstablishingPeerConnection: false,
   isStoppingPeerConnection: false,
 };
 
@@ -10,32 +8,14 @@ export const remotePlotSlice = createSlice({
   name: "remotePlot",
   initialState,
   reducers: {
-    establishSocketConnectionRequest: (state, action) => {
-      state.isEstablishingSocketConnection = true;
+    establishPeerConnectionRequest: (state, action) => {
+      state.isEstablishingPeerConnection = true;
     },
-    establishSocketConnectionSuccess: (state, action) => {
-      state.isEstablishingSocketConnection = false;
+    establishPeerConnectionSuccess: (state, action) => {
+      state.isEstablishingPeerConnection = false;
     },
-    establishSocketConnectionError: (state, action) => {
-      state.isEstablishingSocketConnection = false;
-    },
-    startWebRtcRequest: (state, action) => {
-      state.isStartingWebRtc = true;
-    },
-    startWebRtcSuccess: (state, action) => {
-      state.isStartingWebRtc = false;
-    },
-    startWebRtcError: (state, action) => {
-      state.isStartingWebRtc = false;
-    },
-    negotiateWebRtcRequest: (state, action) => {
-      state.isNegotiatingWebRtc = true;
-    },
-    negotiateWebRtcSuccess: (state, action) => {
-      state.isNegotiatingWebRtc = false;
-    },
-    negotiateWebRtcError: (state, action) => {
-      state.isNegotiatingWebRtc = false;
+    establishPeerConnectionError: (state, action) => {
+      state.isEstablishingPeerConnection = false;
     },
     stopPeerConnectionRequest: (state, action) => {
       state.isStoppingPeerConnection = true;
@@ -49,15 +29,9 @@ export const remotePlotSlice = createSlice({
   },
 });
 export const {
-  establishSocketConnectionRequest,
-  establishSocketConnectionSuccess,
-  establishSocketConnectionError,
-  startWebRtcRequest,
-  startWebRtcSuccess,
-  startWebRtcError,
-  negotiateWebRtcRequest,
-  negotiateWebRtcSuccess,
-  negotiateWebRtcError,
+  establishPeerConnectionRequest,
+  establishPeerConnectionSuccess,
+  establishPeerConnectionError,
   stopPeerConnectionRequest,
   stopPeerConnectionSuccess,
   stopPeerConnectionError,
