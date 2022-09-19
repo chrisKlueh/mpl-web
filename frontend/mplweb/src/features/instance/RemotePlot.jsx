@@ -89,7 +89,6 @@ const RemotePlot = (props) => {
     stopPeerConnectionRequest,
     hostId,
     pid,
-    videoElement,
     isLoading,
     handleTerminate,
     handleComment,
@@ -111,9 +110,9 @@ const RemotePlot = (props) => {
   };
 
   useEffect(() => {
-    console.log(videoElement);
     //equals componentDidMount
     handleConnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -121,6 +120,7 @@ const RemotePlot = (props) => {
     return () => {
       handleDisconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -128,6 +128,7 @@ const RemotePlot = (props) => {
       setEventListeners(generateEventListeners(eventListeners, dataChannel));
       addEventListeners();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataChannel]);
 
   const handleFigureEnter = (event) => {
@@ -172,19 +173,6 @@ const RemotePlot = (props) => {
     }
   };
 
-  // const removeEventListeners = () => {
-  //   eventListeners.map((item) => {
-  //     videoRef.current.removeEventListener(item.event, item.listener);
-  //   });
-  //   if (DEBUG_MOCK_EVENT) {
-  //     videoRef.current.removeEventListener(
-  //       "mousedown",
-  //       handleToggleMockedEvent
-  //     );
-  //     videoRef.current.removeEventListener("mousedown", handleMockedEvent);
-  //   }
-  // };
-
   return (
     <Fragment>
       <div className={styles.videoContainer}>
@@ -193,13 +181,7 @@ const RemotePlot = (props) => {
             <LoadingFragment message="Establishing connection.." />
           </div>
         ) : (
-          <video
-            className={styles.plotVideo}
-            ref={videoRef}
-            autoPlay
-            // onMouseEnter={addEventListeners}
-            // onMouseLeave={removeEventListeners}
-          />
+          <video className={styles.plotVideo} ref={videoRef} autoPlay />
         )}
       </div>
       <PlotControlBar
