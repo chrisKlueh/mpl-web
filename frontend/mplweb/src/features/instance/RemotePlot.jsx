@@ -127,7 +127,7 @@ const RemotePlot = (props) => {
 
   useEffect(() => {
     if (dataChannel !== null) {
-      generateEventListeners(eventListeners, dataChannel);
+      setEventListeners(generateEventListeners(eventListeners, dataChannel));
       addEventListeners();
     }
   }, [dataChannel]);
@@ -157,13 +157,15 @@ const RemotePlot = (props) => {
         default:
           break;
       }
+      return eventList;
     });
   };
 
   const addEventListeners = () => {
-    eventListeners.map((item) => {
-      videoRef.current.addEventListener(item.event, item.listener);
-    });
+    eventListeners.map((item) =>
+      videoRef.current.addEventListener(item.event, item.listener)
+    );
+
     videoRef.current.addEventListener("mouseenter", handleFigureEnter);
     videoRef.current.addEventListener("mouseleave", handleFigureLeave);
     if (DEBUG_MOCK_EVENT) {
