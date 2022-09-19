@@ -31,7 +31,7 @@ const InstanceDetailSkeleton = (props) => {
           className={styles.areaSkeleton}
           animation="wave"
           variant="rectangular"
-          height={200}
+          height={250}
         />
       </div>
     </div>
