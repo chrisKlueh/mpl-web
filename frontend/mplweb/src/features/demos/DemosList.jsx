@@ -75,11 +75,7 @@ const DemosList = (props) => {
       return listItemArray.map((listItem) => {
         return (
           <Fragment key={listItem.id}>
-            <ListItem
-              button
-              className={styles.listItem}
-              onClick={() => handleSpawnInstance(listItem.id)}
-            >
+            <ListItem button onClick={() => handleSpawnInstance(listItem.id)}>
               <ListItemAvatar>
                 <Avatar>
                   <Monitor />
