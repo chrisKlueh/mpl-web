@@ -64,7 +64,6 @@ const RemotePlot = (props) => {
 
   ///////////////////////////////////
 
-  const [socket, setSocket] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
   const [eventListeners, setEventListeners] = useState([
@@ -99,7 +98,6 @@ const RemotePlot = (props) => {
 
   const handleConnect = () => {
     establishPeerConnectionRequest({
-      setSocket: setSocket,
       setPeerConnection: setPeerConnection,
       setDataChannel: setDataChannel,
       hostId: hostId,

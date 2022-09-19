@@ -13,18 +13,9 @@ import {
 } from "../helpers/webRtcHelper";
 
 export function* workerEstablishPeerConnection({ payload }) {
-  const {
-    setSocket,
-    setPeerConnection,
-    setDataChannel,
-    hostId,
-    pid,
-    videoRef,
-  } = payload;
+  const { setPeerConnection, setDataChannel, hostId, pid, videoRef } = payload;
   try {
     const res = yield call(establishSocketConnection, hostId, pid, videoRef);
-    console.log(res);
-    setSocket(res.socket);
     setPeerConnection(res.peerConnection);
     setDataChannel(res.dataChannel);
     yield put(establishPeerConnectionSuccess());
