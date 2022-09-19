@@ -57,7 +57,6 @@ const FeedbackList = (props) => {
           <Fragment key={listItem.id}>
             <ListItem
               button
-              className={styles.listItem}
               onClick={() =>
                 updateSelectedAndOpenDialog(listItem, "FEEDBACK_DETAILS")
               }
