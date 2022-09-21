@@ -21,3 +21,10 @@
   /* height: calc(100vh - 382px); */
   justify-content: space-between;
 }
+
+@media screen and (max-width: 1081px) {
+  .paper {
+    width: 100%;
+    margin: auto auto;
+  }
+}
