@@ -95,6 +95,7 @@ const RemotePlot = (props) => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDebugMenuOpen]);
 
   const setMockedEventLoop = (event) => {
