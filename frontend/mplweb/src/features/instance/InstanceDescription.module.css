@@ -5,6 +5,7 @@
   margin: 5px;
   padding: 10px;
   flex-grow: 1;
+  min-height: 50vh;
 }
 
 .shortDesc {

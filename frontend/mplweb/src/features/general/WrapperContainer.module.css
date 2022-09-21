@@ -6,8 +6,8 @@
 
 .paper {
   width: 75%;
-  /* min-height: calc(100vh - 300px); */
-  margin: 48px auto;
+  margin-inline: auto;
+  margin-block: 5%;
   padding-top: 5px;
 }
 
