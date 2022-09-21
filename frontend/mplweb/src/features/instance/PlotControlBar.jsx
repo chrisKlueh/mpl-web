@@ -30,6 +30,7 @@ const PlotControlBar = (props) => {
             color="primary"
             aria-label="add"
             onClick={handleTerminate}
+            disabled={disabled}
             className={styles.fab}
           >
             <PowerSettingsNew />
