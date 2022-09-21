@@ -1,0 +1,8 @@
+.enableEventContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.switchContainer {
+  margin: auto 0px;
+}

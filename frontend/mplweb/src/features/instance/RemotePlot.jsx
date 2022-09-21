@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import styles from "./RemotePlot.module.css";
 import LoadingFragment from "../general/LoadingFragment";
 import PlotControlBar from "./PlotControlBar";
+import DebugMenu from "./DebugMenu";
 
 import {
   establishPeerConnectionRequest,
@@ -63,7 +64,9 @@ const RemotePlot = (props) => {
   };
 
   ///////////////////////////////////
-
+  const [isDebugMenuOpen, setDebugMenuOpen] = useState(false);
+  const [isAutoEventEnabled, setAutoEventEnabled] = useState(false);
+  const [autoEventInterval, setAutoEventInterval] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
   const [eventListeners, setEventListeners] = useState([
@@ -93,6 +96,7 @@ const RemotePlot = (props) => {
     handleTerminate,
     handleComment,
     handleRestart,
+    isAdmin,
   } = props;
 
   const handleConnect = () => {
@@ -173,6 +177,8 @@ const RemotePlot = (props) => {
     }
   };
 
+  console.log(isAutoEventEnabled);
+  console.log(autoEventInterval);
   return (
     <Fragment>
       <div className={styles.videoContainer}>
@@ -189,7 +195,16 @@ const RemotePlot = (props) => {
         handleSave={handleSavePlot}
         handleComment={handleComment}
         handleRestart={handleRestart}
+        handleOpenDebugMenu={() => setDebugMenuOpen(true)}
         disabled={isLoading}
+        isAdmin={isAdmin}
+      />
+      <DebugMenu
+        open={isDebugMenuOpen}
+        handleClose={() => setDebugMenuOpen(false)}
+        handleEnableAutomatedEvent={setAutoEventEnabled}
+        handleSetInterval={setAutoEventInterval}
+        isAutomatedEventEnabled={!isAutoEventEnabled}
       />
     </Fragment>
   );
@@ -198,6 +213,7 @@ const RemotePlot = (props) => {
 const mapStateToProps = (state) => {
   return {
     isLoading: state.remotePlot.isEstablishingPeerConnection,
+    isAdmin: state.login.isAdmin,
   };
 };
 

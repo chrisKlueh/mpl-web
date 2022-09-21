@@ -5,6 +5,7 @@ import {
   RestartAlt,
   SaveAs,
   Feedback,
+  SmartToy,
 } from "@mui/icons-material";
 
 import styles from "./PlotControlBar.module.css";
@@ -16,6 +17,8 @@ const PlotControlBar = (props) => {
     handleSave,
     handleComment,
     handleRestart,
+    handleOpenDebugMenu,
+    isAdmin,
   } = props;
 
   return (
@@ -75,6 +78,22 @@ const PlotControlBar = (props) => {
           </Fab>
         </span>
       </Tooltip>
+      {isAdmin && (
+        <Tooltip title="Send Automated Event">
+          <span>
+            <Fab
+              size="medium"
+              color="primary"
+              aria-label="add"
+              onClick={handleOpenDebugMenu}
+              disabled={disabled}
+              className={styles.fab}
+            >
+              <SmartToy />
+            </Fab>
+          </span>
+        </Tooltip>
+      )}
     </div>
   );
 };
