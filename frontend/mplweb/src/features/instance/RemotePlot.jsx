@@ -19,54 +19,10 @@ import {
 } from "../../helpers/inputCaptureHelper";
 
 const RemotePlot = (props) => {
-  //to send a mocked mousedown event every mocketEventDelay ms
-  //mouse over plot and press middle mouse btn
-  //then leave plot
-  //then mouse over plot again and press left mouse btn
-  const DEBUG_MOCK_EVENT = false;
-  const [allowMockedEvent, setAllowMockedEvent] = useState(false);
-  const [hasMockedEvent, setHasMockedEvent] = useState(false);
-  const mockedEventDelay = 1000;
-  const handleToggleMockedEvent = (event) => {
-    console.log(event.buttons);
-    if (event.buttons === 4) {
-      setAllowMockedEvent(!allowMockedEvent);
-      console.log("toggled mockEvent");
-    }
-  };
-
-  const handleMockedEvent = (event) => {
-    console.log(event.buttons);
-    console.log(hasMockedEvent);
-    console.log(allowMockedEvent);
-    if (!hasMockedEvent && event.buttons === 1 && allowMockedEvent) {
-      setHasMockedEvent(true);
-      console.log("set first mouse down event");
-      console.log(event);
-      console.log("setting timeout");
-      setTimeout(() => {
-        sendMockedEvent(event);
-      }, mockedEventDelay);
-    }
-  };
-
-  const sendMockedEvent = (event) => {
-    console.log(dataChannel);
-    if (dataChannel.readyState !== "closed") {
-      captureMouseRelated(event, dataChannel);
-      console.log("sent mocket event");
-      setTimeout(() => {
-        sendMockedEvent(event);
-      }, mockedEventDelay);
-    } else {
-      console.log("stopped sending mocked events");
-    }
-  };
-
-  ///////////////////////////////////
   const [isDebugMenuOpen, setDebugMenuOpen] = useState(false);
   const [isAutoEventEnabled, setAutoEventEnabled] = useState(false);
-  const [autoEventInterval, setAutoEventInterval] = useState(null);
+  const [autoEventInterval, setAutoEventInterval] = useState(1);
+  const [autoEventTimeout, setAutoEventTimeout] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
   const [eventListeners, setEventListeners] = useState([
@@ -99,20 +55,6 @@ const RemotePlot = (props) => {
     isAdmin,
   } = props;
 
-  const handleConnect = () => {
-    establishPeerConnectionRequest({
-      setPeerConnection: setPeerConnection,
-      setDataChannel: setDataChannel,
-      hostId: hostId,
-      pid: pid,
-      videoRef: videoRef,
-    });
-  };
-
-  const handleDisconnect = () => {
-    stopPeerConnectionRequest({ peerConnection: peerConnectionMonitor() });
-  };
-
   useEffect(() => {
     //equals componentDidMount
     handleConnect();
@@ -134,6 +76,67 @@ const RemotePlot = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataChannel]);
+
+  useEffect(() => {
+    if (!isDebugMenuOpen) {
+      if (isAutoEventEnabled) {
+        if (autoEventTimeout === null) {
+          videoRef.current.addEventListener(
+            "mousedown",
+            handleAutoSendMocketEvent,
+            {
+              once: true,
+            }
+          );
+        } else {
+          console.log(
+            "Sending multiple automated events simultaneously not allowed."
+          );
+        }
+      }
+    }
+  }, [isDebugMenuOpen]);
+
+  const setMockedEventLoop = (event) => {
+    setAutoEventTimeout(
+      setTimeout(() => {
+        captureMouseRelated(event, dataChannel);
+        setMockedEventLoop(event);
+      }, autoEventInterval * 1000)
+    );
+  };
+
+  const handleAutoSendMocketEvent = (event) => {
+    if (event.buttons === 1 && isAutoEventEnabled) {
+      console.log(
+        "Sending mocked event every " + autoEventInterval + " seconds."
+      );
+      setMockedEventLoop(event);
+    } else {
+      console.log("Automated sending of mocked events not allowed.");
+    }
+  };
+
+  const handleClearMockedEvent = () => {
+    console.log("Clearing mocked event timeout.");
+    clearTimeout(autoEventTimeout);
+    setAutoEventTimeout(null);
+  };
+
+  const handleConnect = () => {
+    establishPeerConnectionRequest({
+      setPeerConnection: setPeerConnection,
+      setDataChannel: setDataChannel,
+      hostId: hostId,
+      pid: pid,
+      videoRef: videoRef,
+    });
+  };
+
+  const handleDisconnect = () => {
+    handleClearMockedEvent();
+    stopPeerConnectionRequest({ peerConnection: peerConnectionMonitor() });
+  };
 
   const handleFigureEnter = (event) => {
     captureMouseRelated(event, dataChannel);
@@ -171,14 +174,8 @@ const RemotePlot = (props) => {
 
     videoRef.current.addEventListener("mouseenter", handleFigureEnter);
     videoRef.current.addEventListener("mouseleave", handleFigureLeave);
-    if (DEBUG_MOCK_EVENT) {
-      videoRef.current.addEventListener("mousedown", handleToggleMockedEvent);
-      videoRef.current.addEventListener("mousedown", handleMockedEvent);
-    }
   };
 
-  console.log(isAutoEventEnabled);
-  console.log(autoEventInterval);
   return (
     <Fragment>
       <div className={styles.videoContainer}>
@@ -203,8 +200,10 @@ const RemotePlot = (props) => {
         open={isDebugMenuOpen}
         handleClose={() => setDebugMenuOpen(false)}
         handleEnableAutomatedEvent={setAutoEventEnabled}
+        interval={autoEventInterval}
         handleSetInterval={setAutoEventInterval}
-        isAutomatedEventEnabled={!isAutoEventEnabled}
+        handleClearAutomatedEvent={handleClearMockedEvent}
+        isAutomatedEventEnabled={isAutoEventEnabled}
       />
     </Fragment>
   );

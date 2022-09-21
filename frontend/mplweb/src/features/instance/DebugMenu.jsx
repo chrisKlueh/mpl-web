@@ -17,9 +17,18 @@ const DebugMenu = (props) => {
     open,
     handleClose,
     handleEnableAutomatedEvent,
+    interval,
     handleSetInterval,
     isAutomatedEventEnabled,
+    handleClearAutomatedEvent,
   } = props;
+
+  const handleSwitchChange = (event) => {
+    if (!event.target.checked) {
+      handleClearAutomatedEvent();
+    }
+    handleEnableAutomatedEvent(event.target.checked);
+  };
 
   return (
     <Dialog
@@ -38,9 +47,8 @@ const DebugMenu = (props) => {
               <FormControlLabel
                 control={
                   <Switch
-                    onChange={(event) =>
-                      handleEnableAutomatedEvent(event.target.checked)
-                    }
+                    checked={isAutomatedEventEnabled}
+                    onChange={handleSwitchChange}
                   />
                 }
                 label="Enable Automated Event"
@@ -51,11 +59,18 @@ const DebugMenu = (props) => {
               id="interval"
               label="Interval"
               type="number"
-              disabled={isAutomatedEventEnabled}
+              disabled={!isAutomatedEventEnabled}
               InputProps={{
-                inputProps: { min: "0.5", max: "60.0", step: "0.5" },
+                inputProps: {
+                  min: "0.5",
+                  max: "60.0",
+                  step: "0.5",
+                  value: interval,
+                },
               }}
-              onChange={(event) => handleSetInterval(event.target.value)}
+              onChange={(event) =>
+                handleSetInterval(parseFloat(event.target.value))
+              }
             />
           </div>
         </DialogContentText>
