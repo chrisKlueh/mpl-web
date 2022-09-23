@@ -1,14 +1,13 @@
-
-version: '3'
+version: "3"
 
 services:
   backend:
     build:
       context: ./backend
       args:
-        DJANGO_ALLOWED_HOSTS: *
-        DJANGO_SECRET_KEY: *
-        DJANGO_CORS_ORIGIN_WHITELIST: *
+        DJANGO_ALLOWED_HOSTS: 127.0.0.1, api
+        DJANGO_SECRET_KEY: "supersecretkeyjustfortesting"
+        DJANGO_CORS_ORIGIN_WHITELIST: 127.0.0.1
     command: gunicorn mplweb.wsgi --bind 0.0.0.0:8000
     ports:
       - "8000:8000"
@@ -16,7 +15,7 @@ services:
     build:
       context: ./frontend
       args:
-        API_URL: *
+        API_URL: 192.168.2.116:8000
     volumes:
       - build_folder:/frontend/build
   nginx:
