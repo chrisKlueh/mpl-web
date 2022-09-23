@@ -58,8 +58,8 @@ MIDDLEWARE = [
 ]
 
 #added from tutorial https://blog.logrocket.com/using-react-django-create-app-tutorial/#migrating-django-models-database, disable later
-CORS_ORIGIN_ALLOW_ALL = True
-#CORS_ORIGIN_WHITELIST = os.environ.get('DJANGO_CORS_ORIGIN_WHITELIST').split(' ')
+#CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = os.environ.get('DJANGO_CORS_ORIGIN_WHITELIST').split(' ')
 
 ROOT_URLCONF = 'mplweb.urls'
 
