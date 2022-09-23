@@ -20,9 +20,9 @@ services:
       - build_folder:/frontend/build
   nginx:
     image: nginx:latest
-    command: sudo chown -R nginx:nginx *
-    command: sudo chmod 755 /var/www/frontend
-    command: sudo chmod 644 /var/www/frontend/*
+    command: chown -R nginx:nginx *
+    command: chmod 755 /var/www/frontend
+    command: chmod 644 /var/www/frontend/*
     ports:
       - 80:8080
     volumes:
