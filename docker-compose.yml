@@ -22,8 +22,8 @@ services:
     image: nginx:latest
     command: chown -R nginx:nginx *
     command: chmod 755 /var/www/frontend
-    command: pwd
-    command: cd /var/www/frontend
+    # command: pwd
+    # command: cd /var/www/frontend
     command: chmod 644 *
     ports:
       - 80:8080
