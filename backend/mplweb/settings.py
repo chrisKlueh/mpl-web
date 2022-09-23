@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,13 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ve%+@npba-l+p+&hzlm*5&)+$&s&ni&kppth5zi1)3(7rr2fy('
+#SECRET_KEY = 'django-insecure-ve%+@npba-l+p+&hzlm*5&)+$&s&ni&kppth5zi1)3(7rr2fy('
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['192.168.2.118']
-
+#ALLOWED_HOSTS = ['192.168.2.118']
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
 
 # Application definition
 
@@ -55,7 +58,8 @@ MIDDLEWARE = [
 ]
 
 #added from tutorial https://blog.logrocket.com/using-react-django-create-app-tutorial/#migrating-django-models-database, disable later
-CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = os.environ.get('CORS_ORIGIN_WHITELIST').split(' ')
 
 ROOT_URLCONF = 'mplweb.urls'
 
