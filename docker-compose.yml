@@ -28,10 +28,5 @@ services:
     depends_on:
       - backend
       - frontend
-    # command: chown -R nginx:nginx *
-    # command: chmod 755 /var/www/frontend
-    # command: pwd
-    # command: cd /var/www/frontend
-    # command: chmod 644 *
 volumes:
   build_folder:

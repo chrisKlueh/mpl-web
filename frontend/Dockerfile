@@ -4,10 +4,4 @@ WORKDIR /frontend
 COPY . /frontend
 ARG API_URL
 ENV REACT_APP_HOST_IP_ADDRESS $API_URL
-#RUN npm
 RUN npm build
-# RUN chown -R nginx:nginx *
-# RUN chmod 755 /frontend
-# RUN chmod 644 *
-#RUN yarn
-#RUN yarn build
