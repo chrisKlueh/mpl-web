@@ -13,6 +13,7 @@ import os
 import ssl
 import io
 import socketio
+import time
 
 from importlib import import_module
 from aiortc import RTCPeerConnection, RTCSessionDescription
@@ -136,7 +137,7 @@ class RemotePlotStream(object):
         jsonAnswer = json.dumps({"sdp": self.pc.localDescription.sdp, "type": self.pc.localDescription.type})
         self.sio.emit("send_answer", {"room": self.sig_room, "data": jsonAnswer})
         print("\n\nSLEEPY TIME")
-        await asyncio.sleep(20.0)
+        time.sleep(20)
         print("\n\nDONE SLEEPING")
 
     def channel_log(self, channel, t, message):
