@@ -56,7 +56,8 @@ class RemotePlotStream(object):
             @self.sio.event
             def sdp_offer(data):
                 answer = loop.run_until_complete(self.offer(data))
-                loop.run_until_complete(asyncio.sleep(10.0))
+                #loop.run_until_complete(asyncio.sleep(10.0))
+                loop.run_forever()
                 # self.sio.emit("send_answer", {"room": self.sig_room, "data": answer})
                 
         
