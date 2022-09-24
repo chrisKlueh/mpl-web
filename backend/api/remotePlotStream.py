@@ -135,6 +135,9 @@ class RemotePlotStream(object):
         
         jsonAnswer = json.dumps({"sdp": self.pc.localDescription.sdp, "type": self.pc.localDescription.type})
         self.sio.emit("send_answer", {"room": self.sig_room, "data": jsonAnswer})
+        print("\n\nSLEEPY TIME")
+        await asyncio.sleep(20.0)
+        print("\n\nDONE SLEEPING")
 
     def channel_log(self, channel, t, message):
         print("channel(%s) %s %s" % (channel.label, t, message))
