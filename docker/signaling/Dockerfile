@@ -4,6 +4,7 @@ FROM python:3
 
 WORKDIR /app/signaling
 COPY ./signaling/requirements.txt ./
+COPY ./signaling/signaling_server.py ./
 
 RUN pip install --upgrade pip
 RUN pip install -r ./requirements.txt
