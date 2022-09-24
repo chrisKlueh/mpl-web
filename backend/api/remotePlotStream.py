@@ -57,7 +57,7 @@ class RemotePlotStream(object):
             def sdp_offer(data):
                 answer = loop.run_until_complete(self.offer(data))
                 loop.run_until_complete(asyncio.sleep(10.0))
-                self.sio.emit("send_answer", {"room": self.sig_room, "data": answer})
+                # self.sio.emit("send_answer", {"room": self.sig_room, "data": answer})
                 
         
         except socketio.exceptions.ConnectionError as error:
@@ -132,7 +132,8 @@ class RemotePlotStream(object):
         answer = await pc.createAnswer()
         await pc.setLocalDescription(answer)
         
-        return json.dumps({"sdp": pc.localDescription.sdp, "type": pc.localDescription.type})
+        jsonAnswer = json.dumps({"sdp": pc.localDescription.sdp, "type": pc.localDescription.type})
+        self.sio.emit("send_answer", {"room": self.sig_room, "data": jsonAnswer})
 
     def channel_log(self, channel, t, message):
         print("channel(%s) %s %s" % (channel.label, t, message))
