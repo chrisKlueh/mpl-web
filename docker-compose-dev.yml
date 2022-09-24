@@ -1,6 +1,11 @@
 version: '2'
 
 services:
+    signaling: 
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./docker/signaling/Dockerfile
     nginx: 
         restart: unless-stopped
         build:
