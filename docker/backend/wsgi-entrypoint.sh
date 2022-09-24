@@ -13,7 +13,7 @@ done
 
 ./manage.py collectstatic --noinput
 
-gunicorn mplweb.wsgi --bind 0.0.0.0:8000 --workers 4 --threads 4
+gunicorn mplweb.wsgi --bind 192.168.2.116:8000 --workers 4 --threads 4
 
 #####################################################################################
 # Options to DEBUG Django server
