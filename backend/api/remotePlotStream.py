@@ -55,10 +55,9 @@ class RemotePlotStream(object):
 
             @self.sio.event
             def sdp_offer(data):
-                answer = loop.run_until_complete(self.offer(data))
-                #loop.run_until_complete(asyncio.sleep(10.0))
-                loop.run_forever()
+                answer = asyncio.new_event_loop().run_until_complete(self.offer(data))
                 # self.sio.emit("send_answer", {"room": self.sig_room, "data": answer})
+                #loop.run_forever()
                 
         
         except socketio.exceptions.ConnectionError as error:
