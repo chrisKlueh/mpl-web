@@ -30,13 +30,12 @@ use("Agg")
 
 class RemotePlotStream(object):
     def __init__(self, demo, sig_host, sig_port, instance_host_id) -> None:
-        self.loop = asyncio.get_event_loop()
         self.establishSocketConnection(sig_host, sig_port, instance_host_id)
         self.pcs = set()
         self.initDemo(demo)
             
     def establishSocketConnection(self, sig_host, sig_port, instance_host_id):
-        # loop = asyncio.get_event_loop()
+        loop = asyncio.get_event_loop()
         self.sio = socketio.Client()
         self.sig_room = "instance_" + str(instance_host_id) + "-" + str(os.getpid())
         sigaling_server_url = "http://" + sig_host + ":" + sig_port
@@ -56,9 +55,9 @@ class RemotePlotStream(object):
 
             @self.sio.event
             def sdp_offer(data):
-                answer = self.loop.run_until_complete(self.offer(data))
+                answer = loop.run_until_complete(self.offer(data))
                 self.sio.emit("send_answer", {"room": self.sig_room, "data": answer})
-                self.loop.run_forever()
+                loop.run_forever()
         
         except socketio.exceptions.ConnectionError as error:
             print(error)

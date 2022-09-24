@@ -1,6 +1,6 @@
 # docker/backend/Dockerfile
 
-FROM python:3
+FROM python:3.8.10
 
 WORKDIR /app
 ADD ./backend/requirements.txt /app/backend/
