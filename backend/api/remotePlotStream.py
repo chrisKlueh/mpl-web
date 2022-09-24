@@ -36,6 +36,7 @@ class RemotePlotStream(object):
             
     def establishSocketConnection(self, sig_host, sig_port, instance_host_id):
         loop = asyncio.get_event_loop()
+        loop.run_forever()
         self.sio = socketio.Client()
         self.sig_room = "instance_" + str(instance_host_id) + "-" + str(os.getpid())
         sigaling_server_url = "http://" + sig_host + ":" + sig_port
