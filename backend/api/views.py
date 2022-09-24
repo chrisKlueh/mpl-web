@@ -132,7 +132,7 @@ class FeedbackList(APIView):
 
 class InstanceList(APIView):
     def spawnInstance(self, demoId):
-        sigHost = "localhost"
+        sigHost = "192.168.2.116"
         sigPort = 8080
         hostId = 2
         demoFile = Demo.objects.get(pk=demoId).file
