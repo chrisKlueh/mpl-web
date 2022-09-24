@@ -30,13 +30,13 @@ use("Agg")
 
 class RemotePlotStream(object):
     def __init__(self, demo, sig_host, sig_port, instance_host_id) -> None:
-        self.establishSocketConnection(sig_host, sig_port, instance_host_id)
+        self.pc = RTCPeerConnection()
         self.pcs = set()
+        self.establishSocketConnection(sig_host, sig_port, instance_host_id)
         self.initDemo(demo)
             
     def establishSocketConnection(self, sig_host, sig_port, instance_host_id):
         loop = asyncio.get_event_loop()
-        loop.run_forever()
         self.sio = socketio.Client()
         self.sig_room = "instance_" + str(instance_host_id) + "-" + str(os.getpid())
         sigaling_server_url = "http://" + sig_host + ":" + sig_port
@@ -56,6 +56,35 @@ class RemotePlotStream(object):
 
             @self.sio.event
             def sdp_offer(data):
+                @self.pc.on("datachannel")
+                def on_datachannel(channel):
+                    self.channel = channel
+                    self.channel_log(channel, "-", "created by remote party")
+
+                    @channel.on("message")
+                    def on_message(message):
+                        if isinstance(message, str):
+                            messageObj = json.loads(message)
+                            self.handleMessage(messageObj)
+
+                    @channel.on("close")
+                    def on_close():
+                        print("data channel was closed")
+
+                @self.pc.on("connectionstatechange")
+                async def on_connectionstatechange():
+                    print("Connection state is %s" % self.pc.connectionState)
+                    if self.pc.connectionState == "failed":
+                        await self.pc.close()
+                        self.pcs.discard(self.pc)
+                    elif self.pc.connectionState == "closed":
+                        os._exit(0)
+                    elif self.pc.connectionState == "connected":
+                        #leave room
+                        self.sio.emit("leave_room", {"room": self.sig_room})
+                        #start video stream by adding the first frame to its queue
+                        self.onUpdatePlot(None)
+                        self.sio.disconnect()
                 answer = loop.run_until_complete(self.offer(data))
                 self.sio.emit("send_answer", {"room": self.sig_room, "data": answer})
                 loop.run_forever()
@@ -85,54 +114,26 @@ class RemotePlotStream(object):
 
     async def offer(self, message):
         offer = RTCSessionDescription(sdp=message["data"]["sdp"], type=message["data"]["type"])
-        pc = RTCPeerConnection()
-        self.pcs.add(pc)
+        self.pc = RTCPeerConnection()
+        self.pcs.add(self.pc)
 
-        @pc.on("datachannel")
-        def on_datachannel(channel):
-            self.channel = channel
-            self.channel_log(channel, "-", "created by remote party")
-
-            @channel.on("message")
-            def on_message(message):
-                if isinstance(message, str):
-                    messageObj = json.loads(message)
-                    self.handleMessage(messageObj)
-
-            @channel.on("close")
-            def on_close():
-                print("data channel was closed")
-
-        @pc.on("connectionstatechange")
-        async def on_connectionstatechange():
-            print("Connection state is %s" % pc.connectionState)
-            if pc.connectionState == "failed":
-                await pc.close()
-                self.pcs.discard(pc)
-            elif pc.connectionState == "closed":
-                os._exit(0)
-            elif pc.connectionState == "connected":
-                #leave room
-                self.sio.emit("leave_room", {"room": self.sig_room})
-                #start video stream by adding the first frame to its queue
-                self.onUpdatePlot(None)
-                self.sio.disconnect()
+        
                 
         self.imageRenderingTrack = ImageRenderingTrack()
         print(f"\nRecording plot with {self.plotWidth}x{self.plotHeight}@{FRAMERATE}fps\n")
-        video_sender = pc.addTrack(self.imageRenderingTrack)
+        video_sender = self.pc.addTrack(self.imageRenderingTrack)
         
         if args.video_codec:
-            self.force_codec(pc, video_sender, args.video_codec)
+            self.force_codec(self.pc, video_sender, args.video_codec)
         elif args.play_without_decoding:
             raise Exception(
                 "You must specify the video codec using --video-codec")
 
-        await pc.setRemoteDescription(offer)
-        answer = await pc.createAnswer()
-        await pc.setLocalDescription(answer)
+        await self.pc.setRemoteDescription(offer)
+        answer = await self.pc.createAnswer()
+        await self.pc.setLocalDescription(answer)
         
-        return json.dumps({"sdp": pc.localDescription.sdp, "type": pc.localDescription.type})
+        return json.dumps({"sdp": self.pc.localDescription.sdp, "type": self.pc.localDescription.type})
 
     def channel_log(self, channel, t, message):
         print("channel(%s) %s %s" % (channel.label, t, message))
