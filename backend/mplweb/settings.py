@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ve%+@npba-l+p+&hzlm*5&)+$&s&ni&kppth5zi1)3(7rr2fy(
 DEBUG = True
 
 #ALLOWED_HOSTS = ['0.0.0.0']
-ALLOWED_HOSTS = ['192.168.2.116']
+ALLOWED_HOSTS = ['192.168.2.115']
 
 
 # Application definition
@@ -56,8 +56,8 @@ MIDDLEWARE = [
 ]
 
 #added from tutorial https://blog.logrocket.com/using-react-django-create-app-tutorial/#migrating-django-models-database, disable later
-#CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = ['http://0.0.0.0', 'http://192.168.2.116']
+CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ORIGIN_WHITELIST = ['http://0.0.0.0', 'http://192.168.2.116']
 
 ROOT_URLCONF = 'mplweb.urls'
 

@@ -6,6 +6,8 @@ services:
         build:
             context: .
             dockerfile: ./docker/signaling/Dockerfile
+        ports:
+            - 8080:8080 
     nginx: 
         restart: unless-stopped
         build:
