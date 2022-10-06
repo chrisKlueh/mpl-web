@@ -7,16 +7,12 @@ services:
         build:
             context: .
             dockerfile: ./docker/signaling/Dockerfile
-        ports:
-            - 8080:8080 
     nginx: 
         network_mode: host
         restart: unless-stopped
         build:
             context: .
             dockerfile: ./docker/nginx/Dockerfile
-        ports:
-            - 80:80
         volumes:
             - static_volume:/app/backend/api/static
             - ./docker/nginx/development:/etc/nginx/conf.d
@@ -27,14 +23,16 @@ services:
         restart: unless-stopped
         build:
             context: .
+            args:
+                DJANGO_ALLOWED_HOSTS: "192.168.2.115"
+                DJANGO_SECRET_KEY: "supersecret"
+                DJANGO_SIG_HOST: "192.168.2.115"
             dockerfile: ./docker/backend/Dockerfile
         volumes:
             
         entrypoint: /app/docker/backend/wsgi-entrypoint.sh
         volumes:
             - static_volume:/app/backend/api/static
-        expose:
-            - 8000        
 
 volumes:
     static_volume: {}
