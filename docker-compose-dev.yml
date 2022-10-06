@@ -2,6 +2,7 @@ version: '2'
 
 services:
     signaling: 
+        network_mode: host
         restart: unless-stopped
         build:
             context: .
@@ -9,6 +10,7 @@ services:
         ports:
             - 8080:8080 
     nginx: 
+        network_mode: host
         restart: unless-stopped
         build:
             context: .
@@ -21,6 +23,7 @@ services:
         depends_on: 
             - backend
     backend:
+        network_mode: host
         restart: unless-stopped
         build:
             context: .
