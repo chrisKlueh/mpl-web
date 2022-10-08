@@ -11,7 +11,7 @@ const saveBlobToFile = (blob) => {
 export const establishSocketConnection = (hostId, pid, videoRef) => {
   return new Promise((resolve, reject) => {
     const myRoom = `instance_${hostId}-${pid}`;
-    let client_io = io("http://192.168.2.118:8080");
+    let client_io = io(`${window.location.origin}:8080`);
     client_io.emit("join_room", { role: "client", room: myRoom });
 
     client_io.on("connect", () => {

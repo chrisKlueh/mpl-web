@@ -15,7 +15,6 @@ import io
 import socketio
 
 from importlib import import_module
-from aiohttp import web
 from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.rtcrtpsender import RTCRtpSender
 from matplotlib import use

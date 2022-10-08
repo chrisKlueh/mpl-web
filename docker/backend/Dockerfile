@@ -1,0 +1,22 @@
+# docker/backend/Dockerfile
+
+FROM python:3.8.10
+
+ARG DJANGO_ALLOWED_HOSTS
+ARG DJANGO_SECRET_KEY
+ARG DJANGO_SIG_HOST
+
+ENV DJANGO_ALLOWED_HOSTS $DJANGO_ALLOWED_HOSTS
+ENV DJANGO_SECRET_KEY $DJANGO_SECRET_KEY
+ENV DJANGO_SIG_HOST $DJANGO_SIG_HOST
+
+WORKDIR /app
+ADD ./backend/requirements.txt /app/backend/
+
+
+RUN pip install --upgrade pip
+RUN pip install gunicorn
+RUN pip install -r backend/requirements.txt
+
+ADD ./docker /app/docker
+ADD ./backend /app/backend

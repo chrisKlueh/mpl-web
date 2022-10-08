@@ -1,6 +1,7 @@
 import subprocess
 import os
 import signal
+import os
 
 from functools import partial
 from django.http import Http404
@@ -132,7 +133,7 @@ class FeedbackList(APIView):
 
 class InstanceList(APIView):
     def spawnInstance(self, demoId):
-        sigHost = "localhost"
+        sigHost = os.environ.get('DJANGO_SIG_HOST')
         sigPort = 8080
         hostId = 2
         demoFile = Demo.objects.get(pk=demoId).file

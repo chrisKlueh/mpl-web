@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+    signaling: 
+        network_mode: host
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./docker/signaling/Dockerfile
+    nginx: 
+        network_mode: host
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./docker/nginx/Dockerfile
+        volumes:
+            - static_volume:/app/backend/api/static
+            - ./docker/nginx/development:/etc/nginx/conf.d
+        depends_on: 
+            - backend
+    backend:
+        network_mode: host
+        restart: unless-stopped
+        build:
+            context: .
+            args:
+                DJANGO_ALLOWED_HOSTS: "192.168.2.115"
+                DJANGO_SECRET_KEY: "supersecret"
+                DJANGO_SIG_HOST: "192.168.2.115"
+            dockerfile: ./docker/backend/Dockerfile
+        volumes:
+            
+        entrypoint: /app/docker/backend/wsgi-entrypoint.sh
+        volumes:
+            - static_volume:/app/backend/api/static
+
+volumes:
+    static_volume: {}

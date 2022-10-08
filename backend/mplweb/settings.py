@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ve%+@npba-l+p+&hzlm*5&)+$&s&ni&kppth5zi1)3(7rr2fy('
+#SECRET_KEY = 'django-insecure-ve%+@npba-l+p+&hzlm*5&)+$&s&ni&kppth5zi1)3(7rr2fy('
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.2.118']
+#ALLOWED_HOSTS = ['0.0.0.0']
+#ALLOWED_HOSTS = ['192.168.2.115']
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
 
 
 # Application definition
@@ -56,6 +60,7 @@ MIDDLEWARE = [
 
 #added from tutorial https://blog.logrocket.com/using-react-django-create-app-tutorial/#migrating-django-models-database, disable later
 CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ORIGIN_WHITELIST = ['http://0.0.0.0', 'http://192.168.2.116']
 
 ROOT_URLCONF = 'mplweb.urls'
 
@@ -124,6 +129,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
