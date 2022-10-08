@@ -94,6 +94,7 @@ const DemoDialogBase = (props) => {
                   disableNext={!checkFirstStepComplete()}
                   files={files}
                   setFiles={setFiles}
+                  allowMultipleFiles={false}
                 />
               ) : (
                 <DemoDetailsForm
