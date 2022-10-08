@@ -24,7 +24,12 @@ const UploadDropzone = (props) => {
     <li key={file.path}>{`${file.path} (${file.size} bytes)`}</li>
   ));
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "text/x-python": [".py"],
+    },
+  });
   const fileQuantityString = allowMultipleFiles ? "files" : "file";
   return (
     <Fragment>
@@ -36,6 +41,9 @@ const UploadDropzone = (props) => {
               ? `Drop the demo ${fileQuantityString} here ...`
               : `Drag 'n' drop demo ${fileQuantityString} here, or click to select.`}
           </p>
+          <div className={styles.fileTypeHint}>
+            {"(Accepted file type: .py)"}
+          </div>
           {fileList.length > 0 && (
             <div>
               <ul>{fileList}</ul>

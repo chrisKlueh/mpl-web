@@ -13,5 +13,14 @@
 }
 
 .textContainer p {
+  margin-bottom: 0;
+}
+
+.fileTypeHint {
+  text-align: center;
+  font-style: italic;
+}
+
+.textContainer p {
   font-size: 18px;
 }
