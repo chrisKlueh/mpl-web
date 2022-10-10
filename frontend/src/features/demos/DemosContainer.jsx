@@ -10,7 +10,7 @@ import DemoUploadDialog from "./DemoUploadDialog";
 import { getSelectedPage } from "../../helpers/listHelper";
 
 const DemosContainer = (props) => {
-  const rowsPerPageOptions = [1, 2, 3];
+  const rowsPerPageOptions = [5, 10];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const { isLoading, demos, isAdmin, showDemosRequest } = props;
@@ -18,7 +18,6 @@ const DemosContainer = (props) => {
   useEffect(() => {
     //equals componentDidMount
     showDemosRequest();
-    console.log("did mount");
   }, [showDemosRequest]);
 
   const handleChangePage = (event, newPage) => setPage(newPage);
@@ -30,6 +29,7 @@ const DemosContainer = (props) => {
     <WrapperContainer pageTitle="Available Demos">
       <DemosList
         listItems={getSelectedPage(demos, page, rowsPerPage)}
+        maxLength={rowsPerPage}
         isGettingDemos={isLoading}
         isAdmin={isAdmin}
       />

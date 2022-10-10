@@ -36,6 +36,7 @@ const DemosList = (props) => {
   const {
     isGettingDemos,
     listItems,
+    maxLength,
     showDemoRequest,
     deleteDemoRequest,
     isSpawningInstance,
@@ -70,7 +71,7 @@ const DemosList = (props) => {
 
   const createListItems = (listItemArray) => {
     if (isGettingDemos) {
-      return <ListRowSkeleton rows={5} className={styles.skeleton} />;
+      return <ListRowSkeleton rows={maxLength} className={styles.skeleton} />;
     } else {
       return listItemArray.map((listItem) => {
         return (
