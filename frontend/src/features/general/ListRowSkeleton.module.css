@@ -1,5 +1,10 @@
-.item {
+.itemWithSecondary {
   height: 60px;
+  padding: 0 10px;
+}
+
+.itemWithoutSecondary {
+  height: 48px;
   padding: 0 10px;
 }
 

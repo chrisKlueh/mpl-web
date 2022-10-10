@@ -71,7 +71,13 @@ const DemosList = (props) => {
 
   const createListItems = (listItemArray) => {
     if (isGettingDemos) {
-      return <ListRowSkeleton rows={maxLength} className={styles.skeleton} />;
+      return (
+        <ListRowSkeleton
+          hasSecondaryText
+          rows={maxLength}
+          className={styles.skeleton}
+        />
+      );
     } else {
       return listItemArray.map((listItem) => {
         return (
