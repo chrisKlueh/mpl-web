@@ -27,7 +27,8 @@ const FeedbackList = (props) => {
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isFeedbackDetailsOpen, setFeedbackDetailsOpen] = useState(false);
 
-  const { isLoadingFeedback, listItems, deleteFeedbackRequest } = props;
+  const { isLoadingFeedback, listItems, deleteFeedbackRequest, maxLength } =
+    props;
 
   const updateSelectedAndOpenDialog = (listItem, type) => {
     setSelectedListItem(listItem);
@@ -50,7 +51,7 @@ const FeedbackList = (props) => {
 
   const createListItems = (listItemArray) => {
     if (isLoadingFeedback) {
-      return <ListRowSkeleton rows={5} className={styles.skeleton} />;
+      return <ListRowSkeleton rows={maxLength} className={styles.skeleton} />;
     } else {
       return listItemArray.map((listItem) => {
         return (
