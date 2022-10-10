@@ -26,7 +26,11 @@ const DemosContainer = (props) => {
     setRowsPerPage(parseInt(event.target.value, 10));
 
   return (
-    <WrapperContainer pageTitle="Available Demos">
+    <WrapperContainer
+      pageTitle="Available Demos"
+      handleRefresh={showDemosRequest}
+      isRefreshing={isLoading}
+    >
       <DemosList
         listItems={getSelectedPage(demos, page, rowsPerPage)}
         maxLength={rowsPerPage}

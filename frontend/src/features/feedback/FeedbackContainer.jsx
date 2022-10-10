@@ -25,7 +25,11 @@ const FeedbackContainer = (props) => {
     setRowsPerPage(parseInt(event.target.value, 10));
 
   return (
-    <WrapperContainer pageTitle="Feedback">
+    <WrapperContainer
+      pageTitle="Feedback"
+      handleRefresh={showFeedbackRequest}
+      isRefreshing={isLoading}
+    >
       <FeedbackList
         listItems={getSelectedPage(feedback, page, rowsPerPage)}
         maxLength={rowsPerPage}
