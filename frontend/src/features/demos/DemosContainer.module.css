@@ -1,0 +1,8 @@
+.bottomContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pagination {
+  margin: 0 auto;
+}

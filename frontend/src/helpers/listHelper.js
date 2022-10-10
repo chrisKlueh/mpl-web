@@ -3,3 +3,8 @@ export const truncateString = (string, maxLength) => {
     ? string.slice(0, maxLength) + "..."
     : string;
 };
+
+export const getSelectedPage = (list, page, rowsPerPage) => {
+  const startIndex = page * rowsPerPage;
+  return list.slice(startIndex, startIndex + rowsPerPage);
+};
