@@ -30,6 +30,7 @@ const DemosContainer = (props) => {
       pageTitle="Available Demos"
       handleRefresh={showDemosRequest}
       isRefreshing={isLoading}
+      autoRefresh={60}
     >
       <DemosList
         listItems={getSelectedPage(demos, page, rowsPerPage)}

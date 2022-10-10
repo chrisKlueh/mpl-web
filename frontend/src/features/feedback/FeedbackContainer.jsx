@@ -29,6 +29,7 @@ const FeedbackContainer = (props) => {
       pageTitle="Feedback"
       handleRefresh={showFeedbackRequest}
       isRefreshing={isLoading}
+      autoRefresh={60}
     >
       <FeedbackList
         listItems={getSelectedPage(feedback, page, rowsPerPage)}

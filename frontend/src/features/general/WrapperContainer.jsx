@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { Paper, Typography, IconButton, Tooltip } from "@mui/material";
@@ -8,6 +8,7 @@ import Navbar from "./Navbar";
 import styles from "./WrapperContainer.module.css";
 
 const WrapperContainer = (props) => {
+  const [autoRefreshInterval, setAutoRefreshInterval] = useState(null);
   const {
     isLoggedIn,
     isAdmin,
@@ -15,7 +16,30 @@ const WrapperContainer = (props) => {
     pageTitle,
     handleRefresh,
     isRefreshing,
+    autoRefresh,
   } = props;
+
+  useEffect(() => {
+    //equals componentDidMount
+    if (autoRefresh && handleRefresh) {
+      setAutoRefreshInterval(
+        setInterval(() => {
+          handleRefresh();
+        }, autoRefresh * 1000)
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    //return statement equals componentWillUnmount
+    return () => {
+      if (autoRefresh && handleRefresh && autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRefreshInterval]);
 
   return isLoggedIn ? (
     <div className={styles.root}>
