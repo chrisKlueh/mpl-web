@@ -1,11 +1,13 @@
-.root {
-  min-width: 500px;
-}
-
 .titleContainer {
   display: flex;
 }
 
 .avatar {
   margin-inline-end: 10px;
+}
+
+@media screen and (min-width: 600px) {
+  .root {
+    min-width: 500px;
+  }
 }
