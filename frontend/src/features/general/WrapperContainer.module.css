@@ -35,5 +35,6 @@
   .paper {
     width: 100%;
     margin: auto auto;
+    min-height: 50%;
   }
 }

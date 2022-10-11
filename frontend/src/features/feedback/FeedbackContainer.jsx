@@ -10,7 +10,7 @@ import { getSelectedPage } from "../../helpers/listHelper";
 
 const FeedbackContainer = (props) => {
   const { isLoading, feedback, showFeedbackRequest } = props;
-  const rowsPerPageOptions = [6, 10];
+  const rowsPerPageOptions = [6, 10, 15];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 
@@ -41,6 +41,7 @@ const FeedbackContainer = (props) => {
         count={feedback.length}
         color="standard"
         rowsPerPageOptions={rowsPerPageOptions}
+        labelRowsPerPage={"Rows"}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={handleChangePage}

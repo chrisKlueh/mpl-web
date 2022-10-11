@@ -10,7 +10,7 @@ import DemoUploadDialog from "./DemoUploadDialog";
 import { getSelectedPage } from "../../helpers/listHelper";
 
 const DemosContainer = (props) => {
-  const rowsPerPageOptions = [5, 10];
+  const rowsPerPageOptions = [5, 10, 15];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const { isLoading, demos, isAdmin, showDemosRequest } = props;
@@ -44,6 +44,7 @@ const DemosContainer = (props) => {
           count={demos.length}
           color="standard"
           rowsPerPageOptions={rowsPerPageOptions}
+          labelRowsPerPage={"Rows"}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}

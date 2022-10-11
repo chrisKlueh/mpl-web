@@ -22,3 +22,9 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .listItemDate {
+    display: none;
+  }
+}

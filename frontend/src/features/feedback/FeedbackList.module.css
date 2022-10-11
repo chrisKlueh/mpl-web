@@ -30,3 +30,15 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .feedbackDate {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 750px) and (orientation: portrait) {
+  .genericListItem {
+    display: none;
+  }
+}
