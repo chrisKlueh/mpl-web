@@ -22,3 +22,14 @@
   border-radius: 5px;
   min-height: 150px;
 }
+
+@media screen and (orientation: portrait) {
+  .root {
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .detailsContainer {
+    min-height: 0;
+  }
+}
