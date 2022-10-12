@@ -8,13 +8,33 @@ import {
   deleteDemoSuccess,
   deleteDemoError,
 } from "../slices/demosSlice";
+import { enqueueSnackbar } from "../slices/notifierSlice";
 
 export function* workerShowDemos() {
   try {
     const res = yield call(showDemosReq);
     yield put(showDemosSuccess(res.data));
+    console.log("loaded demos");
+    yield put(
+      enqueueSnackbar({
+        message: "Demo list loaded.",
+        options: {
+          key: new Date().getTime() + Math.random(),
+          variant: "success",
+        },
+      })
+    );
   } catch (error) {
     yield put(showDemosError());
+    yield put(
+      enqueueSnackbar({
+        message: "Failed to load demo list.",
+        options: {
+          key: new Date().getTime() + Math.random(),
+          variant: "error",
+        },
+      })
+    );
   }
 }
 
