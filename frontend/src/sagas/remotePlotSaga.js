@@ -11,6 +11,7 @@ import {
   establishSocketConnection,
   stopPeerConnection,
 } from "../helpers/webRtcHelper";
+import { snackbarNotification } from "../helpers/notifierHelper";
 
 export function* workerEstablishPeerConnection({ payload }) {
   const { setPeerConnection, setDataChannel, hostId, pid, videoRef } = payload;
@@ -21,6 +22,9 @@ export function* workerEstablishPeerConnection({ payload }) {
     yield put(establishPeerConnectionSuccess());
   } catch (error) {
     yield put(establishPeerConnectionError());
+    yield put(
+      snackbarNotification("Failed to establish peer connection.", "error")
+    );
   }
 }
 
@@ -39,6 +43,7 @@ export function* workerStopPeerConnection({ payload }) {
     yield put(stopPeerConnectionSuccess());
   } catch (error) {
     yield put(stopPeerConnectionError());
+    yield put(snackbarNotification("Failed to stop peer connection.", "error"));
   }
 }
 

@@ -20,7 +20,6 @@ export const notifierSlice = createSlice({
       };
     },
     closeSnackbar: (state, action) => {
-      console.log(action);
       return {
         ...state,
         notifications: state.notifications.map((notification) =>
@@ -31,7 +30,6 @@ export const notifierSlice = createSlice({
       };
     },
     removeSnackbar: (state, action) => {
-      console.log(action);
       return {
         ...state,
         notifications: state.notifications.filter(
