@@ -1,6 +1,6 @@
 .bottomContainer {
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
 }
 
 .pagination {

@@ -39,18 +39,20 @@ const DemosContainer = (props) => {
         isAdmin={isAdmin}
       />
       <div className={styles.bottomContainer}>
-        <TablePagination
-          component="div"
-          count={demos.length}
-          color="standard"
-          rowsPerPageOptions={rowsPerPageOptions}
-          labelRowsPerPage={"Rows"}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          className={styles.pagination}
-        />
+        {demos.length > 0 && (
+          <TablePagination
+            component="div"
+            count={demos.length}
+            color="standard"
+            rowsPerPageOptions={rowsPerPageOptions}
+            labelRowsPerPage={"Rows"}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            className={styles.pagination}
+          />
+        )}
         {isAdmin && <DemoUploadDialog />}
       </div>
     </WrapperContainer>

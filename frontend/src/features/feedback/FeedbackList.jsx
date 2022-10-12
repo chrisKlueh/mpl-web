@@ -113,7 +113,7 @@ const FeedbackList = (props) => {
             {createListItems(listItems)}
           </div>
         ) : (
-          <Placeholder />
+          <Placeholder message={"Looks like nobody left you feedback.."} />
         )}
       </List>
       <ConfirmationDialog

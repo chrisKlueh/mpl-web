@@ -36,18 +36,20 @@ const FeedbackContainer = (props) => {
         maxLength={rowsPerPage}
         isLoadingFeedback={isLoading}
       />
-      <TablePagination
-        component="div"
-        count={feedback.length}
-        color="standard"
-        rowsPerPageOptions={rowsPerPageOptions}
-        labelRowsPerPage={"Rows"}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        className={styles.pagination}
-      />
+      {feedback.length > 0 && (
+        <TablePagination
+          component="div"
+          count={feedback.length}
+          color="standard"
+          rowsPerPageOptions={rowsPerPageOptions}
+          labelRowsPerPage={"Rows"}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          className={styles.pagination}
+        />
+      )}
     </WrapperContainer>
   );
 };

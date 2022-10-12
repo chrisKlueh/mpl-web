@@ -152,7 +152,7 @@ const DemosList = (props) => {
             {createListItems(listItems)}
           </div>
         ) : (
-          <Placeholder />
+          <Placeholder message={"Looks like there are no demos yet.."} />
         )}
       </List>
       <ConfirmationDialog
