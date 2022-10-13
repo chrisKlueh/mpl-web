@@ -1,0 +1,8 @@
+.bottomContainer {
+  display: flex;
+  justify-content: right;
+}
+
+.pagination {
+  margin: 0 auto;
+}

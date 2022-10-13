@@ -1,29 +1,58 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { TablePagination } from "@mui/material";
 
+import styles from "./FeedbackContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
 import { showFeedbackRequest } from "../../slices/feedbackSlice";
 import FeedbackList from "./FeedbackList";
+import { getSelectedPage } from "../../helpers/listHelper";
 
-class FeedbackContainer extends Component {
-  componentDidMount() {
-    this.handleShowFeedback();
-  }
+const FeedbackContainer = (props) => {
+  const { isLoading, feedback, showFeedbackRequest } = props;
+  const rowsPerPageOptions = [5, 10, 15];
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 
-  handleShowFeedback = () => {
-    const { showFeedbackRequest } = this.props;
+  useEffect(() => {
+    //equals componentDidMount
     showFeedbackRequest();
-  };
+  }, [showFeedbackRequest]);
 
-  render() {
-    const { isLoading, feedback } = this.props;
-    return (
-      <WrapperContainer pageTitle="Feedback">
-        <FeedbackList listItems={feedback} isLoadingFeedback={isLoading} />
-      </WrapperContainer>
-    );
-  }
-}
+  const handleChangePage = (event, newPage) => setPage(newPage);
+
+  const handleChangeRowsPerPage = (event) =>
+    setRowsPerPage(parseInt(event.target.value, 10));
+
+  return (
+    <WrapperContainer
+      pageTitle="Feedback"
+      handleRefresh={showFeedbackRequest}
+      isRefreshing={isLoading}
+      autoRefresh={60}
+    >
+      <FeedbackList
+        listItems={getSelectedPage(feedback, page, rowsPerPage)}
+        maxLength={rowsPerPage}
+        isLoadingFeedback={isLoading}
+      />
+      {feedback.length > 0 && (
+        <TablePagination
+          component="div"
+          count={feedback.length}
+          color="standard"
+          rowsPerPageOptions={rowsPerPageOptions}
+          labelRowsPerPage={"Rows"}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          className={styles.pagination}
+        />
+      )}
+    </WrapperContainer>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {

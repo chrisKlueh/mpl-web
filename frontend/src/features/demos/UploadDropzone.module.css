@@ -13,5 +13,21 @@
 }
 
 .textContainer p {
+  margin-bottom: 0;
+}
+
+.fileTypeHint {
+  text-align: center;
+  font-style: italic;
+}
+
+.textContainer p {
   font-size: 18px;
+}
+
+@media screen and (max-width: 530px) {
+  .dropzone {
+    width: 100%;
+    margin: auto auto;
+  }
 }

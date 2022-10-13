@@ -1,5 +1,5 @@
 .root {
-  height: 100vh;
+  height: calc(100vh - 69px);
   background-image: url("../../background.jpg");
   background-position: 40% 5%;
 }
@@ -11,20 +11,34 @@
   padding-top: 5px;
 }
 
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
 .pageTitle {
   padding-inline-start: 10px;
+}
+
+.refreshButton {
+  margin-inline-end: 15px;
 }
 
 .children {
   display: flex;
   flex-direction: column;
-  /* height: calc(100vh - 382px); */
   justify-content: space-between;
+  min-height: 60vh;
 }
 
 @media screen and (max-width: 1081px) {
+  .root {
+    background-image: none;
+  }
+
   .paper {
     width: 100%;
     margin: auto auto;
+    min-height: 100%;
   }
 }

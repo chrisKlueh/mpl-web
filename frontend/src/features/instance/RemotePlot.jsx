@@ -187,16 +187,16 @@ const RemotePlot = (props) => {
         ) : (
           <video className={styles.plotVideo} ref={videoRef} autoPlay />
         )}
+        <PlotControlBar
+          handleTerminate={handleTerminate}
+          handleSave={handleSavePlot}
+          handleComment={handleComment}
+          handleRestart={handleRestart}
+          handleOpenDebugMenu={() => setDebugMenuOpen(true)}
+          disabled={isLoading}
+          isAdmin={isAdmin}
+        />
       </div>
-      <PlotControlBar
-        handleTerminate={handleTerminate}
-        handleSave={handleSavePlot}
-        handleComment={handleComment}
-        handleRestart={handleRestart}
-        handleOpenDebugMenu={() => setDebugMenuOpen(true)}
-        disabled={isLoading}
-        isAdmin={isAdmin}
-      />
       <DebugMenu
         open={isDebugMenuOpen}
         handleClose={() => setDebugMenuOpen(false)}

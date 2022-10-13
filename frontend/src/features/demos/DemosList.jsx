@@ -36,6 +36,7 @@ const DemosList = (props) => {
   const {
     isGettingDemos,
     listItems,
+    maxLength,
     showDemoRequest,
     deleteDemoRequest,
     isSpawningInstance,
@@ -70,7 +71,13 @@ const DemosList = (props) => {
 
   const createListItems = (listItemArray) => {
     if (isGettingDemos) {
-      return <ListRowSkeleton rows={5} className={styles.skeleton} />;
+      return (
+        <ListRowSkeleton
+          hasSecondaryText
+          rows={maxLength}
+          className={styles.skeleton}
+        />
+      );
     } else {
       return listItemArray.map((listItem) => {
         return (
@@ -145,7 +152,7 @@ const DemosList = (props) => {
             {createListItems(listItems)}
           </div>
         ) : (
-          <Placeholder />
+          <Placeholder message={"Looks like there are no demos yet.."} />
         )}
       </List>
       <ConfirmationDialog

@@ -16,6 +16,7 @@ import {
   deleteInstanceError,
 } from "../slices/instanceSlice";
 import { showDemoRequest } from "../slices/demoSlice";
+import { snackbarNotification } from "../helpers/notifierHelper";
 
 export function* workerShowInstance({ payload }) {
   try {
@@ -24,6 +25,9 @@ export function* workerShowInstance({ payload }) {
     yield put(showDemoRequest(res.data.demo));
   } catch (error) {
     yield put(showInstanceError());
+    yield put(
+      snackbarNotification("Failed to load instance details.", "error")
+    );
   }
 }
 
@@ -39,6 +43,7 @@ export function* workerSpawnInstance({ payload }) {
     yield navigate(`/instance/${res.data.id}`);
   } catch (error) {
     yield put(spawnInstanceError());
+    yield put(snackbarNotification("Failed to spawn instance.", "error"));
   }
 }
 
@@ -53,6 +58,7 @@ export function* workerDeleteInstance({ payload }) {
     yield put(deleteInstanceSuccess());
   } catch (error) {
     yield put(deleteInstanceError());
+    yield put(snackbarNotification("Failed to terminate instance.", "error"));
   }
 }
 

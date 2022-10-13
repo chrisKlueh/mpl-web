@@ -1,6 +1,5 @@
 import React from "react";
 import { Paper, Grid, Typography } from "@mui/material";
-import { Face, Fingerprint } from "@mui/icons-material";
 import { connect } from "react-redux";
 import { Formik, Form, Field } from "formik";
 import { Button, LinearProgress } from "@mui/material";
@@ -47,9 +46,6 @@ class LogInForm extends React.Component {
             <Form>
               <Grid container className={styles.container}>
                 <Grid item>
-                  <Face className={styles.icon} />
-                </Grid>
-                <Grid item>
                   <Field
                     component={TextField}
                     name="username"
@@ -61,9 +57,6 @@ class LogInForm extends React.Component {
                 </Grid>
               </Grid>
               <Grid container className={styles.container}>
-                <Grid item>
-                  <Fingerprint className={styles.icon} />
-                </Grid>
                 <Grid item>
                   <Field
                     component={TextField}

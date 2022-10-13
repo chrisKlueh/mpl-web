@@ -5,3 +5,9 @@
 .field {
   width: 350px;
 }
+
+@media screen and (max-width: 450px) {
+  .field {
+    width: 250px;
+  }
+}

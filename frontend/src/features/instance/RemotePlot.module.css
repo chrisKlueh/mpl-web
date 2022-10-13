@@ -1,21 +1,33 @@
 .loadingFragment {
   flex-direction: row;
-  justify-content: center;
+  align-self: center;
+  margin: auto auto;
 }
 
 .videoContainer {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   width: 50%;
   margin: 5px;
 }
 
 .plotVideo:hover {
-  border: 2px solid rgb(190, 85, 85);
+  border: 2px solid #1976d2;
 }
 
 .plotVideo {
   width: 100%;
   border: 2px solid whitesmoke;
+}
+
+@media screen and (orientation: portrait) {
+  .loadingFragment {
+    width: 100%;
+  }
+
+  .videoContainer {
+    flex-direction: column;
+    width: calc(100% - 10px);
+    order: -1;
+  }
 }

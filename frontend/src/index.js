@@ -10,6 +10,8 @@ import reportWebVitals from "./reportWebVitals";
 
 import { StyledEngineProvider } from "@mui/material/styles";
 
+import CustomSnackbarProvider from "./features/general/CustomSnackbarProvider";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   //strict mode intentionally triggers componentDidMount twice (in development)
@@ -17,7 +19,9 @@ root.render(
   // <React.StrictMode>
   <StyledEngineProvider injectFirst>
     <Provider store={store}>
-      <App />
+      <CustomSnackbarProvider>
+        <App />
+      </CustomSnackbarProvider>
     </Provider>
   </StyledEngineProvider>
   // </React.StrictMode>

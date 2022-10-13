@@ -5,12 +5,17 @@ import { DialogActions, Button } from "@mui/material";
 import styles from "./UploadDropzone.module.css";
 
 const UploadDropzone = (props) => {
-  const { handleClose, handleNext, disableNext, files } = props;
+  const { handleClose, handleNext, disableNext, files, allowMultipleFiles } =
+    props;
 
   const onDrop = useCallback(
     (acceptedFiles) => {
-      const { setFiles } = props;
-      setFiles((prev) => [...prev, ...acceptedFiles]);
+      const { setFiles, allowMultipleFiles } = props;
+      if (allowMultipleFiles) {
+        setFiles((prev) => [...prev, ...acceptedFiles]);
+      } else {
+        setFiles(acceptedFiles);
+      }
     },
     [props]
   );
@@ -19,7 +24,13 @@ const UploadDropzone = (props) => {
     <li key={file.path}>{`${file.path} (${file.size} bytes)`}</li>
   ));
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "text/x-python": [".py"],
+    },
+  });
+  const fileQuantityString = allowMultipleFiles ? "files" : "file";
   return (
     <Fragment>
       <div {...getRootProps()} className={styles.dropzone}>
@@ -27,9 +38,12 @@ const UploadDropzone = (props) => {
         <div className={styles.textContainer}>
           <p>
             {isDragActive
-              ? "Drop the demo files here ..."
-              : "Drag 'n' drop demo files here, or click to select."}
+              ? `Drop the demo ${fileQuantityString} here ...`
+              : `Drag 'n' drop demo ${fileQuantityString} here, or click to select.`}
           </p>
+          <div className={styles.fileTypeHint}>
+            {"(Accepted file type: .py)"}
+          </div>
           {fileList.length > 0 && (
             <div>
               <ul>{fileList}</ul>

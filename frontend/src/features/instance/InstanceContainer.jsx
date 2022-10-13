@@ -53,7 +53,6 @@ const InstanceContainer = (props) => {
   const handleTerminate = () => {
     navigate("/demos/");
   };
-  const handleSave = () => console.log("saving current plot");
   const handleRestart = () => console.log("restarting instance");
 
   const handleSubmitFeedback = (feedbackType, feedback) => {

@@ -15,6 +15,7 @@ import {
   deleteFeedbackSuccess,
   deleteFeedbackError,
 } from "../slices/feedbackSlice";
+import { snackbarNotification } from "../helpers/notifierHelper";
 
 export function* workerShowFeedback() {
   try {
@@ -22,6 +23,7 @@ export function* workerShowFeedback() {
     yield put(showFeedbackSuccess(res.data));
   } catch (error) {
     yield put(showFeedbackError());
+    yield put(snackbarNotification("Failed to load feedback.", "error"));
   }
 }
 
@@ -34,8 +36,10 @@ export function* workerSubmitFeedback({ payload }) {
     const { feedbackType, feedback, demoId } = payload;
     yield call(submitFeedbackReq, feedbackType, feedback, demoId);
     yield put(submitFeedbackSuccess());
+    yield put(snackbarNotification("Feedback submitted.", "success"));
   } catch (error) {
     yield put(submitFeedbackError());
+    yield put(snackbarNotification("Failed to submit feedback.", "error"));
   }
 }
 
@@ -49,8 +53,10 @@ export function* workerDeleteFeedback({ payload }) {
     yield call(deleteFeedbackReq, user_id, feedback_id);
     yield put(deleteFeedbackSuccess());
     yield put(showFeedbackRequest());
+    yield put(snackbarNotification("Feedback deleted.", "success"));
   } catch (error) {
     yield put(deleteFeedbackError());
+    yield put(snackbarNotification("Failed to delete feedback.", "error"));
   }
 }
 

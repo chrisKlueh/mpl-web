@@ -4,12 +4,20 @@ import { Skeleton } from "@mui/material";
 
 import styles from "./ListRowSkeleton.module.css";
 
-const createSkeleton = (rows, styling) => {
+const createSkeleton = (rows, hasSecondaryText) => {
   let res = [];
   for (let i = 0; i < rows; i++) {
     res.push(
       <Fragment key={i}>
-        <ListItem button className={styles.item} id={i}>
+        <ListItem
+          button
+          className={
+            hasSecondaryText
+              ? styles.itemWithSecondary
+              : styles.itemWithoutSecondary
+          }
+          id={i}
+        >
           <Skeleton
             className={styles.skeletonIcon}
             animation="wave"
@@ -33,9 +41,9 @@ const createSkeleton = (rows, styling) => {
 };
 
 const ListRowSkeleton = (props) => {
-  const { rows } = props;
+  const { rows, hasSecondaryText } = props;
 
-  return <Fragment>{createSkeleton(rows)}</Fragment>;
+  return <Fragment>{createSkeleton(rows, hasSecondaryText)}</Fragment>;
 };
 
 export default ListRowSkeleton;

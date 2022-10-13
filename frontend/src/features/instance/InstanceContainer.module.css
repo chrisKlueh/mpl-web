@@ -2,3 +2,9 @@
   display: flex;
   justify-content: space-between;
 }
+
+@media screen and (orientation: portrait) {
+  .root {
+    flex-direction: column;
+  }
+}

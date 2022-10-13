@@ -12,6 +12,7 @@ import {
   editDemoError,
 } from "../slices/demoSlice";
 import { showDemosRequest } from "../slices/demosSlice";
+import { snackbarNotification } from "../helpers/notifierHelper";
 
 export function* workerShowDemo({ payload }) {
   try {
@@ -19,6 +20,7 @@ export function* workerShowDemo({ payload }) {
     yield put(showDemoSuccess(res.data));
   } catch (error) {
     yield put(showDemoError());
+    yield put(snackbarNotification("Failed to load demo details.", "error"));
   }
 }
 
@@ -32,8 +34,10 @@ export function* workerUploadDemo({ payload }) {
     yield call(uploadDemoReq, user_id, title, short_desc, detail_desc, file);
     yield put(uploadDemoSuccess());
     yield put(showDemosRequest());
+    yield put(snackbarNotification("Demo uploaded.", "success"));
   } catch (error) {
     yield put(uploadDemoError());
+    yield put(snackbarNotification("Failed to upload demo.", "error"));
   }
 }
 
@@ -47,8 +51,10 @@ export function* workerEditDemo({ payload }) {
     yield call(editDemoReq, id, user_id, title, short_desc, detail_desc, file);
     yield put(editDemoSuccess());
     yield put(showDemosRequest());
+    yield put(snackbarNotification("Demo edited.", "success"));
   } catch (error) {
     yield put(editDemoError());
+    yield put(snackbarNotification("Failed to edit demo.", "error"));
   }
 }
 
