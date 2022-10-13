@@ -22,11 +22,14 @@ const WrapperContainer = (props) => {
   useEffect(() => {
     //equals componentDidMount
     if (autoRefresh && handleRefresh) {
-      setAutoRefreshInterval(
-        setInterval(() => {
+      let interval = setInterval(() => {
+        if (isLoggedIn) {
           handleRefresh();
-        }, autoRefresh * 1000)
-      );
+        } else {
+          clearInterval(interval);
+        }
+      }, autoRefresh * 1000);
+      setAutoRefreshInterval(interval);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -40,7 +43,7 @@ const WrapperContainer = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoRefreshInterval]);
-
+  console.log(window.autoRefreshInterval);
   return isLoggedIn ? (
     <div className={styles.root}>
       <Navbar isLoggedIn={isLoggedIn} isAdmin={isAdmin} userName={userName} />
