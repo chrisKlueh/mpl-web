@@ -7,11 +7,12 @@ import { validateAll } from "../../helpers/feedbackValidationHelper";
 import styles from "./FeedbackForm.module.css";
 
 const FeedbackForm = (props) => {
-  const { handleSubmit, handleClose } = props;
+  const { handleSubmit, handleClose, bugReport, cancelString, submitString } =
+    props;
   return (
     <Formik
       initialValues={{
-        feedbackType: "",
+        feedbackType: bugReport ? "1" : "",
         feedback: "",
       }}
       validate={(values) => validateAll(values)}
@@ -31,8 +32,10 @@ const FeedbackForm = (props) => {
                 type="text"
                 label="Feedback type"
               >
-                <MenuItem value={1}>Bug Report</MenuItem>
-                <MenuItem value={2}>Comment</MenuItem>
+                <MenuItem selected={bugReport} value={1}>
+                  Bug Report
+                </MenuItem>
+                {!bugReport && <MenuItem value={2}>Comment</MenuItem>}
               </Field>
             </Grid>
           </Grid>
@@ -52,7 +55,7 @@ const FeedbackForm = (props) => {
           </Grid>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
-              Cancel
+              {cancelString ? cancelString : "Cancel"}
             </Button>
             <Button
               disabled={!values.feedback || !values.feedbackType}
@@ -62,7 +65,7 @@ const FeedbackForm = (props) => {
               }}
               color="primary"
             >
-              Submit
+              {submitString ? submitString : "Submit"}
             </Button>
           </DialogActions>
         </Form>

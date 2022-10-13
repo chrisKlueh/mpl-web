@@ -1,11 +1,13 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./RemotePlot.module.css";
 import LoadingFragment from "../general/LoadingFragment";
 import PlotControlBar from "./PlotControlBar";
 import DebugMenu from "./DebugMenu";
 import ErrorDialog from "./ErrorDialog";
+import FeedbackDialog from "./FeedbackDialog";
 
 import {
   establishPeerConnectionRequest,
@@ -19,10 +21,13 @@ import {
   requestSnapshot,
 } from "../../helpers/inputCaptureHelper";
 
+import { submitFeedbackRequest } from "../../slices/feedbackSlice";
+
 const RemotePlot = (props) => {
   const [isDebugMenuOpen, setDebugMenuOpen] = useState(false);
   const [isErrorDialogOpen, setErrorDialogOpen] = useState(false);
   const [errorDialogDetails, setErrorDialogDetails] = useState(null);
+  const [isBugReportDialogOpen, setBugReportDialogOpen] = useState(false);
   const [isAutoEventEnabled, setAutoEventEnabled] = useState(false);
   const [autoEventInterval, setAutoEventInterval] = useState(1);
   const [autoEventTimeout, setAutoEventTimeout] = useState(null);
@@ -37,6 +42,8 @@ const RemotePlot = (props) => {
     { event: "keyup", handlerBase: "key", listener: null },
     { event: "contextmenu", handlerBase: "context", listener: null },
   ]);
+
+  const navigate = useNavigate();
 
   const videoRef = useRef(null);
   const useStateMonitor = (state) => {
@@ -182,6 +189,22 @@ const RemotePlot = (props) => {
     videoRef.current.addEventListener("mouseleave", handleFigureLeave);
   };
 
+  const handleSubmitBugReport = (feedbackType, feedback) => {
+    const { submitFeedbackRequest, demo } = props;
+    const { id } = demo;
+    submitFeedbackRequest({
+      feedbackType: feedbackType,
+      feedback: feedback,
+      demoId: id,
+    });
+    navigate("/demos/");
+  };
+
+  const handleDismissBugReport = () => {
+    setBugReportDialogOpen(false);
+    navigate("/demos/");
+  };
+
   return (
     <Fragment>
       <div className={styles.videoContainer}>
@@ -216,7 +239,14 @@ const RemotePlot = (props) => {
         isAdmin={isAdmin}
         errorDetails={errorDialogDetails}
         handleClose={() => setErrorDialogOpen(false)}
-        handleConfirm={handleTerminate}
+        handleConfirm={() => setBugReportDialogOpen(true)}
+      />
+      <FeedbackDialog
+        open={isBugReportDialogOpen}
+        handleSubmit={handleSubmitBugReport}
+        handleClose={handleDismissBugReport}
+        bugReport
+        cancelString={"Dismiss"}
       />
     </Fragment>
   );
@@ -226,6 +256,7 @@ const mapStateToProps = (state) => {
   return {
     isLoading: state.remotePlot.isEstablishingPeerConnection,
     isAdmin: state.login.isAdmin,
+    demo: state.demo.demo,
   };
 };
 
@@ -235,6 +266,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(establishPeerConnectionRequest(payload)),
     stopPeerConnectionRequest: (payload) =>
       dispatch(stopPeerConnectionRequest(payload)),
+    submitFeedbackRequest: (payload) =>
+      dispatch(submitFeedbackRequest(payload)),
   };
 };
 
