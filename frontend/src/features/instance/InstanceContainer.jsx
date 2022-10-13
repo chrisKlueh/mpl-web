@@ -58,7 +58,6 @@ const InstanceContainer = (props) => {
   const handleSubmitFeedback = (feedbackType, feedback) => {
     const { submitFeedbackRequest, demo } = props;
     const { id } = demo;
-    console.log(id);
     submitFeedbackRequest({
       feedbackType: feedbackType,
       feedback: feedback,

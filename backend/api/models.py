@@ -14,7 +14,7 @@ class User(models.Model):
 
 class Demo(models.Model):
     id = models.AutoField("demo_id", primary_key=True)
-    created_at = models.DateTimeField("created_at", auto_now_add=True)
+    created_at = models.DateTimeField("created_at", auto_now=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField("title", max_length=240, unique=True)
     short_desc = models.CharField("short_desc", max_length=240)
