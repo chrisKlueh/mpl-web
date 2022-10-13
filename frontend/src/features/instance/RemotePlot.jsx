@@ -5,6 +5,7 @@ import styles from "./RemotePlot.module.css";
 import LoadingFragment from "../general/LoadingFragment";
 import PlotControlBar from "./PlotControlBar";
 import DebugMenu from "./DebugMenu";
+import ErrorDialog from "./ErrorDialog";
 
 import {
   establishPeerConnectionRequest,
@@ -20,6 +21,8 @@ import {
 
 const RemotePlot = (props) => {
   const [isDebugMenuOpen, setDebugMenuOpen] = useState(false);
+  const [isErrorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [errorDialogDetails, setErrorDialogDetails] = useState(null);
   const [isAutoEventEnabled, setAutoEventEnabled] = useState(false);
   const [autoEventInterval, setAutoEventInterval] = useState(1);
   const [autoEventTimeout, setAutoEventTimeout] = useState(null);
@@ -131,6 +134,8 @@ const RemotePlot = (props) => {
       hostId: hostId,
       pid: pid,
       videoRef: videoRef,
+      setErrorDialogDetails: setErrorDialogDetails,
+      setErrorDialogOpen: setErrorDialogOpen,
     });
   };
 
@@ -205,6 +210,13 @@ const RemotePlot = (props) => {
         handleSetInterval={setAutoEventInterval}
         handleClearAutomatedEvent={handleClearMockedEvent}
         isAutomatedEventEnabled={isAutoEventEnabled}
+      />
+      <ErrorDialog
+        open={isErrorDialogOpen}
+        isAdmin={isAdmin}
+        errorDetails={errorDialogDetails}
+        handleClose={() => setErrorDialogOpen(false)}
+        handleConfirm={handleTerminate}
       />
     </Fragment>
   );

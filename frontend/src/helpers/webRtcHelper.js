@@ -8,10 +8,17 @@ const saveBlobToFile = (blob) => {
   saveAs(blob, fileName);
 };
 
-export const establishSocketConnection = (hostId, pid, videoRef) => {
+export const establishSocketConnection = (
+  hostId,
+  pid,
+  videoRef,
+  setErrorDialogDetails,
+  setErrorDialogOpen
+) => {
   return new Promise((resolve, reject) => {
     const myRoom = `instance_${hostId}-${pid}`;
-    let client_io = io(`${window.location.origin}:8080`);
+    //let client_io = io(`${window.location.origin}:8080`);
+    let client_io = io(`192.168.2.115:8080`);
     client_io.emit("join_room", { role: "client", room: myRoom });
 
     client_io.on("connect", () => {
@@ -28,7 +35,13 @@ export const establishSocketConnection = (hostId, pid, videoRef) => {
         console.log("I joined the room. Waiting for instance..");
       } else if (role === "instance") {
         console.log("Instance joined the room. Starting connection process..");
-        let connectionObj = start(client_io, myRoom, videoRef);
+        let connectionObj = start(
+          client_io,
+          myRoom,
+          videoRef,
+          setErrorDialogDetails,
+          setErrorDialogOpen
+        );
 
         client_io.on("sdp_answer", (data) => {
           try {
@@ -81,7 +94,13 @@ const negotiate = (client_io, pc, myRoom) => {
     });
 };
 
-const start = (client_io, myRoom, videoRef) => {
+const start = (
+  client_io,
+  myRoom,
+  videoRef,
+  setErrorDialogDetails,
+  setErrorDialogOpen
+) => {
   const config = {
     sdpSemantics: "unified-plan",
     //always use stun servers
@@ -107,8 +126,15 @@ const start = (client_io, myRoom, videoRef) => {
       saveBlobToFile(blob);
     } else {
       let message = JSON.parse(event.data);
-      console.log("Data channel message:", message);
-      console.log(message.type);
+      if (message.type && message.type === "exception") {
+        setErrorDialogDetails({
+          description: message.description,
+          stacktrace: message.stacktrace,
+        });
+        setErrorDialogOpen(true);
+      } else {
+        console.log("Data channel message:", message);
+      }
     }
   };
 
@@ -139,19 +165,3 @@ export const stopPeerConnection = (peerConnection) => {
     }
   });
 };
-
-// function send(evtObject) {
-//   let msg = JSON.stringify(evtObject);
-//   dataChannel.send(msg);
-// }
-
-// function closeDC() {
-//   console.log("closing data channel");
-//   dataChannel.close();
-// }
-
-// function renderImg(blob) {
-//   let urlCreator = window.URL || window.webkitURL;
-//   let imgUrl = urlCreator.createObjectURL(blob);
-//   videoWindow.src = imgUrl;
-// }

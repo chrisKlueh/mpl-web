@@ -13,6 +13,7 @@ import os
 import ssl
 import io
 import socketio
+import traceback
 
 from importlib import import_module
 from aiortc import RTCPeerConnection, RTCSessionDescription
@@ -30,9 +31,9 @@ use("Agg")
 
 class RemotePlotStream(object):
     def __init__(self, demo, sig_host, sig_port, instance_host_id) -> None:
-        self.establishSocketConnection(sig_host, sig_port, instance_host_id)
-        self.pcs = set()
-        self.initDemo(demo)
+            self.establishSocketConnection(sig_host, sig_port, instance_host_id)
+            self.pcs = set()
+            self.initDemo(demo)
             
     def establishSocketConnection(self, sig_host, sig_port, instance_host_id):
         loop = asyncio.get_event_loop()
@@ -141,30 +142,35 @@ class RemotePlotStream(object):
         channel.send(message)
 
     def handleMessage(self, messageObj):
-        if messageObj["type"] == MESSAGE_TYPES["MOUSE_MOVE"]:
-            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
-            self.demoFig.canvas.motion_notify_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]))
-        elif messageObj["type"] == MESSAGE_TYPES["MOUSE_DOWN"]:
-            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
-            self.demoFig.canvas.button_press_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]), button=MPL_MOUSE_BTNS[messageObj["button"]])
-        elif messageObj["type"] == MESSAGE_TYPES["MOUSE_UP"]:
-            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
-            self.demoFig.canvas.button_release_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]), button=MPL_MOUSE_BTNS[messageObj["button"]])
-        elif messageObj["type"] == MESSAGE_TYPES["KEY_DOWN"]:
-            self.demoFig.canvas.key_press_event(messageObj["key"])
-        elif messageObj["type"] == MESSAGE_TYPES["KEY_UP"]:
-            self.demoFig.canvas.key_release_event(messageObj["key"])
-        elif messageObj["type"] == MESSAGE_TYPES["WHEEL"]:
-            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
-            self.demoFig.canvas.scroll_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]), step=self.calcStep(messageObj["deltaY"]))
-        elif messageObj["type"] == MESSAGE_TYPES["FIGURE_ENTER"]:
-            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
-            self.demoFig.canvas.enter_notify_event(xy=(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"])))
-        elif messageObj["type"] == MESSAGE_TYPES["FIGURE_LEAVE"]:
-            self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
-            self.demoFig.canvas.leave_notify_event()
-        elif messageObj["type"] == MESSAGE_TYPES["REQUEST_SNAPSHOT"]:
-            self.onSaveSnapshot()
+        try:
+            if messageObj["type"] == MESSAGE_TYPES["MOUSE_MOVE"]:
+                self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+                self.demoFig.canvas.motion_notify_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]))
+            elif messageObj["type"] == MESSAGE_TYPES["MOUSE_DOWN"]:
+                self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+                self.demoFig.canvas.button_press_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]), button=MPL_MOUSE_BTNS[messageObj["button"]])
+            elif messageObj["type"] == MESSAGE_TYPES["MOUSE_UP"]:
+                self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+                self.demoFig.canvas.button_release_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]), button=MPL_MOUSE_BTNS[messageObj["button"]])
+            elif messageObj["type"] == MESSAGE_TYPES["KEY_DOWN"]:
+                self.demoFig.canvas.key_press_event(messageObj["key"])
+            elif messageObj["type"] == MESSAGE_TYPES["KEY_UP"]:
+                self.demoFig.canvas.key_release_event(messageObj["key"])
+            elif messageObj["type"] == MESSAGE_TYPES["WHEEL"]:
+                self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+                self.demoFig.canvas.scroll_event(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"]), step=self.calcStep(messageObj["deltaY"]))
+            elif messageObj["type"] == MESSAGE_TYPES["FIGURE_ENTER"]:
+                self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+                self.demoFig.canvas.enter_notify_event(xy=(self.calcX(messageObj["normalizedX"]), self.calcY(messageObj["normalizedY"])))
+            elif messageObj["type"] == MESSAGE_TYPES["FIGURE_LEAVE"]:
+                self.checkClientPlotDimensions(messageObj["clientWidth"], messageObj["clientHeight"])
+                self.demoFig.canvas.leave_notify_event()
+            elif messageObj["type"] == MESSAGE_TYPES["REQUEST_SNAPSHOT"]:
+                self.onSaveSnapshot()
+        except Exception as e:
+            stackTrace = ''.join(traceback.format_exception(None, e, e.__traceback__))
+            print("\nAn exception occurred when processing input:", stackTrace, "\n")
+            self.channel_send(self.channel, json.dumps({"type": MESSAGE_TYPES["EXCEPTION"], "description": str(e), "stacktrace": stackTrace}))
 
     def calcStep(self, deltaY):
         step = 1
@@ -263,7 +269,7 @@ if __name__ == "__main__":
     else:
         ssl_context = None
 
-    demoModule = import_module("." + args.demo, "demo_files")
-    demo = demoModule.Demo(blocking=False)
-    
-    remotePlotStream = RemotePlotStream(demo, args.sig_host, args.sig_port, args.instance_host_id)
+        demoModule = import_module("." + args.demo, "demo_files")
+        demo = demoModule.Demo(blocking=False)
+        
+        remotePlotStream = RemotePlotStream(demo, args.sig_host, args.sig_port, args.instance_host_id)

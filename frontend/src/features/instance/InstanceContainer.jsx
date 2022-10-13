@@ -8,7 +8,6 @@ import ConfirmationDialog from "../general/ConfirmationDialog";
 import InstanceDescription from "./InstanceDescription";
 import FeedbackDialog from "./FeedbackDialog";
 import RemotePlot from "./RemotePlot";
-import ErrorDialog from "./ErrorDialog";
 
 import {
   resetInstanceState,
@@ -21,10 +20,6 @@ const InstanceContainer = (props) => {
   const [isFeedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   const [isTerminateDialogOpen, setTerminateDialogOpen] = useState(false);
   const [isRestartDialogOpen, setRestartDialogOpen] = useState(false);
-  const [isErrorDialogOpen, setErrorDialogOpen] = useState(false);
-  const [errorDialogDetails, setErrorDialogDetails] = useState(
-    "jimmy hat problemen"
-  );
 
   const navigate = useNavigate();
   const {
@@ -81,8 +76,7 @@ const InstanceContainer = (props) => {
           pid={instance.pid}
           handleTerminate={() => setTerminateDialogOpen(true)}
           handleComment={() => setFeedbackDialogOpen(true)}
-          /* handleRestart={() => setRestartDialogOpen(true)} */
-          handleRestart={() => setErrorDialogOpen(true)}
+          handleRestart={() => setRestartDialogOpen(true)}
         />
       </div>
       <FeedbackDialog
@@ -103,12 +97,6 @@ const InstanceContainer = (props) => {
         handleClose={() => setRestartDialogOpen(false)}
         handleConfirm={handleRestart}
         open={isRestartDialogOpen}
-      />
-      <ErrorDialog
-        open={isErrorDialogOpen}
-        errorDetails={errorDialogDetails}
-        handleClose={() => setErrorDialogOpen(false)}
-        handleConfirm={handleTerminate}
       />
     </WrapperContainer>
   );
