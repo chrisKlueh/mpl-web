@@ -43,7 +43,6 @@ const WrapperContainer = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoRefreshInterval]);
-  console.log(window.autoRefreshInterval);
   return isLoggedIn ? (
     <div className={styles.root}>
       <Navbar isLoggedIn={isLoggedIn} isAdmin={isAdmin} userName={userName} />
