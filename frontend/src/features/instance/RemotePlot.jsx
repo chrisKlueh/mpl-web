@@ -61,7 +61,6 @@ const RemotePlot = (props) => {
     isLoading,
     handleTerminate,
     handleComment,
-    handleRestart,
     isAdmin,
   } = props;
 
@@ -220,7 +219,6 @@ const RemotePlot = (props) => {
           handleTerminate={handleTerminate}
           handleSave={handleSavePlot}
           handleComment={handleComment}
-          handleRestart={handleRestart}
           handleOpenDebugMenu={() => setDebugMenuOpen(true)}
           disabled={isLoading}
           isAdmin={isAdmin}
