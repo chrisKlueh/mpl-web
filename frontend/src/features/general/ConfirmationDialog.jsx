@@ -1,43 +1,26 @@
 import React from "react";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import { DialogContentText } from "@mui/material";
+
+import InfoDialogBase from "./InfoDialogBase";
 
 const ConfirmationDialog = (props) => {
   const { open, title, description, handleClose, handleConfirm } = props;
 
-  const handleConfirmAndClose = () => {
-    handleConfirm();
-    handleClose();
-  };
+  const confirmationDialogChildren = (
+    <DialogContentText id="alert-dialog-description">
+      {description}
+    </DialogContentText>
+  );
 
   return (
-    <Dialog
+    <InfoDialogBase
+      title={title}
+      handleClose={handleClose}
+      handleConfirm={handleConfirm}
       open={open}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          {description}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleConfirmAndClose} color="primary" autoFocus>
-          Confirm
-        </Button>
-      </DialogActions>
-    </Dialog>
+      {confirmationDialogChildren}
+    </InfoDialogBase>
   );
 };
 
