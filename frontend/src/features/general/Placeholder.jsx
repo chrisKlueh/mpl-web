@@ -8,7 +8,7 @@ const Placeholder = (props) => {
   return (
     <div className={styles.container}>
       <img className={styles.plotty} alt="Plotty" src={sadSmiley} />
-      <div>{message}</div>
+      <div>{message ? message : "Looks like there's nothing here yet.."}</div>
     </div>
   );
 };
