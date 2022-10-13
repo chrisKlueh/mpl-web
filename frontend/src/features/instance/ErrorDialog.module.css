@@ -1,0 +1,7 @@
+.errorDescription {
+  margin: 3px 0;
+  padding: 0 0 0 15px;
+  font-family: "Consolas", monospace;
+  border-radius: 5px;
+  background-color: lightgray;
+}
