@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Dialog,
@@ -8,18 +8,28 @@ import {
   DialogTitle,
   Avatar,
   Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import { BugReport, Chat } from "@mui/icons-material";
+import { BugReport, Chat, ExpandMore } from "@mui/icons-material";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import styles from "./FeedbackDetails.module.css";
 
 const FeedbackDetails = (props) => {
   const { feedbackDetails, open, handleClose } = props;
+  const [isAccordionOpen, setAccordionOpen] = useState(false);
+
+  const collapseAndClose = () => {
+    setAccordionOpen(false);
+    handleClose();
+  };
+
   return (
     feedbackDetails && (
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={collapseAndClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -46,9 +56,27 @@ const FeedbackDetails = (props) => {
             <DialogContentText id="alert-dialog-description">
               {feedbackDetails.details}
             </DialogContentText>
+            {feedbackDetails.stacktrace && (
+              <Accordion
+                expanded={isAccordionOpen}
+                onChange={() => setAccordionOpen(!isAccordionOpen)}
+                className={styles.accordion}
+              >
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <DialogContentText>
+                    {`${isAccordionOpen ? "Hide" : "Show"} traceback`}
+                  </DialogContentText>
+                </AccordionSummary>
+                <AccordionDetails className={styles.accordionDetails}>
+                  <DialogContentText>
+                    {feedbackDetails.stacktrace}
+                  </DialogContentText>
+                </AccordionDetails>
+              </Accordion>
+            )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={collapseAndClose} color="primary">
               Close
             </Button>
           </DialogActions>

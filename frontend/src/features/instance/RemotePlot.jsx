@@ -196,6 +196,7 @@ const RemotePlot = (props) => {
       feedbackType: feedbackType,
       feedback: feedback,
       demoId: id,
+      stacktrace: errorDialogDetails.stacktrace,
     });
     navigate("/demos/");
   };

@@ -16,11 +16,20 @@ export const showFeedbackReq = async () => {
   });
 };
 
-export const submitFeedbackReq = async (feedbackType, feedback, demoId) => {
+export const submitFeedbackReq = async (
+  feedbackType,
+  feedback,
+  demoId,
+  stacktrace
+) => {
   let formData = new FormData();
   formData.append("type", feedbackType);
   formData.append("details", feedback);
   formData.append("demo", demoId);
+  if (stacktrace) {
+    //truncate stacktrace to the maximum length allowed by the database
+    formData.append("stacktrace", stacktrace.substring(0, 1500));
+  }
 
   return new Promise((resolve, reject) => {
     axios({
