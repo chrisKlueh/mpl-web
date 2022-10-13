@@ -17,8 +17,8 @@ export const establishSocketConnection = (
 ) => {
   return new Promise((resolve, reject) => {
     const myRoom = `instance_${hostId}-${pid}`;
-    //let client_io = io(`${window.location.origin}:8080`);
-    let client_io = io(`192.168.2.115:8080`);
+    let client_io = io(`${window.location.origin}:8080`);
+    //let client_io = io(`192.168.2.115:8080`);
     client_io.emit("join_room", { role: "client", room: myRoom });
 
     client_io.on("connect", () => {
