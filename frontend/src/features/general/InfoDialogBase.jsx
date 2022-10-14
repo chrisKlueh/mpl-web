@@ -15,6 +15,7 @@ const InfoDialogBase = (props) => {
     confirmString,
     handleClose,
     handleConfirm,
+    cancelAllowed,
   } = props;
 
   const handleConfirmAndClose = () => {
@@ -25,16 +26,18 @@ const InfoDialogBase = (props) => {
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={cancelAllowed ? handleClose : null}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>{props.children}</DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          {closeString ? closeString : "Cancel"}
-        </Button>
+        {cancelAllowed && (
+          <Button onClick={handleClose} color="primary">
+            {closeString ? closeString : "Cancel"}
+          </Button>
+        )}
         <Button onClick={handleConfirmAndClose} color="primary" autoFocus>
           {confirmString ? confirmString : "Confirm"}
         </Button>

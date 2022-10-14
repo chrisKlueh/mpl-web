@@ -34,13 +34,13 @@ export function* watcherShowFeedback() {
 export function* workerSubmitFeedback({ payload }) {
   try {
     const { feedbackType, feedback, demoId } = payload;
-    if (payload.stacktrace) {
+    if (payload.generatedDetails) {
       yield call(
         submitFeedbackReq,
         feedbackType,
         feedback,
         demoId,
-        payload.stacktrace
+        payload.generatedDetails
       );
     } else {
       yield call(submitFeedbackReq, feedbackType, feedback, demoId);

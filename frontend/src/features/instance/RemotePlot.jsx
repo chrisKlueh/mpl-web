@@ -24,6 +24,7 @@ import {
 import { submitFeedbackRequest } from "../../slices/feedbackSlice";
 
 const RemotePlot = (props) => {
+  const [isPeerDisconnected, setPeerDisconnected] = useState(false);
   const [isDebugMenuOpen, setDebugMenuOpen] = useState(false);
   const [isErrorDialogOpen, setErrorDialogOpen] = useState(false);
   const [errorDialogDetails, setErrorDialogDetails] = useState(null);
@@ -142,6 +143,7 @@ const RemotePlot = (props) => {
       videoRef: videoRef,
       setErrorDialogDetails: setErrorDialogDetails,
       setErrorDialogOpen: setErrorDialogOpen,
+      setPeerDisconnected: setPeerDisconnected,
     });
   };
 
@@ -195,7 +197,7 @@ const RemotePlot = (props) => {
       feedbackType: feedbackType,
       feedback: feedback,
       demoId: id,
-      stacktrace: errorDialogDetails.stacktrace,
+      generatedDetails: errorDialogDetails.generatedDetails,
     });
     navigate("/demos/");
   };
@@ -208,7 +210,7 @@ const RemotePlot = (props) => {
   return (
     <Fragment>
       <div className={styles.videoContainer}>
-        {isLoading ? (
+        {isLoading || isPeerDisconnected ? (
           <div className={styles.loadingFragment}>
             <LoadingFragment message="Establishing connection.." />
           </div>

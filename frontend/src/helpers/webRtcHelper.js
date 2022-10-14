@@ -13,12 +13,13 @@ export const establishSocketConnection = (
   pid,
   videoRef,
   setErrorDialogDetails,
-  setErrorDialogOpen
+  setErrorDialogOpen,
+  setPeerDisconnected
 ) => {
   return new Promise((resolve, reject) => {
     const myRoom = `instance_${hostId}-${pid}`;
-    let client_io = io(`${window.location.origin}:8080`);
-    //let client_io = io(`192.168.2.115:8080`);
+    //let client_io = io(`${window.location.origin}:8080`);
+    let client_io = io(`192.168.2.115:8080`);
     client_io.emit("join_room", { role: "client", room: myRoom });
 
     client_io.on("connect", () => {
@@ -40,7 +41,8 @@ export const establishSocketConnection = (
           myRoom,
           videoRef,
           setErrorDialogDetails,
-          setErrorDialogOpen
+          setErrorDialogOpen,
+          setPeerDisconnected
         );
 
         client_io.on("sdp_answer", (data) => {
@@ -99,7 +101,8 @@ const start = (
   myRoom,
   videoRef,
   setErrorDialogDetails,
-  setErrorDialogOpen
+  setErrorDialogOpen,
+  setPeerDisconnected
 ) => {
   const config = {
     sdpSemantics: "unified-plan",
@@ -114,6 +117,25 @@ const start = (
       videoRef.current.srcObject = evt.streams[0];
     }
   });
+  pc.oniceconnectionstatechange = (ev) => {
+    console.log(
+      "peerConnection.iceconnectionstatechange:" + pc.iceConnectionState
+    );
+    if (pc.iceConnectionState === "disconnected") {
+      setPeerDisconnected(true);
+    } else if (
+      pc.iceConnectionState === "failed" ||
+      pc.iceConnectionState === "closed"
+    ) {
+      setErrorDialogDetails({
+        errorType: "peer_connection_error",
+        description: `iceConnectionState: ${pc.iceConnectionState}`,
+        generatedDetails: `Peer connection lost (iceConnectionState: ${pc.iceConnectionState}).`,
+      });
+      setErrorDialogOpen(true);
+    }
+  };
+
   let dataChannel = pc.createDataChannel("inputchannel");
 
   dataChannel.onerror = (error) => {
@@ -128,8 +150,9 @@ const start = (
       let message = JSON.parse(event.data);
       if (message.type && message.type === "exception") {
         setErrorDialogDetails({
+          errorType: "demo_error",
           description: message.description,
-          stacktrace: message.stacktrace,
+          generatedDetails: message.stacktrace,
         });
         setErrorDialogOpen(true);
       } else {

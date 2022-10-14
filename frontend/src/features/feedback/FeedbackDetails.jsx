@@ -56,7 +56,7 @@ const FeedbackDetails = (props) => {
             <DialogContentText id="alert-dialog-description">
               {feedbackDetails.details}
             </DialogContentText>
-            {feedbackDetails.stacktrace && (
+            {feedbackDetails.generated_details && (
               <Accordion
                 expanded={isAccordionOpen}
                 onChange={() => setAccordionOpen(!isAccordionOpen)}
@@ -64,12 +64,12 @@ const FeedbackDetails = (props) => {
               >
                 <AccordionSummary expandIcon={<ExpandMore />}>
                   <DialogContentText>
-                    {`${isAccordionOpen ? "Hide" : "Show"} traceback`}
+                    {`${isAccordionOpen ? "Hide" : "Show"} associated error`}
                   </DialogContentText>
                 </AccordionSummary>
                 <AccordionDetails className={styles.accordionDetails}>
                   <DialogContentText>
-                    {feedbackDetails.stacktrace}
+                    {feedbackDetails.generated_details}
                   </DialogContentText>
                 </AccordionDetails>
               </Accordion>
