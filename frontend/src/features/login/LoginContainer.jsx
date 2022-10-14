@@ -2,29 +2,17 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 
+import styles from "./LoginContainer.module.css";
 import LoginForm from "./LoginForm";
 import Navbar from "../general/Navbar";
-import backgroundImage from "../../background.jpg";
 
 const LoginContainer = (props) => {
   const { isLoggedIn } = props;
   return (
-    <div
-      style={{
-        height: "100vh",
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundPosition: "40% 5%",
-      }}
-    >
+    <div className={styles.root}>
       <Navbar isLoggedIn={isLoggedIn} />
       {isLoggedIn && <Navigate to={"/demos"} />}
-      <div
-        style={{
-          zIndex: 1,
-          margin: "100px auto",
-          display: "flex",
-        }}
-      >
+      <div className={styles.loginFormContainer}>
         <LoginForm />
       </div>
     </div>

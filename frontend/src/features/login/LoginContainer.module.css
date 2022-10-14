@@ -1,0 +1,13 @@
+.root {
+  background-image: url("../../background.jpg");
+  background-position: 40% 5%;
+  height: 100vh;
+  background-size: cover;
+}
+
+.loginFormContainer {
+  z-index: 1;
+  display: flex;
+  justify-self: center;
+  height: calc(100% - 64px);
+}
