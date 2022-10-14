@@ -1,7 +1,10 @@
-.root {
-  height: calc(100vh - 69px);
+html {
   background-image: url("../../background.jpg");
   background-position: 40% 5%;
+}
+
+.root {
+  height: calc(100vh - 69px);
 }
 
 .paper {
@@ -32,7 +35,7 @@
 }
 
 @media screen and (max-width: 1081px) {
-  .root {
+  html {
     background-image: none;
   }
 

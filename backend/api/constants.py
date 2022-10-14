@@ -12,6 +12,7 @@ MESSAGE_TYPES = {
     "FIGURE_ENTER": "mouseenter",
     "FIGURE_LEAVE": "mouseleave",
     "REQUEST_SNAPSHOT": "request_snapshot",
+    "EXCEPTION": "exception",
 }
 
 MPL_MOUSE_BTNS = {

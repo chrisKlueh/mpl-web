@@ -14,7 +14,7 @@ class User(models.Model):
 
 class Demo(models.Model):
     id = models.AutoField("demo_id", primary_key=True)
-    created_at = models.DateTimeField("created_at", auto_now_add=True)
+    created_at = models.DateTimeField("created_at", auto_now=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField("title", max_length=240, unique=True)
     short_desc = models.CharField("short_desc", max_length=240)
@@ -60,6 +60,7 @@ class Feedback(models.Model):
     created_at = models.DateTimeField("created_at", auto_now_add=True)
     #details should be models.TextField?
     details = models.CharField("name", max_length=240)
+    stacktrace = models.CharField("stacktrace", max_length=1500, blank=True, default='')
     type = models.ForeignKey(FeedbackType, on_delete=models.CASCADE)
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
     

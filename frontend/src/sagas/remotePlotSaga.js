@@ -14,9 +14,24 @@ import {
 import { snackbarNotification } from "../helpers/notifierHelper";
 
 export function* workerEstablishPeerConnection({ payload }) {
-  const { setPeerConnection, setDataChannel, hostId, pid, videoRef } = payload;
+  const {
+    setPeerConnection,
+    setDataChannel,
+    hostId,
+    pid,
+    videoRef,
+    setErrorDialogDetails,
+    setErrorDialogOpen,
+  } = payload;
   try {
-    const res = yield call(establishSocketConnection, hostId, pid, videoRef);
+    const res = yield call(
+      establishSocketConnection,
+      hostId,
+      pid,
+      videoRef,
+      setErrorDialogDetails,
+      setErrorDialogOpen
+    );
     setPeerConnection(res.peerConnection);
     setDataChannel(res.dataChannel);
     yield put(establishPeerConnectionSuccess());

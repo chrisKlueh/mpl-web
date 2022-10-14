@@ -80,7 +80,7 @@ class DemoList(APIView):
     permission_classes = [partial(OnlyAdminPermission, ['POST'])]
     def get(self, request, format=None):
         
-        demoList = Demo.objects.all()
+        demoList = Demo.objects.all().order_by('-created_at')
         serializer = DemoSerializer(demoList, context={'request': request}, many=True)
         return Response(serializer.data)
 
@@ -120,7 +120,7 @@ class DemoDetail(APIView):
 class FeedbackList(APIView):
     def get(self, request, format=None):
         
-        feedbackList = Feedback.objects.all()
+        feedbackList = Feedback.objects.all().order_by('-created_at')
         serializer = FeedbackSerializer(feedbackList, context={'request': request}, many=True)
         return Response(serializer.data)
 
@@ -134,6 +134,7 @@ class FeedbackList(APIView):
 class InstanceList(APIView):
     def spawnInstance(self, demoId):
         sigHost = os.environ.get('DJANGO_SIG_HOST')
+        #sigHost = "192.168.2.115"
         sigPort = 8080
         hostId = 2
         demoFile = Demo.objects.get(pk=demoId).file

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,14 @@ import FeedbackForm from "./FeedbackForm";
 import styles from "./FeedbackDialog.module.css";
 
 const FeedbackDialog = (props) => {
-  const { open, handleClose, handleSubmit } = props;
+  const {
+    open,
+    handleClose,
+    handleSubmit,
+    bugReport,
+    cancelString,
+    submitString,
+  } = props;
 
   return (
     <Dialog
@@ -19,18 +26,38 @@ const FeedbackDialog = (props) => {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">Leave Feedback</DialogTitle>
+      <DialogTitle id="alert-dialog-title">
+        {bugReport ? "Report Bug" : "Leave Feedback"}
+      </DialogTitle>
       <DialogContent>
         <DialogContentText
           id="alert-dialog-description"
           className={styles.dialogContentText}
         >
-          Feel free to report a bug or just leave a comment. Please select the
-          feedback type accordingly. <br />
-          Your feedback is anonymous and will only be linked to the demo this
-          instance is based on.
+          {bugReport ? (
+            <Fragment>
+              Feel free to report this bug. Note: a traceback of the error will
+              be added automatically.
+              <br />
+              Your feedback is anonymous and will only be linked to the demo
+              this instance is based on.
+            </Fragment>
+          ) : (
+            <Fragment>
+              Feel free to report a bug or just leave a comment. Please select
+              the feedback type accordingly. <br />
+              Your feedback is anonymous and will only be linked to the demo
+              this instance is based on.
+            </Fragment>
+          )}
         </DialogContentText>
-        <FeedbackForm handleSubmit={handleSubmit} handleClose={handleClose} />
+        <FeedbackForm
+          handleSubmit={handleSubmit}
+          handleClose={handleClose}
+          bugReport={bugReport}
+          cancelString={cancelString}
+          submitString={submitString}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -53,12 +53,10 @@ const InstanceContainer = (props) => {
   const handleTerminate = () => {
     navigate("/demos/");
   };
-  const handleRestart = () => console.log("restarting instance");
 
   const handleSubmitFeedback = (feedbackType, feedback) => {
     const { submitFeedbackRequest, demo } = props;
     const { id } = demo;
-    console.log(id);
     submitFeedbackRequest({
       feedbackType: feedbackType,
       feedback: feedback,
@@ -76,7 +74,6 @@ const InstanceContainer = (props) => {
           pid={instance.pid}
           handleTerminate={() => setTerminateDialogOpen(true)}
           handleComment={() => setFeedbackDialogOpen(true)}
-          handleRestart={() => setRestartDialogOpen(true)}
         />
       </div>
       <FeedbackDialog
@@ -90,13 +87,6 @@ const InstanceContainer = (props) => {
         handleClose={() => setTerminateDialogOpen(false)}
         handleConfirm={handleTerminate}
         open={isTerminateDialogOpen}
-      />
-      <ConfirmationDialog
-        title="Confirm instance restart"
-        description="Do you really want to restart this instance?"
-        handleClose={() => setRestartDialogOpen(false)}
-        handleConfirm={handleRestart}
-        open={isRestartDialogOpen}
       />
     </WrapperContainer>
   );

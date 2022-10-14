@@ -44,4 +44,4 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Feedback
-        fields = ('id', 'created_at', 'details', 'type', 'demo', 'demo_title')
+        fields = ('id', 'created_at', 'details' , 'stacktrace', 'type', 'demo', 'demo_title')

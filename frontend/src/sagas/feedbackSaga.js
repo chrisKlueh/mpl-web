@@ -34,7 +34,17 @@ export function* watcherShowFeedback() {
 export function* workerSubmitFeedback({ payload }) {
   try {
     const { feedbackType, feedback, demoId } = payload;
-    yield call(submitFeedbackReq, feedbackType, feedback, demoId);
+    if (payload.stacktrace) {
+      yield call(
+        submitFeedbackReq,
+        feedbackType,
+        feedback,
+        demoId,
+        payload.stacktrace
+      );
+    } else {
+      yield call(submitFeedbackReq, feedbackType, feedback, demoId);
+    }
     yield put(submitFeedbackSuccess());
     yield put(snackbarNotification("Feedback submitted.", "success"));
   } catch (error) {

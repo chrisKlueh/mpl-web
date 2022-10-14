@@ -6,6 +6,15 @@
   margin-inline-end: 10px;
 }
 
+.accordion {
+  margin-top: 10px;
+}
+
+.accordionDetails {
+  max-height: 30vh;
+  overflow: scroll;
+}
+
 @media screen and (min-width: 600px) {
   .root {
     min-width: 500px;
