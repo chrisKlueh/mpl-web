@@ -7,6 +7,19 @@ import styles from "./ErrorDialog.module.css";
 const ErrorDialog = (props) => {
   const { open, isAdmin, errorDetails, handleClose, handleConfirm } = props;
 
+  const getTitle = (errorName) => {
+    switch (errorName) {
+      case "timeout_error":
+        return "Connection Timeout";
+      case "peer_connection_error":
+        return "Peer Connection Lost";
+      case "demo_error":
+        return "Instance Error";
+      default:
+        return;
+    }
+  };
+
   const printTracebackAndClose = () => {
     if (
       isAdmin &&
@@ -18,6 +31,24 @@ const ErrorDialog = (props) => {
     }
     handleClose();
   };
+
+  const errorDialogChildrenTimeoutError = errorDetails !== null && (
+    <Fragment>
+      <DialogContentText id="alert-dialog-description">
+        {`A timeout occurred when establishing the peer connection${
+          isAdmin ? ":" : "."
+        }`}
+      </DialogContentText>
+      {errorDetails.description && isAdmin && (
+        <DialogContentText className={styles.errorDescription}>
+          {errorDetails.description}
+        </DialogContentText>
+      )}
+      <DialogContentText>
+        {"Try to spawn a new instance of this demo."}
+      </DialogContentText>
+    </Fragment>
+  );
 
   const errorDialogChildrenConnectionError = errorDetails !== null && (
     <Fragment>
@@ -61,23 +92,30 @@ const ErrorDialog = (props) => {
     </Fragment>
   );
 
+  const getChildren = (errorName) => {
+    switch (errorName) {
+      case "timeout_error":
+        return errorDialogChildrenTimeoutError;
+      case "peer_connection_error":
+        return errorDialogChildrenConnectionError;
+      case "demo_error":
+        return errorDialogChildrenDemoError;
+      default:
+        return;
+    }
+  };
+
   return (
     errorDetails !== null && (
       <InfoDialogBase
-        title={
-          errorDetails.errorType === "peer_connection_error"
-            ? "Peer Connection Lost"
-            : "Instance Error"
-        }
+        title={getTitle(errorDetails.errorType)}
         handleClose={printTracebackAndClose}
         handleConfirm={handleConfirm}
         open={open}
         confirmString={"Terminate now"}
-        cancelAllowed={errorDetails.errorType !== "peer_connection_error"}
+        cancelAllowed={errorDetails.errorType === "demo_error"}
       >
-        {errorDetails.errorType === "peer_connection_error"
-          ? errorDialogChildrenConnectionError
-          : errorDialogChildrenDemoError}
+        {getChildren(errorDetails.errorType)}
       </InfoDialogBase>
     )
   );

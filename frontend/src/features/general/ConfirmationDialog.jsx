@@ -18,6 +18,7 @@ const ConfirmationDialog = (props) => {
       handleClose={handleClose}
       handleConfirm={handleConfirm}
       open={open}
+      cancelAllowed
     >
       {confirmationDialogChildren}
     </InfoDialogBase>

@@ -1,11 +1,24 @@
 import { io } from "socket.io-client";
 import { saveAs } from "file-saver";
 
+const CONNECTION_TIMEOUT_DURATION = 60000;
+const CONNECTION_TIMEOUT_SIGNALING_STEPS = [
+  "Timed out connecting to signaling server",
+  "Timed out joining signaling room",
+  "Timed out waiting for instance to join signaling room",
+  "Signaling timed out in state:",
+];
+var connectionTimeoutCause = null;
+
 const saveBlobToFile = (blob) => {
   const fileName = `snapshot_${new Date().toLocaleString("en-GB")}.png`
     .replace(/,\s/g, "_")
     .replace(/:/g, "");
   saveAs(blob, fileName);
+};
+
+const updateTimeoutCause = (timeoutCause) => {
+  connectionTimeoutCause = timeoutCause;
 };
 
 export const establishSocketConnection = (
@@ -16,14 +29,24 @@ export const establishSocketConnection = (
   setErrorDialogOpen,
   setPeerDisconnected
 ) => {
+  updateTimeoutCause(CONNECTION_TIMEOUT_SIGNALING_STEPS[0]);
+  let connectionTimeoutHandle = setTimeout(() => {
+    setErrorDialogDetails({
+      errorType: "timeout_error",
+      description: connectionTimeoutCause,
+      generatedDetails: connectionTimeoutCause,
+    });
+    setErrorDialogOpen(true);
+  }, CONNECTION_TIMEOUT_DURATION);
   return new Promise((resolve, reject) => {
     const myRoom = `instance_${hostId}-${pid}`;
-    let client_io = io(`${window.location.origin}:8080`);
-    //let client_io = io(`192.168.2.115:8080`);
+    //let client_io = io(`${window.location.origin}:8080`);
+    let client_io = io(`192.168.2.115:8080`);
     client_io.emit("join_room", { role: "client", room: myRoom });
 
     client_io.on("connect", () => {
       console.log("connected");
+      updateTimeoutCause(CONNECTION_TIMEOUT_SIGNALING_STEPS[1]);
     });
 
     client_io.on("disconnect", () => {
@@ -33,6 +56,7 @@ export const establishSocketConnection = (
     client_io.on("joined_room", (data) => {
       const role = data.role;
       if (role === "client") {
+        updateTimeoutCause(CONNECTION_TIMEOUT_SIGNALING_STEPS[2]);
         console.log("I joined the room. Waiting for instance..");
       } else if (role === "instance") {
         console.log("Instance joined the room. Starting connection process..");
@@ -42,7 +66,8 @@ export const establishSocketConnection = (
           videoRef,
           setErrorDialogDetails,
           setErrorDialogOpen,
-          setPeerDisconnected
+          setPeerDisconnected,
+          connectionTimeoutHandle
         );
 
         client_io.on("sdp_answer", (data) => {
@@ -102,7 +127,8 @@ const start = (
   videoRef,
   setErrorDialogDetails,
   setErrorDialogOpen,
-  setPeerDisconnected
+  setPeerDisconnected,
+  connectionTimeoutHandle
 ) => {
   const config = {
     sdpSemantics: "unified-plan",
@@ -117,6 +143,15 @@ const start = (
       videoRef.current.srcObject = evt.streams[0];
     }
   });
+  pc.onsignalingstatechange = (ev) => {
+    if (pc.signalingState === "stable") {
+      clearTimeout(connectionTimeoutHandle);
+    } else {
+      updateTimeoutCause(
+        `${CONNECTION_TIMEOUT_SIGNALING_STEPS[3]} ${pc.signalingState}`
+      );
+    }
+  };
   pc.oniceconnectionstatechange = (ev) => {
     console.log(
       "peerConnection.iceconnectionstatechange:" + pc.iceConnectionState
