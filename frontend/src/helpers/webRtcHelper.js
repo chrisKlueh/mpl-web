@@ -3,8 +3,8 @@ import { saveAs } from "file-saver";
 
 const saveBlobToFile = (blob) => {
   const fileName = `snapshot_${new Date().toLocaleString("en-GB")}.png`
-    .replace(/\,\s/g, "_")
-    .replace(/\:/g, "");
+    .replace(/,\s/g, "_")
+    .replace(/:/g, "");
   saveAs(blob, fileName);
 };
 
@@ -18,8 +18,8 @@ export const establishSocketConnection = (
 ) => {
   return new Promise((resolve, reject) => {
     const myRoom = `instance_${hostId}-${pid}`;
-    //let client_io = io(`${window.location.origin}:8080`);
-    let client_io = io(`192.168.2.115:8080`);
+    let client_io = io(`${window.location.origin}:8080`);
+    //let client_io = io(`192.168.2.115:8080`);
     client_io.emit("join_room", { role: "client", room: myRoom });
 
     client_io.on("connect", () => {
