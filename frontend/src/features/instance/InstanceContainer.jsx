@@ -19,7 +19,6 @@ import { submitFeedbackRequest } from "../../slices/feedbackSlice";
 const InstanceContainer = (props) => {
   const [isFeedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   const [isTerminateDialogOpen, setTerminateDialogOpen] = useState(false);
-  const [isRestartDialogOpen, setRestartDialogOpen] = useState(false);
 
   const navigate = useNavigate();
   const {
@@ -37,8 +36,6 @@ const InstanceContainer = (props) => {
       deleteInstanceRequest({
         userId: userId,
         instanceId: instance.id,
-        hostId: instance.host,
-        pid: instance.pid,
       });
       resetInstanceState();
     };
@@ -70,8 +67,7 @@ const InstanceContainer = (props) => {
       <div className={styles.root}>
         <InstanceDescription isLoading={isLoading} description={demo} />
         <RemotePlot
-          hostId={instance.host}
-          pid={instance.pid}
+          instanceId={instance.id}
           handleTerminate={() => setTerminateDialogOpen(true)}
           handleComment={() => setFeedbackDialogOpen(true)}
         />

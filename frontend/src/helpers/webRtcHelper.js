@@ -22,8 +22,7 @@ const updateTimeoutCause = (timeoutCause) => {
 };
 
 export const establishSocketConnection = (
-  hostId,
-  pid,
+  instanceId,
   videoRef,
   setErrorDialogDetails,
   setErrorDialogOpen,
@@ -39,7 +38,8 @@ export const establishSocketConnection = (
     setErrorDialogOpen(true);
   }, CONNECTION_TIMEOUT_DURATION);
   return new Promise((resolve, reject) => {
-    const myRoom = `instance_${hostId}-${pid}`;
+    const myRoom = `instance_${instanceId}`;
+    console.log("room: " + myRoom);
     //let client_io = io(`${window.location.origin}:8080`);
     let client_io = io(`192.168.2.115:8080`);
     client_io.emit("join_room", { role: "client", room: myRoom });

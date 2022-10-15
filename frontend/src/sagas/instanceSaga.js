@@ -53,8 +53,8 @@ export function* watcherSpawnInstance() {
 
 export function* workerDeleteInstance({ payload }) {
   try {
-    const { userId, instanceId, hostId, pid } = payload;
-    yield call(deleteInstanceReq, userId, instanceId, hostId, pid);
+    const { userId, instanceId } = payload;
+    yield call(deleteInstanceReq, userId, instanceId);
     yield put(deleteInstanceSuccess());
   } catch (error) {
     yield put(deleteInstanceError());

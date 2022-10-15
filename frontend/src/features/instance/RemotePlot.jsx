@@ -57,8 +57,7 @@ const RemotePlot = (props) => {
   const {
     establishPeerConnectionRequest,
     stopPeerConnectionRequest,
-    hostId,
-    pid,
+    instanceId,
     isLoading,
     handleTerminate,
     handleComment,
@@ -138,8 +137,7 @@ const RemotePlot = (props) => {
     establishPeerConnectionRequest({
       setPeerConnection: setPeerConnection,
       setDataChannel: setDataChannel,
-      hostId: hostId,
-      pid: pid,
+      instanceId: instanceId,
       videoRef: videoRef,
       setErrorDialogDetails: setErrorDialogDetails,
       setErrorDialogOpen: setErrorDialogOpen,

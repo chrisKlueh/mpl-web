@@ -65,11 +65,9 @@ export const showInstanceReq = async (id) => {
   });
 };
 
-export const deleteInstanceReq = async (user_id, instance_id, host_id, pid) => {
+export const deleteInstanceReq = async (user_id, instance_id) => {
   let formData = new FormData();
   formData.append("user_id", user_id);
-  formData.append("host", host_id);
-  formData.append("pid", pid);
 
   return new Promise((resolve, reject) => {
     axios({

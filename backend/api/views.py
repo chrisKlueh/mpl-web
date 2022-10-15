@@ -3,6 +3,8 @@ import os
 import signal
 import os
 
+from uuid import getnode
+
 from functools import partial
 from django.http import Http404
 
@@ -132,17 +134,17 @@ class FeedbackList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class InstanceList(APIView):
-    def spawnInstance(self, demoId):
-        sigHost = os.environ.get('DJANGO_SIG_HOST')
-        #sigHost = "192.168.2.115"
+    def spawnInstance(self, demoId, instanceId, userId):
+        #sigHost = os.environ.get('DJANGO_SIG_HOST')
+        sigHost = "192.168.2.115"
         sigPort = 8080
-        hostId = 2
+        hostId = hex(getnode())
         demoFile = Demo.objects.get(pk=demoId).file
         demoFileString = str(demoFile).split("/")[1]
         print(demoFileString)
         demoFileString = demoFileString[:len(demoFileString) - 3]
         print(demoFileString)
-        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --sig_host " + str(sigHost) + " --sig_port " + str(sigPort) + " --instance_host_id " + str(hostId) + " --demo " + str(demoFileString)).split(), shell=False)
+        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --sig_host " + str(sigHost) + " --sig_port " + str(sigPort) + " --instance_id " + str(instanceId) + " --user_id " + str(userId) + " --demo " + str(demoFileString)).split(), shell=False)
         return hostId, p.pid
         
     def get(self, request, format=None):
@@ -153,17 +155,26 @@ class InstanceList(APIView):
 
     def post(self, request, format=None):
         instanceData = {'user_id': request.data["user_id"], 'demo': request.data["demo"]}
-        try:
-            host, pid = self.spawnInstance(instanceData['demo'])
+        print(instanceData)
+        #try:
+        serializer = InstanceSerializer(data=instanceData)
+        if serializer.is_valid():
+            instance = serializer.save()
+            host, pid = self.spawnInstance(instanceData['demo'], instance.id, instanceData['user_id'])
             instanceData['host'] = host
             instanceData['pid'] = pid
-            serializer = InstanceSerializer(data=instanceData)
+            InstanceDetail.get_object(self, instance.id)
+            serializer = InstanceSerializer(instance, data=instanceData,context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            else:
+                instance = self.get_object(id)
+                instance.delete()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        #except:
+        #    return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 class InstanceDetail(APIView):
     def get_object(self, pk):
@@ -180,17 +191,22 @@ class InstanceDetail(APIView):
     def delete(self, request, pk, format=None):
         instance = self.get_object(pk)
         user_id = instance.user_id
-        host = instance.host
-        pid = instance.pid
-        if request.data["host"] == str(host) and request.data["pid"] == str(pid) and request.data["user_id"] == str(user_id):
+        print(user_id)
+        print(request.data["user_id"])
+        #host = instance.host
+        #pid = instance.pid
+        #if request.data["host"] == str(host) and request.data["pid"] == str(pid) and request.data["user_id"] == str(user_id):
+        if request.data["user_id"] == str(user_id):
             try:
-                os.kill(pid, signal.SIGSTOP)
+                os.kill(instance.pid, signal.SIGSTOP)
                 instance.delete()
             except:
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        
 
 class FeedbackDetail(APIView):
     permission_classes = [partial(OnlyAdminPermission, ['DELETE'])]

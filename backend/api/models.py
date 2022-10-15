@@ -38,12 +38,10 @@ class Instance(models.Model):
     created_at = models.DateTimeField("created_at", auto_now_add=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
-    host = models.ForeignKey(Host, on_delete=models.CASCADE)
-    pid = models.IntegerField("pid")
+    #host = models.ForeignKey(Host, on_delete=models.CASCADE)
+    host = models.CharField("host", max_length=240, blank=True, default="")
+    pid = models.IntegerField("pid", blank=True, default=0)
     
-    class Meta:
-        unique_together = ("host", "pid")
-
     def __str__(self):
         return str(self.id)
 

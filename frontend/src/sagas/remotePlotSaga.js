@@ -17,8 +17,7 @@ export function* workerEstablishPeerConnection({ payload }) {
   const {
     setPeerConnection,
     setDataChannel,
-    hostId,
-    pid,
+    instanceId,
     videoRef,
     setErrorDialogDetails,
     setErrorDialogOpen,
@@ -27,8 +26,7 @@ export function* workerEstablishPeerConnection({ payload }) {
   try {
     const res = yield call(
       establishSocketConnection,
-      hostId,
-      pid,
+      instanceId,
       videoRef,
       setErrorDialogDetails,
       setErrorDialogOpen,
