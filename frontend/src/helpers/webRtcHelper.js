@@ -8,6 +8,7 @@ const CONNECTION_TIMEOUT_SIGNALING_STEPS = [
   "Timed out waiting for instance to join signaling room",
   "Signaling timed out in state:",
 ];
+const CONNECTION_TO_SIGNALING_LOST = "Signaling server connection lost";
 var connectionTimeoutCause = null;
 
 const saveBlobToFile = (blob) => {
@@ -51,6 +52,25 @@ export const establishSocketConnection = (
 
     client_io.on("disconnect", () => {
       console.log("disconnected");
+    });
+
+    client_io.on("connect_error", (error) => {
+      client_io.close();
+      //cancel timeout
+      clearTimeout(connectionTimeoutHandle);
+      //distinguish between failed initial connection and
+      //connection loss afterwards (since the error is ambiguous)
+      const connectErrorCause =
+        connectionTimeoutCause === CONNECTION_TIMEOUT_SIGNALING_STEPS[0]
+          ? CONNECTION_TIMEOUT_SIGNALING_STEPS[0]
+          : CONNECTION_TO_SIGNALING_LOST;
+      setErrorDialogDetails({
+        errorType: "timeout_error",
+        description: connectErrorCause,
+        generatedDetails:
+          connectErrorCause + ` (${error.type}: ${error.message})`,
+      });
+      setErrorDialogOpen(true);
     });
 
     client_io.on("joined_room", (data) => {
