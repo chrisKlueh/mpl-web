@@ -34,6 +34,10 @@
   .feedbackDate {
     display: none;
   }
+
+  .feedbackDetails {
+    max-width: 120px;
+  }
 }
 
 @media screen and (max-width: 750px) and (orientation: portrait) {
