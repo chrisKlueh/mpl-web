@@ -6,7 +6,7 @@ import styles from "./FeedbackContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
 import { showFeedbackRequest } from "../../slices/feedbackSlice";
 import FeedbackList from "./FeedbackList";
-import { getSelectedPage } from "../../helpers/listHelper";
+import { getSelectedPage, getMaxAmountOfPages } from "../../helpers/listHelper";
 
 const FeedbackContainer = (props) => {
   const { isLoading, feedback, showFeedbackRequest } = props;
@@ -21,8 +21,14 @@ const FeedbackContainer = (props) => {
 
   const handleChangePage = (event, newPage) => setPage(newPage);
 
-  const handleChangeRowsPerPage = (event) =>
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const handleChangeRowsPerPage = (event) => {
+    const newRowsPerPage = event.target.value;
+    const newAmountOfPages = getMaxAmountOfPages(feedback, newRowsPerPage);
+    if (page >= newAmountOfPages) {
+      setPage(newAmountOfPages - 1);
+    }
+    setRowsPerPage(parseInt(newRowsPerPage, 10));
+  };
 
   return (
     <WrapperContainer
