@@ -17,20 +17,20 @@ export function* workerEstablishPeerConnection({ payload }) {
   const {
     setPeerConnection,
     setDataChannel,
-    hostId,
-    pid,
+    instanceId,
     videoRef,
     setErrorDialogDetails,
     setErrorDialogOpen,
+    setPeerDisconnected,
   } = payload;
   try {
     const res = yield call(
       establishSocketConnection,
-      hostId,
-      pid,
+      instanceId,
       videoRef,
       setErrorDialogDetails,
-      setErrorDialogOpen
+      setErrorDialogOpen,
+      setPeerDisconnected
     );
     setPeerConnection(res.peerConnection);
     setDataChannel(res.dataChannel);

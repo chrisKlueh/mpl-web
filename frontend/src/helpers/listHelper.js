@@ -8,3 +8,6 @@ export const getSelectedPage = (list, page, rowsPerPage) => {
   const startIndex = page * rowsPerPage;
   return list.slice(startIndex, startIndex + rowsPerPage);
 };
+
+export const getMaxAmountOfPages = (list, rowsPerPage) =>
+  Math.ceil(list.length / rowsPerPage);

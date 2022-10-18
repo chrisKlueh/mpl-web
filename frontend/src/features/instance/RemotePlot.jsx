@@ -24,13 +24,14 @@ import {
 import { submitFeedbackRequest } from "../../slices/feedbackSlice";
 
 const RemotePlot = (props) => {
+  const [isPeerDisconnected, setPeerDisconnected] = useState(false);
   const [isDebugMenuOpen, setDebugMenuOpen] = useState(false);
   const [isErrorDialogOpen, setErrorDialogOpen] = useState(false);
   const [errorDialogDetails, setErrorDialogDetails] = useState(null);
   const [isBugReportDialogOpen, setBugReportDialogOpen] = useState(false);
   const [isAutoEventEnabled, setAutoEventEnabled] = useState(false);
-  const [autoEventInterval, setAutoEventInterval] = useState(1);
-  const [autoEventTimeout, setAutoEventTimeout] = useState(null);
+  const [autoEventFrequency, setAutoEventFrequency] = useState(1);
+  const [autoEventInterval, setAutoEventInterval] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [dataChannel, setDataChannel] = useState(null);
   const [eventListeners, setEventListeners] = useState([
@@ -56,8 +57,7 @@ const RemotePlot = (props) => {
   const {
     establishPeerConnectionRequest,
     stopPeerConnectionRequest,
-    hostId,
-    pid,
+    instanceId,
     isLoading,
     handleTerminate,
     handleComment,
@@ -89,10 +89,10 @@ const RemotePlot = (props) => {
   useEffect(() => {
     if (!isDebugMenuOpen) {
       if (isAutoEventEnabled) {
-        if (autoEventTimeout === null) {
+        if (autoEventInterval === null) {
           videoRef.current.addEventListener(
             "mousedown",
-            handleAutoSendMocketEvent,
+            handleAutoSendMockedEvent,
             {
               once: true,
             }
@@ -108,18 +108,17 @@ const RemotePlot = (props) => {
   }, [isDebugMenuOpen]);
 
   const setMockedEventLoop = (event) => {
-    setAutoEventTimeout(
-      setTimeout(() => {
+    setAutoEventInterval(
+      setInterval(() => {
         captureMouseRelated(event, dataChannel);
-        setMockedEventLoop(event);
-      }, autoEventInterval * 1000)
+      }, autoEventFrequency * 1000)
     );
   };
 
-  const handleAutoSendMocketEvent = (event) => {
+  const handleAutoSendMockedEvent = (event) => {
     if (event.buttons === 1 && isAutoEventEnabled) {
       console.log(
-        "Sending mocked event every " + autoEventInterval + " seconds."
+        "Sending mocked event every " + autoEventFrequency + " seconds."
       );
       setMockedEventLoop(event);
     } else {
@@ -128,20 +127,20 @@ const RemotePlot = (props) => {
   };
 
   const handleClearMockedEvent = () => {
-    console.log("Clearing mocked event timeout.");
-    clearTimeout(autoEventTimeout);
-    setAutoEventTimeout(null);
+    console.log("Clearing mocked event interval.");
+    clearInterval(autoEventInterval);
+    setAutoEventInterval(null);
   };
 
   const handleConnect = () => {
     establishPeerConnectionRequest({
       setPeerConnection: setPeerConnection,
       setDataChannel: setDataChannel,
-      hostId: hostId,
-      pid: pid,
+      instanceId: instanceId,
       videoRef: videoRef,
       setErrorDialogDetails: setErrorDialogDetails,
       setErrorDialogOpen: setErrorDialogOpen,
+      setPeerDisconnected: setPeerDisconnected,
     });
   };
 
@@ -195,7 +194,7 @@ const RemotePlot = (props) => {
       feedbackType: feedbackType,
       feedback: feedback,
       demoId: id,
-      stacktrace: errorDialogDetails.stacktrace,
+      generatedDetails: errorDialogDetails.generatedDetails,
     });
     navigate("/demos/");
   };
@@ -208,7 +207,7 @@ const RemotePlot = (props) => {
   return (
     <Fragment>
       <div className={styles.videoContainer}>
-        {isLoading ? (
+        {isLoading || isPeerDisconnected ? (
           <div className={styles.loadingFragment}>
             <LoadingFragment message="Establishing connection.." />
           </div>
@@ -228,8 +227,8 @@ const RemotePlot = (props) => {
         open={isDebugMenuOpen}
         handleClose={() => setDebugMenuOpen(false)}
         handleEnableAutomatedEvent={setAutoEventEnabled}
-        interval={autoEventInterval}
-        handleSetInterval={setAutoEventInterval}
+        frequency={autoEventFrequency}
+        handleSetFrequency={setAutoEventFrequency}
         handleClearAutomatedEvent={handleClearMockedEvent}
         isAutomatedEventEnabled={isAutoEventEnabled}
       />

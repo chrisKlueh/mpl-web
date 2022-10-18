@@ -38,12 +38,10 @@ class Instance(models.Model):
     created_at = models.DateTimeField("created_at", auto_now_add=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
-    host = models.ForeignKey(Host, on_delete=models.CASCADE)
-    pid = models.IntegerField("pid")
+    #host = models.ForeignKey(Host, on_delete=models.CASCADE)
+    host = models.CharField("host", max_length=240, blank=True, default="")
+    pid = models.IntegerField("pid", blank=True, default=0)
     
-    class Meta:
-        unique_together = ("host", "pid")
-
     def __str__(self):
         return str(self.id)
 
@@ -60,7 +58,7 @@ class Feedback(models.Model):
     created_at = models.DateTimeField("created_at", auto_now_add=True)
     #details should be models.TextField?
     details = models.CharField("name", max_length=240)
-    stacktrace = models.CharField("stacktrace", max_length=1500, blank=True, default='')
+    generated_details = models.CharField("generated_details", max_length=1500, blank=True, default='')
     type = models.ForeignKey(FeedbackType, on_delete=models.CASCADE)
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
     

@@ -17,8 +17,8 @@ const DebugMenu = (props) => {
     open,
     handleClose,
     handleEnableAutomatedEvent,
-    interval,
-    handleSetInterval,
+    frequency,
+    handleSetFrequency,
     isAutomatedEventEnabled,
     handleClearAutomatedEvent,
   } = props;
@@ -57,8 +57,8 @@ const DebugMenu = (props) => {
             />
           </FormGroup>
           <TextField
-            id="interval"
-            label="Interval"
+            id="frequency"
+            label="Frequency"
             type="number"
             disabled={!isAutomatedEventEnabled}
             InputProps={{
@@ -66,11 +66,11 @@ const DebugMenu = (props) => {
                 min: "0.5",
                 max: "60.0",
                 step: "0.5",
-                value: interval,
+                value: frequency,
               },
             }}
             onChange={(event) =>
-              handleSetInterval(parseFloat(event.target.value))
+              handleSetFrequency(parseFloat(event.target.value))
             }
           />
         </div>

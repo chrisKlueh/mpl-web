@@ -20,15 +20,15 @@ export const submitFeedbackReq = async (
   feedbackType,
   feedback,
   demoId,
-  stacktrace
+  generatedDetails
 ) => {
   let formData = new FormData();
   formData.append("type", feedbackType);
   formData.append("details", feedback);
   formData.append("demo", demoId);
-  if (stacktrace) {
-    //truncate stacktrace to the maximum length allowed by the database
-    formData.append("stacktrace", stacktrace.substring(0, 1500));
+  if (generatedDetails) {
+    //truncate generated_details to the maximum length allowed by the database
+    formData.append("generated_details", generatedDetails.substring(0, 1500));
   }
 
   return new Promise((resolve, reject) => {

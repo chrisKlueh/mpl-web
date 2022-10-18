@@ -36,8 +36,8 @@ const FeedbackDialog = (props) => {
         >
           {bugReport ? (
             <Fragment>
-              Feel free to report this bug. Note: a traceback of the error will
-              be added automatically.
+              Feel free to report how you encountered this bug. Note: The
+              associated error will be added automatically.
               <br />
               Your feedback is anonymous and will only be linked to the demo
               this instance is based on.

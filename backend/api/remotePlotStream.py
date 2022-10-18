@@ -14,7 +14,9 @@ import ssl
 import io
 import socketio
 import traceback
+import requests
 
+from  threading import Timer
 from importlib import import_module
 from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.rtcrtpsender import RTCRtpSender
@@ -26,19 +28,36 @@ from imageRenderingTrack import ImageRenderingTrack
 
 ROOT = os.path.dirname(__file__)
 
+CONNECTION_TIMEOUT_DURATION = 60.0
+
 # Use non-interactive backend to run the mpl demo
 use("Agg")
 
 class RemotePlotStream(object):
-    def __init__(self, demo, sig_host, sig_port, instance_host_id) -> None:
-            self.establishSocketConnection(sig_host, sig_port, instance_host_id)
-            self.pcs = set()
-            self.initDemo(demo)
-            
-    def establishSocketConnection(self, sig_host, sig_port, instance_host_id):
+    def __init__(self, demo, sig_host, sig_port, instance_id, user_id) -> None:
+        self.instanceId = instance_id
+        self.userId = user_id
+        self.establishSocketConnection(sig_host, sig_port, self.instanceId, self.userId)
+        self.pcs = set()
+        self.initDemo(demo)
+        self.timeout = Timer(CONNECTION_TIMEOUT_DURATION, self.terminateSelf, ["Timed out during signaling"])
+        self.timeout.start()
+
+
+    def terminateSelf(self, reason):
+        print("######################")
+        print("My time has come...")
+        print("Reason: " + reason)
+        print("######################")
+        requestUrl = "http://192.168.2.115:8000/api/instances/" + str(self.instanceId)
+        formData = {"user_id": self.userId}
+        terminateResponse = requests.delete(requestUrl, json = formData)
+
+    def establishSocketConnection(self, sig_host, sig_port, instance_id, user_id):
         loop = asyncio.get_event_loop()
         self.sio = socketio.Client()
-        self.sig_room = "instance_" + str(instance_host_id) + "-" + str(os.getpid())
+        self.sig_room = "instance_" + str(instance_id)
+        print(self.sig_room)
         sigaling_server_url = "http://" + sig_host + ":" + sig_port
         try:
             self.sio.connect(sigaling_server_url)
@@ -55,14 +74,20 @@ class RemotePlotStream(object):
                 print("Disconnected from socket " + sigaling_server_url)
 
             @self.sio.event
+            def connect_error(data):
+                self.terminateSelf("Signaling server connection lost")
+
+            @self.sio.event
             def sdp_offer(data):
                 answer = loop.run_until_complete(self.offer(data))
                 self.sio.emit("send_answer", {"room": self.sig_room, "data": answer})
                 loop.run_forever()
         
         except socketio.exceptions.ConnectionError as error:
+            print("\nFailed to connect to signaling server:")
             print(error)
-        
+            self.terminateSelf("Timed out connecting to signaling server")
+    
     def initDemo(self, demo):
         self.demo = demo
         self.demoFig = self.demo.getFig()
@@ -109,9 +134,14 @@ class RemotePlotStream(object):
             if pc.connectionState == "failed":
                 await pc.close()
                 self.pcs.discard(pc)
+                self.terminateSelf("Peer connection failed")
             elif pc.connectionState == "closed":
-                os._exit(0)
+                self.terminateSelf("Peer connection closed")
+                #os._exit(0)
             elif pc.connectionState == "connected":
+                #cancel timeout for self-termination
+                self.timeout.cancel()
+                print("\nPeer connection established. Stopping self-termination timeout.\n")
                 #leave room
                 self.sio.emit("leave_room", {"room": self.sig_room})
                 #start video stream by adding the first frame to its queue
@@ -251,7 +281,8 @@ def add_args():
     parser.add_argument("--demo", help="The filename of the demo (without .py)", required=True)
     parser.add_argument("--sig_host", help="Signaling server host", required=True)
     parser.add_argument("--sig_port", help="Signaling server port", required=True)
-    parser.add_argument("--instance_host_id", help="The instance's host id", required=True)
+    parser.add_argument("--instance_id", help="The instance's id", required=True)
+    parser.add_argument("--user_id", help="The instance's owner", required=True)
 
     return parser.parse_args()
 
@@ -272,4 +303,4 @@ if __name__ == "__main__":
         demoModule = import_module("." + args.demo, "demo_files")
         demo = demoModule.Demo(blocking=False)
         
-        remotePlotStream = RemotePlotStream(demo, args.sig_host, args.sig_port, args.instance_host_id)
+        remotePlotStream = RemotePlotStream(demo, args.sig_host, args.sig_port, args.instance_id, args.user_id)
