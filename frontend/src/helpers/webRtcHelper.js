@@ -153,7 +153,14 @@ const start = (
   const config = {
     sdpSemantics: "unified-plan",
     //always use stun servers
-    iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }],
+    //iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }],
+    iceServers: [
+      {
+        urls: "turn:192.168.2.115:3478",
+        username: "testuser",
+        credential: "secret",
+      },
+    ],
   };
 
   let pc = new RTCPeerConnection(config);

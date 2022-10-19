@@ -18,7 +18,7 @@ import requests
 
 from  threading import Timer
 from importlib import import_module
-from aiortc import RTCPeerConnection, RTCSessionDescription
+from aiortc import RTCPeerConnection, RTCSessionDescription, RTCConfiguration, RTCIceServer
 from aiortc.rtcrtpsender import RTCRtpSender
 from matplotlib import use
 import numpy as np
@@ -49,7 +49,8 @@ class RemotePlotStream(object):
         print("My time has come...")
         print("Reason: " + reason)
         print("######################")
-        requestUrl = "http://192.168.2.115:8000/api/instances/" + str(self.instanceId)
+        #requestUrl = "http://192.168.2.115:8000/api/instances/" + str(self.instanceId)
+        requestUrl = "http://" + os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')[0] + "/api/instances/" + str(self.instanceId)
         formData = {"user_id": self.userId}
         terminateResponse = requests.delete(requestUrl, json = formData)
 
@@ -110,7 +111,9 @@ class RemotePlotStream(object):
 
     async def offer(self, message):
         offer = RTCSessionDescription(sdp=message["data"]["sdp"], type=message["data"]["type"])
-        pc = RTCPeerConnection()
+        #pc = RTCPeerConnection()
+        config = RTCConfiguration([RTCIceServer("turn:192.168.2.115:3478", "testuser", "secret")])
+        pc = RTCPeerConnection(configuration=config)
         self.pcs.add(pc)
 
         @pc.on("datachannel")
