@@ -18,6 +18,11 @@ services:
     restart: unless-stopped
     build:
       context: .
+      args:
+        REACT_APP_TURN_SERVER: "turn:192.168.2.115:3478"
+        REACT_APP_TURN_USER: "testuser"
+        REACT_APP_TURN_PASSWORD: "secret"
+        REACT_APP_SIGNALING_SERVER: "192.168.2.115:8080"
       dockerfile: ./docker/nginx/Dockerfile
     volumes:
       - static_volume:/app/backend/api/static
@@ -32,7 +37,7 @@ services:
       args:
         DJANGO_ALLOWED_HOSTS: "192.168.2.115"
         DJANGO_SECRET_KEY: "supersecret"
-        DJANGO_SIG_HOST: "192.168.2.115"
+        DJANGO_SIG_HOST: "192.168.2.115:8080"
       dockerfile: ./docker/backend/Dockerfile
     entrypoint: /app/docker/backend/wsgi-entrypoint.sh
     volumes:

@@ -135,16 +135,13 @@ class FeedbackList(APIView):
 
 class InstanceList(APIView):
     def spawnInstance(self, demoId, instanceId, userId):
-        #sigHost = os.environ.get('DJANGO_SIG_HOST')
-        sigHost = "192.168.2.115"
-        sigPort = 8080
         hostId = hex(getnode())
         demoFile = Demo.objects.get(pk=demoId).file
         demoFileString = str(demoFile).split("/")[1]
         print(demoFileString)
         demoFileString = demoFileString[:len(demoFileString) - 3]
         print(demoFileString)
-        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --sig_host " + str(sigHost) + " --sig_port " + str(sigPort) + " --instance_id " + str(instanceId) + " --user_id " + str(userId) + " --demo " + str(demoFileString)).split(), shell=False)
+        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --instance_id " + str(instanceId) + " --user_id " + str(userId) + " --demo " + str(demoFileString)).split(), shell=False)
         return hostId, p.pid
         
     def get(self, request, format=None):
