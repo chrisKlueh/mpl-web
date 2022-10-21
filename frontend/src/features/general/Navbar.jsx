@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import {
   AppBar,
   Box,
@@ -15,6 +16,7 @@ import TimelineIcon from "@mui/icons-material/Timeline";
 import { Link } from "react-router-dom";
 
 import styles from "./Navbar.module.css";
+import { logoutRequest } from "../../slices/loginSlice";
 
 const Navbar = (props) => {
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -28,8 +30,10 @@ const Navbar = (props) => {
   };
 
   const handleLogout = () => {
+    const { logoutRequest, userId } = props;
     console.log("LOGOUT");
     handleCloseUserMenu();
+    logoutRequest({ userId: userId });
   };
 
   const { isLoggedIn, isAdmin, userName } = props;
@@ -110,4 +114,17 @@ const Navbar = (props) => {
     </AppBar>
   );
 };
-export default Navbar;
+
+const mapStateToProps = (state) => {
+  return {
+    userId: state.login.userId,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logoutRequest: (payload) => dispatch(logoutRequest(payload)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
