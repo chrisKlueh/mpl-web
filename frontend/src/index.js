@@ -3,12 +3,14 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 import { Provider } from "react-redux";
-import store from "./store";
+import { store, persistor } from "./store";
 
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 import { StyledEngineProvider } from "@mui/material/styles";
+
+import { PersistGate } from "redux-persist/integration/react";
 
 import CustomSnackbarProvider from "./features/general/CustomSnackbarProvider";
 
@@ -19,9 +21,11 @@ root.render(
   // <React.StrictMode>
   <StyledEngineProvider injectFirst>
     <Provider store={store}>
-      <CustomSnackbarProvider>
-        <App />
-      </CustomSnackbarProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <CustomSnackbarProvider>
+          <App />
+        </CustomSnackbarProvider>
+      </PersistGate>
     </Provider>
   </StyledEngineProvider>
   // </React.StrictMode>
