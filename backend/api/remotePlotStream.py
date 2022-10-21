@@ -18,7 +18,7 @@ import requests
 
 from  threading import Timer
 from importlib import import_module
-from aiortc import RTCPeerConnection, RTCSessionDescription
+from aiortc import RTCPeerConnection, RTCSessionDescription, RTCConfiguration, RTCIceServer
 from aiortc.rtcrtpsender import RTCRtpSender
 from matplotlib import use
 import numpy as np
@@ -28,16 +28,32 @@ from imageRenderingTrack import ImageRenderingTrack
 
 ROOT = os.path.dirname(__file__)
 
+if not (os.environ.get('DJANGO_SIG_HOST') == None):
+    print("Using docker params: API_URL, ICE_SERVERS")
+    API_URL = "http://" + os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')[0] + "/api/"#docker
+    ICE_SERVERS = [RTCIceServer("turn:192.168.2.115:3478", "testuser", "secret")]#docker
+else:
+    print("Using dev params: API_URL, ICE_SERVERS")
+    API_URL = "http://192.168.2.115:8000/api/"#dev
+    ICE_SERVERS = [RTCIceServer("stun:stun.1.google.com:19302")]#dev
+
+if not (os.environ.get('DJANGO_SIG_HOST') == None):
+    print("Using docker params: SIG_HOST")
+    SIG_HOST = os.environ.get('DJANGO_SIG_HOST')
+else:
+    print("Using dev params: SIG_HOST")
+    SIG_HOST = "192.168.2.115:8080"
+
 CONNECTION_TIMEOUT_DURATION = 60.0
 
 # Use non-interactive backend to run the mpl demo
 use("Agg")
 
 class RemotePlotStream(object):
-    def __init__(self, demo, sig_host, sig_port, instance_id, user_id) -> None:
+    def __init__(self, demo, instance_id, user_id) -> None:
         self.instanceId = instance_id
         self.userId = user_id
-        self.establishSocketConnection(sig_host, sig_port, self.instanceId, self.userId)
+        self.establishSocketConnection(self.instanceId, self.userId)
         self.pcs = set()
         self.initDemo(demo)
         self.timeout = Timer(CONNECTION_TIMEOUT_DURATION, self.terminateSelf, ["Timed out during signaling"])
@@ -49,16 +65,16 @@ class RemotePlotStream(object):
         print("My time has come...")
         print("Reason: " + reason)
         print("######################")
-        requestUrl = "http://192.168.2.115:8000/api/instances/" + str(self.instanceId)
+        requestUrl = API_URL + "instances/" + str(self.instanceId)
         formData = {"user_id": self.userId}
         terminateResponse = requests.delete(requestUrl, json = formData)
 
-    def establishSocketConnection(self, sig_host, sig_port, instance_id, user_id):
+    def establishSocketConnection(self, instance_id, user_id):
         loop = asyncio.get_event_loop()
         self.sio = socketio.Client()
         self.sig_room = "instance_" + str(instance_id)
         print(self.sig_room)
-        sigaling_server_url = "http://" + sig_host + ":" + sig_port
+        sigaling_server_url = "http://" + SIG_HOST
         try:
             self.sio.connect(sigaling_server_url)
             print("Connected with socket " + sigaling_server_url)
@@ -110,7 +126,8 @@ class RemotePlotStream(object):
 
     async def offer(self, message):
         offer = RTCSessionDescription(sdp=message["data"]["sdp"], type=message["data"]["type"])
-        pc = RTCPeerConnection()
+        config = RTCConfiguration(ICE_SERVERS)
+        pc = RTCPeerConnection(configuration=config)
         self.pcs.add(pc)
 
         @pc.on("datachannel")
@@ -279,8 +296,6 @@ def add_args():
         "--video-codec", help="Force a specific video codec (e.g. video/H264)"
     )
     parser.add_argument("--demo", help="The filename of the demo (without .py)", required=True)
-    parser.add_argument("--sig_host", help="Signaling server host", required=True)
-    parser.add_argument("--sig_port", help="Signaling server port", required=True)
     parser.add_argument("--instance_id", help="The instance's id", required=True)
     parser.add_argument("--user_id", help="The instance's owner", required=True)
 
@@ -303,4 +318,4 @@ if __name__ == "__main__":
         demoModule = import_module("." + args.demo, "demo_files")
         demo = demoModule.Demo(blocking=False)
         
-        remotePlotStream = RemotePlotStream(demo, args.sig_host, args.sig_port, args.instance_id, args.user_id)
+        remotePlotStream = RemotePlotStream(demo, args.instance_id, args.user_id)

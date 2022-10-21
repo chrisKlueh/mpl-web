@@ -1,6 +1,20 @@
 import { io } from "socket.io-client";
 import { saveAs } from "file-saver";
 
+const SIGNALING_URL = process.env.REACT_APP_SIGNALING_SERVER
+  ? process.env.REACT_APP_SIGNALING_SERVER
+  : `192.168.2.115:8080`;
+
+const ICE_SERVERS = process.env.REACT_APP_TURN_SERVER
+  ? [
+      {
+        urls: process.env.REACT_APP_TURN_SERVER,
+        username: process.env.REACT_APP_TURN_USER,
+        credential: process.env.REACT_APP_TURN_PASSWORD,
+      },
+    ]
+  : [{ urls: ["stun:stun.l.google.com:19302"] }];
+
 const CONNECTION_TIMEOUT_DURATION = 60000;
 const CONNECTION_TIMEOUT_SIGNALING_STEPS = [
   "Timed out connecting to signaling server",
@@ -41,8 +55,7 @@ export const establishSocketConnection = (
   return new Promise((resolve, reject) => {
     const myRoom = `instance_${instanceId}`;
     console.log("room: " + myRoom);
-    //let client_io = io(`${window.location.origin}:8080`);
-    let client_io = io(`192.168.2.115:8080`);
+    let client_io = io(SIGNALING_URL);
     client_io.emit("join_room", { role: "client", room: myRoom });
 
     client_io.on("connect", () => {
@@ -152,8 +165,7 @@ const start = (
 ) => {
   const config = {
     sdpSemantics: "unified-plan",
-    //always use stun servers
-    iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }],
+    iceServers: ICE_SERVERS,
   };
 
   let pc = new RTCPeerConnection(config);

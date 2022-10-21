@@ -1,3 +1,4 @@
-//export const API_URL = "http://192.168.2.116:8000/api/";
-//export const API_URL = "http://0.0.0.0:8000/api/";
-export const API_URL = `${window.location.origin}/api/`;
+export const API_URL =
+  process.env.NODE_ENV === "production"
+    ? `${window.location.origin}/api/`
+    : "http://192.168.2.115:8000/api/";
