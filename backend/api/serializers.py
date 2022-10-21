@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Demo, Instance, Host, FeedbackType, Feedback
+from .models import User, Demo, Instance, FeedbackType, Feedback
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -17,12 +17,6 @@ class DemoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Demo 
         fields = ('id', 'name', 'created_at', 'user_id', 'title', 'short_desc', 'detail_desc', 'file')
-
-class HostSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Host 
-        fields = ('id', 'created_at', 'ip_address')
 
 class InstanceSerializer(serializers.ModelSerializer):
 

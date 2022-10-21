@@ -17,7 +17,7 @@ from rest_framework.permissions import BasePermission
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch.dispatcher import receiver
 
-from .models import User, Demo, Instance, Host, FeedbackType, Feedback
+from .models import User, Demo, Instance, FeedbackType, Feedback
 from .serializers import *
 
 class OnlyAdminPermission(BasePermission):
