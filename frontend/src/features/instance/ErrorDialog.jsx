@@ -57,7 +57,9 @@ const ErrorDialog = (props) => {
           handleConfirm(isBugreportAllowed(errorDetails.errorType))
         }
         open={open}
-        confirmString={"Terminate now"}
+        confirmString={
+          errorDetails.errorType === "user_error" ? "Ok" : "Terminate now"
+        }
         cancelAllowed={errorDetails.errorType === "demo_error"}
       >
         {generateChildren(getErrorDialogChildrenConfig(errorDetails.errorType))}

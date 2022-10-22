@@ -9,10 +9,7 @@ import InstanceDescription from "./InstanceDescription";
 import FeedbackDialog from "./FeedbackDialog";
 import RemotePlot from "./RemotePlot";
 
-import {
-  resetInstanceState,
-  deleteInstanceRequest,
-} from "../../slices/instanceSlice";
+import { resetInstanceState } from "../../slices/instanceSlice";
 import { showDemoRequest, resetDemoState } from "../../slices/demoSlice";
 import { submitFeedbackRequest } from "../../slices/feedbackSlice";
 
@@ -21,34 +18,17 @@ const InstanceContainer = (props) => {
   const [isTerminateDialogOpen, setTerminateDialogOpen] = useState(false);
 
   const navigate = useNavigate();
-  const {
-    showDemoRequest,
-    resetInstanceState,
-    deleteInstanceRequest,
-    resetDemoState,
-    instance,
-    userId,
-  } = props;
+  const { showDemoRequest, resetInstanceState, resetDemoState, instance } =
+    props;
   useEffect(() => {
     //equals componentDidMount
     showDemoRequest(instance.demo);
     //return statement equals componentWillUnmount
     return () => {
-      deleteInstanceRequest({
-        userId: userId,
-        instanceId: instance.id,
-      });
       resetDemoState();
       resetInstanceState();
     };
-  }, [
-    showDemoRequest,
-    resetInstanceState,
-    deleteInstanceRequest,
-    resetDemoState,
-    userId,
-    instance,
-  ]);
+  }, [showDemoRequest, resetInstanceState, resetDemoState, instance]);
 
   const handleTerminate = () => {
     navigate("/demos/");
@@ -93,7 +73,6 @@ const InstanceContainer = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    userId: state.login.userId,
     instance: state.instance.instance,
     demo: state.demo.demo,
     isLoading: state.demo.isGettingDemo,
@@ -104,8 +83,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     resetInstanceState: () => dispatch(resetInstanceState()),
     resetDemoState: () => dispatch(resetDemoState()),
-    deleteInstanceRequest: (payload) =>
-      dispatch(deleteInstanceRequest(payload)),
     showDemoRequest: (id) => dispatch(showDemoRequest(id)),
     submitFeedbackRequest: (payload) =>
       dispatch(submitFeedbackRequest(payload)),

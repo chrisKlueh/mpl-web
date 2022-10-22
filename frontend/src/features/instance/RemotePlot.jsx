@@ -22,6 +22,7 @@ import {
 } from "../../helpers/inputCaptureHelper";
 
 import { submitFeedbackRequest } from "../../slices/feedbackSlice";
+import { deleteInstanceRequest } from "../../slices/instanceSlice";
 
 const RemotePlot = (props) => {
   const [isPeerDisconnected, setPeerDisconnected] = useState(false);
@@ -58,10 +59,12 @@ const RemotePlot = (props) => {
     establishPeerConnectionRequest,
     stopPeerConnectionRequest,
     instanceId,
+    userId,
     isLoading,
     handleTerminate,
     handleComment,
     isAdmin,
+    deleteInstanceRequest,
   } = props;
 
   useEffect(() => {
@@ -156,7 +159,15 @@ const RemotePlot = (props) => {
 
   const handleDisconnect = () => {
     handleClearMockedEvent();
-    stopPeerConnectionRequest({ peerConnection: peerConnectionMonitor() });
+    if (peerConnectionMonitor()) {
+      stopPeerConnectionRequest({ peerConnection: peerConnectionMonitor() });
+    }
+    if (instanceId) {
+      deleteInstanceRequest({
+        userId: userId,
+        instanceId: instanceId,
+      });
+    }
   };
 
   const handleFigureEnter = (event) => {
@@ -273,6 +284,7 @@ const mapStateToProps = (state) => {
     isLoading: state.remotePlot.isEstablishingPeerConnection,
     isAdmin: state.login.isAdmin,
     demo: state.demo.demo,
+    userId: state.login.userId,
   };
 };
 
@@ -284,6 +296,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(stopPeerConnectionRequest(payload)),
     submitFeedbackRequest: (payload) =>
       dispatch(submitFeedbackRequest(payload)),
+    deleteInstanceRequest: (payload) =>
+      dispatch(deleteInstanceRequest(payload)),
   };
 };
 
