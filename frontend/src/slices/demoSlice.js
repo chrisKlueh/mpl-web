@@ -37,6 +37,7 @@ export const demoSlice = createSlice({
     editDemoError: (state, action) => {
       state.isUploadingDemo = false;
     },
+    resetDemoState: (state, action) => initialState,
   },
 });
 export const {
@@ -49,6 +50,7 @@ export const {
   editDemoRequest,
   editDemoSuccess,
   editDemoError,
+  resetDemoState,
 } = demoSlice.actions;
 
 export default demoSlice.reducer;

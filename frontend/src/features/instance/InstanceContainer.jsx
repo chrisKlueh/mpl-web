@@ -13,7 +13,7 @@ import {
   resetInstanceState,
   deleteInstanceRequest,
 } from "../../slices/instanceSlice";
-import { showDemoRequest } from "../../slices/demoSlice";
+import { showDemoRequest, resetDemoState } from "../../slices/demoSlice";
 import { submitFeedbackRequest } from "../../slices/feedbackSlice";
 
 const InstanceContainer = (props) => {
@@ -25,6 +25,7 @@ const InstanceContainer = (props) => {
     showDemoRequest,
     resetInstanceState,
     deleteInstanceRequest,
+    resetDemoState,
     instance,
     userId,
   } = props;
@@ -37,12 +38,14 @@ const InstanceContainer = (props) => {
         userId: userId,
         instanceId: instance.id,
       });
+      resetDemoState();
       resetInstanceState();
     };
   }, [
     showDemoRequest,
     resetInstanceState,
     deleteInstanceRequest,
+    resetDemoState,
     userId,
     instance,
   ]);
@@ -100,6 +103,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     resetInstanceState: () => dispatch(resetInstanceState()),
+    resetDemoState: () => dispatch(resetDemoState()),
     deleteInstanceRequest: (payload) =>
       dispatch(deleteInstanceRequest(payload)),
     showDemoRequest: (id) => dispatch(showDemoRequest(id)),

@@ -38,6 +38,7 @@ export const feedbackSlice = createSlice({
     deleteFeedbackError: (state, action) => {
       state.isDeletingFeedback = false;
     },
+    resetFeedbackState: (state, action) => initialState,
   },
 });
 export const {
@@ -50,6 +51,7 @@ export const {
   deleteFeedbackRequest,
   deleteFeedbackSuccess,
   deleteFeedbackError,
+  resetFeedbackState,
 } = feedbackSlice.actions;
 
 export default feedbackSlice.reducer;
