@@ -195,10 +195,13 @@ class InstanceDetail(APIView):
         #if request.data["host"] == str(host) and request.data["pid"] == str(pid) and request.data["user_id"] == str(user_id):
         if request.data["user_id"] == str(user_id):
             try:
-                os.kill(instance.pid, signal.SIGSTOP)
                 instance.delete()
-            except:
-                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
+                os.kill(instance.pid, signal.SIGSTOP)
+            except Exception as e:
+                if type(e) == ProcessLookupError:
+                    return Response(status=status.HTTP_404_NOT_FOUND)        
+                else:
+                    return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
