@@ -28,6 +28,7 @@ export const demosSlice = createSlice({
     deleteDemoError: (state, action) => {
       state.isDeletingDemo = false;
     },
+    resetDemosState: (state, action) => initialState,
   },
 });
 export const {
@@ -37,6 +38,7 @@ export const {
   deleteDemoRequest,
   deleteDemoSuccess,
   deleteDemoError,
+  resetDemosState,
 } = demosSlice.actions;
 
 export default demosSlice.reducer;

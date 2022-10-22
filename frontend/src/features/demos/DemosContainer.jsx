@@ -4,7 +4,7 @@ import { TablePagination } from "@mui/material";
 
 import styles from "./DemosContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
-import { showDemosRequest } from "../../slices/demosSlice";
+import { showDemosRequest, resetDemosState } from "../../slices/demosSlice";
 import DemosList from "./DemosList";
 import DemoUploadDialog from "./DemoUploadDialog";
 import { getSelectedPage, getMaxAmountOfPages } from "../../helpers/listHelper";
@@ -13,12 +13,17 @@ const DemosContainer = (props) => {
   const rowsPerPageOptions = [5, 10, 15];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
-  const { isLoading, demos, isAdmin, showDemosRequest } = props;
+  const { isLoading, demos, isAdmin, showDemosRequest, resetDemosState } =
+    props;
 
   useEffect(() => {
     //equals componentDidMount
     showDemosRequest();
-  }, [showDemosRequest]);
+    //return statement equals componentWillUnmount
+    return () => {
+      resetDemosState();
+    };
+  }, [showDemosRequest, resetDemosState]);
 
   const handleChangePage = (event, newPage) => setPage(newPage);
 
@@ -79,6 +84,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     showDemosRequest: () => dispatch(showDemosRequest()),
+    resetDemosState: () => dispatch(resetDemosState()),
   };
 };
 
