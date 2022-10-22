@@ -35,7 +35,7 @@ export const getErrorDialogChildrenConfig = (errorName) => {
       return {
         description:
           "You cannot access an instance via URL or refresh your current tab",
-        consequence: "Try to spawn a new instance of this demo.",
+        consequence: "Spawn a new instance from the demo list instead.",
       };
     default:
       return {
