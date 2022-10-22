@@ -21,11 +21,9 @@ const FeedbackContainer = (props) => {
   useEffect(() => {
     //equals componentDidMount
     showFeedbackRequest();
-    console.log("FEEDBACK MOUNT");
     //return statement equals componentWillUnmount
     return () => {
       resetFeedbackState();
-      console.log("FEEDBACK UNMOUNT");
     };
   }, [showFeedbackRequest, resetFeedbackState]);
 

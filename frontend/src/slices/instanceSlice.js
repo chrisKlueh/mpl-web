@@ -39,9 +39,7 @@ export const instanceSlice = createSlice({
     deleteInstanceError: (state, action) => {
       state.isDeletingInstance = false;
     },
-    resetInstanceState: (state, action) => {
-      state.instance = initialState.instance;
-    },
+    resetInstanceState: (state, action) => initialState,
   },
 });
 export const {

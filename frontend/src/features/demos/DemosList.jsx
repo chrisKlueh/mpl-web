@@ -21,7 +21,7 @@ import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import Placeholder from "../general/Placeholder";
 import { deleteDemoRequest } from "../../slices/demosSlice";
-import { showDemoRequest } from "../../slices/demoSlice";
+import { showDemoRequest, resetDemoState } from "../../slices/demoSlice";
 import { spawnInstanceRequest } from "../../slices/instanceSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { truncateString } from "../../helpers/listHelper";
@@ -41,6 +41,7 @@ const DemosList = (props) => {
     deleteDemoRequest,
     isSpawningInstance,
     isAdmin,
+    resetDemoState,
   } = props;
 
   const updateSelectedAndOpenDialog = (id, dialog) => {
@@ -67,6 +68,11 @@ const DemosList = (props) => {
   const handleDeleteDemo = (demoId) => {
     const { userId } = props;
     deleteDemoRequest({ user_id: userId, demo_id: demoId });
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditDialogOpen(false);
+    resetDemoState();
   };
 
   const createListItems = (listItemArray) => {
@@ -165,7 +171,7 @@ const DemosList = (props) => {
       <DemoEditDialog
         id={selectedId}
         open={isEditDialogOpen}
-        handleClose={() => setEditDialogOpen(false)}
+        handleClose={handleCloseEditDialog}
       />
       <LoadingDialog open={isSpawningInstance} />
     </div>
@@ -184,6 +190,7 @@ const mapDispatchToProps = (dispatch) => {
     deleteDemoRequest: (id) => dispatch(deleteDemoRequest(id)),
     showDemoRequest: (id) => dispatch(showDemoRequest(id)),
     spawnInstanceRequest: (payload) => dispatch(spawnInstanceRequest(payload)),
+    resetDemoState: () => dispatch(resetDemoState()),
   };
 };
 
