@@ -53,7 +53,6 @@ export function* watcherEstablishPeerConnection() {
 export function* workerStopPeerConnection({ payload }) {
   const { peerConnection } = payload;
   try {
-    console.log(peerConnection);
     yield call(stopPeerConnection, peerConnection);
     yield put(stopPeerConnectionSuccess());
   } catch (error) {

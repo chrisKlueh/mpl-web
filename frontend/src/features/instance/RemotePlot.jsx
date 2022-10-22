@@ -66,7 +66,17 @@ const RemotePlot = (props) => {
 
   useEffect(() => {
     //equals componentDidMount
-    handleConnect();
+    if (instanceId) {
+      handleConnect();
+    } else {
+      setErrorDialogDetails({
+        errorType: "user_error",
+        description: "User error",
+        generatedDetails:
+          "The user tried to access an instance via URL or refreshed their current tab",
+      });
+      setErrorDialogOpen(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -204,6 +214,14 @@ const RemotePlot = (props) => {
     navigate("/demos/");
   };
 
+  const handleConfirmErrorDialog = (allowBugreport) => {
+    if (allowBugreport) {
+      setBugReportDialogOpen(true);
+    } else {
+      navigate("/demos/");
+    }
+  };
+
   return (
     <Fragment>
       <div className={styles.videoContainer}>
@@ -237,7 +255,7 @@ const RemotePlot = (props) => {
         isAdmin={isAdmin}
         errorDetails={errorDialogDetails}
         handleClose={() => setErrorDialogOpen(false)}
-        handleConfirm={() => setBugReportDialogOpen(true)}
+        handleConfirm={handleConfirmErrorDialog}
       />
       <FeedbackDialog
         open={isBugReportDialogOpen}
