@@ -7,3 +7,13 @@
 .switchContainer {
   margin: auto 0px;
 }
+
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .enableEventContainer {
+    flex-direction: column;
+  }
+
+  .switchContainer {
+    margin-bottom: 10px;
+  }
+}
