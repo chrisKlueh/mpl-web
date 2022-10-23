@@ -27,6 +27,16 @@ const FeedbackContainer = (props) => {
     };
   }, [showFeedbackRequest, resetFeedbackState]);
 
+  useEffect(() => {
+    if (feedback.length > 0) {
+      const newAmountOfPages = getMaxAmountOfPages(feedback, rowsPerPage);
+      if (page >= newAmountOfPages) {
+        setPage(newAmountOfPages - 1);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feedback]);
+
   const handleChangePage = (event, newPage) => setPage(newPage);
 
   const handleChangeRowsPerPage = (event) => {
