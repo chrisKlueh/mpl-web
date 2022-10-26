@@ -1,11 +1,10 @@
-import axios from "axios";
-import { API_URL } from "../constants/index";
+import { axiosInstance } from "./axiosApi";
 
 export const showFeedbackReq = async () => {
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "get",
-      url: `${API_URL}feedback/`,
+      url: `feedback/`,
     })
       .then((response) => {
         resolve(response);
@@ -32,9 +31,9 @@ export const submitFeedbackReq = async (
   }
 
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "post",
-      url: `${API_URL}feedback/`,
+      url: `feedback/`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
@@ -52,9 +51,9 @@ export const deleteFeedbackReq = async (userId, feedbackId) => {
   formData.append("user_id", userId);
 
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "delete",
-      url: `${API_URL}feedback/${feedbackId}`,
+      url: `feedback/${feedbackId}`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })

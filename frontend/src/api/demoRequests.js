@@ -1,11 +1,10 @@
-import axios from "axios";
-import { API_URL } from "../constants/index";
+import { axiosInstance } from "./axiosApi";
 
 export const showDemoReq = async (id) => {
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "get",
-      url: `${API_URL}demos/${id}`,
+      url: `demos/${id}`,
     })
       .then((response) => {
         resolve(response);
@@ -31,9 +30,9 @@ export const uploadDemoReq = async (
   formData.append("file", file);
 
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "post",
-      url: `${API_URL}demos/`,
+      url: `demos/`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
@@ -62,9 +61,9 @@ export const editDemoReq = async (
   formData.append("file", file);
 
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "put",
-      url: `${API_URL}demos/${id}`,
+      url: `demos/${id}`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
