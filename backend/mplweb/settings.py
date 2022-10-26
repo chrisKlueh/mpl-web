@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
+
 from pathlib import Path
 from datetime import timedelta
 
@@ -21,12 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@abhx55$8@c3wwi!(hu#+v+otoe)q@)8i5fnq!c^kr*-ja((zq'
+if not (os.environ.get('DJANGO_SECRET_KEY')) == None:
+    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+else:
+    SECRET_KEY = 'django-insecure-@abhx55$8@c3wwi!(hu#+v+otoe)q@)8i5fnq!c^kr*-ja((zq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+if not (os.environ.get('DJANGO_ALLOWED_HOSTS')) == None:
+    ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
+else:
+    ALLOWED_HOSTS = ['192.168.2.115']
 
 
 # Application definition
@@ -75,7 +83,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+#added from tutorial https://blog.logrocket.com/using-react-django-create-app-tutorial/#migrating-django-models-database, disable later
+CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ORIGIN_WHITELIST = ['http://0.0.0.0', 'http://192.168.2.116']
 
 ROOT_URLCONF = 'mplweb.urls'
 
@@ -144,10 +157,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_ROOT = './api/'
 
 AUTH_USER_MODEL = 'api.UserGroup'
