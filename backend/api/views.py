@@ -112,7 +112,7 @@ class DemoList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DemoDetail(APIView):
-    permission_classes = [partial(OnlyAdminPermission, ['PUT', 'DELETE'])]
+    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['PUT', 'DELETE'])]
     def get_object(self, pk):
         try:
             return Demo.objects.get(pk=pk)
@@ -226,7 +226,7 @@ class InstanceDetail(APIView):
         
 
 class FeedbackDetail(APIView):
-    permission_classes = [partial(OnlyAdminPermission, ['DELETE'])]
+    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['DELETE'])]
     def get_object(self, pk):
         try:
             return Feedback.objects.get(pk=pk)
