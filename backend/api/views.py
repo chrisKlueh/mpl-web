@@ -67,7 +67,7 @@ class OnlyAdminPermission(BasePermission):
         print(obj)
         return True
 
-class UserList(APIView):
+class UserGroupList(APIView):
     def get(self, request, format=None):
         userGroupList = UserGroup.objects.values('group_name', 'id', 'created_at', 'is_admin')
         serializer = UserGroupSerializer(userGroupList, context={'request': request}, many=True)
@@ -80,7 +80,7 @@ class UserList(APIView):
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserDetail(APIView):
+class UserGroupDetail(APIView):
     def get_object(self, pk):
         try:
             return UserGroup.objects.get(pk=pk)
@@ -159,7 +159,7 @@ class InstanceList(APIView):
         print(demoFileString)
         demoFileString = demoFileString[:len(demoFileString) - 3]
         print(demoFileString)
-        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --instance_id " + str(instanceId) + " --user_id " + str(userGroupId) + " --demo " + str(demoFileString)).split(), shell=False)
+        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --instance_id " + str(instanceId) + " --group_id " + str(userGroupId) + " --demo " + str(demoFileString)).split(), shell=False)
         return hostId, p.pid
         
     def get(self, request, format=None): 

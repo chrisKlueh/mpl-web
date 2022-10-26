@@ -50,9 +50,9 @@ CONNECTION_TIMEOUT_DURATION = 60.0
 use("Agg")
 
 class RemotePlotStream(object):
-    def __init__(self, demo, instance_id, user_id) -> None:
+    def __init__(self, demo, instance_id, group_id) -> None:
         self.instanceId = instance_id
-        self.userId = user_id
+        self.groupId = group_id
         self.establishSocketConnection(self.instanceId, self.userId)
         self.pcs = set()
         self.initDemo(demo)
@@ -66,10 +66,11 @@ class RemotePlotStream(object):
         print("Reason: " + reason)
         print("######################")
         requestUrl = API_URL + "instances/" + str(self.instanceId)
-        formData = {"user_id": self.userId}
+        #TO DO: use token here instead!
+        formData = {"group_id": self.groupId}
         terminateResponse = requests.delete(requestUrl, json = formData)
 
-    def establishSocketConnection(self, instance_id, user_id):
+    def establishSocketConnection(self, instance_id):
         loop = asyncio.get_event_loop()
         self.sio = socketio.Client()
         self.sig_room = "instance_" + str(instance_id)
@@ -297,7 +298,7 @@ def add_args():
     )
     parser.add_argument("--demo", help="The filename of the demo (without .py)", required=True)
     parser.add_argument("--instance_id", help="The instance's id", required=True)
-    parser.add_argument("--user_id", help="The instance's owner", required=True)
+    parser.add_argument("--group_id", help="The instance owner's group", required=True)
 
     return parser.parse_args()
 
@@ -318,4 +319,4 @@ if __name__ == "__main__":
         demoModule = import_module("." + args.demo, "demo_files")
         demo = demoModule.Demo(blocking=False)
         
-        remotePlotStream = RemotePlotStream(demo, args.instance_id, args.user_id)
+        remotePlotStream = RemotePlotStream(demo, args.instance_id, args.group_id)
