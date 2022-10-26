@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserGroup
+from .models import UserGroup, Demo, Instance, FeedbackType, Feedback 
 from django.contrib.auth.admin import UserAdmin
 
 class UserAdminConfig(UserAdmin):
@@ -17,3 +17,7 @@ class UserAdminConfig(UserAdmin):
     )
 
 admin.site.register(UserGroup, UserAdminConfig)
+admin.site.register(Demo)
+admin.site.register(Instance)
+admin.site.register(FeedbackType)
+admin.site.register(Feedback)
