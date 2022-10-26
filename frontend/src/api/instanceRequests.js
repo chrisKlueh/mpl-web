@@ -2,7 +2,7 @@ import { axiosInstance } from "./axiosApi";
 
 export const spawnInstanceReq = async (user_id, demo_id) => {
   let formData = new FormData();
-  formData.append("user_id", user_id);
+  formData.append("group_id", user_id);
   formData.append("demo", demo_id);
 
   return new Promise((resolve, reject) => {
@@ -66,7 +66,7 @@ export const showInstanceReq = async (id) => {
 
 export const deleteInstanceReq = async (user_id, instance_id) => {
   let formData = new FormData();
-  formData.append("user_id", user_id);
+  formData.append("group_id", user_id);
 
   return new Promise((resolve, reject) => {
     axiosInstance({

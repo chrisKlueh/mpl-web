@@ -48,7 +48,7 @@ export const submitFeedbackReq = async (
 
 export const deleteFeedbackReq = async (userId, feedbackId) => {
   let formData = new FormData();
-  formData.append("user_id", userId);
+  formData.append("group_id", userId);
 
   return new Promise((resolve, reject) => {
     axiosInstance({

@@ -49,7 +49,7 @@ class Demo(models.Model):
     short_desc = models.CharField("short desc", max_length=240)
     #detail_desc should be models.TextField?
     detail_desc = models.CharField("detail desc", max_length=240)
-    file = models.FileField(upload_to='demo files', validators=[FileExtensionValidator( ['py'] ) ])
+    file = models.FileField(upload_to='demo_files', validators=[FileExtensionValidator( ['py'] ) ])
     
     def __str__(self):
         return str(self.id)

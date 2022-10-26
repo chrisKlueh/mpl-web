@@ -38,7 +38,7 @@ class DemoSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
 
     def get_name(self, demo):
-        return(demo.group_id.name)
+        return(demo.group_id.group_name)
         
     class Meta:
         model = Demo 

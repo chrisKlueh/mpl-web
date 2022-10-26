@@ -53,7 +53,7 @@ class RemotePlotStream(object):
     def __init__(self, demo, instance_id, group_id) -> None:
         self.instanceId = instance_id
         self.groupId = group_id
-        self.establishSocketConnection(self.instanceId, self.userId)
+        self.establishSocketConnection(self.instanceId)
         self.pcs = set()
         self.initDemo(demo)
         self.timeout = Timer(CONNECTION_TIMEOUT_DURATION, self.terminateSelf, ["Timed out during signaling"])

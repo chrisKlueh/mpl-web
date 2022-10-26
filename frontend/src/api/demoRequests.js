@@ -23,7 +23,7 @@ export const uploadDemoReq = async (
   file
 ) => {
   let formData = new FormData();
-  formData.append("user_id", user_id);
+  formData.append("group_id", user_id);
   formData.append("title", title);
   formData.append("short_desc", short_desc);
   formData.append("detail_desc", detail_desc);
@@ -54,7 +54,7 @@ export const editDemoReq = async (
   file
 ) => {
   let formData = new FormData();
-  formData.append("user_id", user_id);
+  formData.append("group_id", user_id);
   formData.append("title", title);
   formData.append("short_desc", short_desc);
   formData.append("detail_desc", detail_desc);

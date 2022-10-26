@@ -15,7 +15,7 @@ export const showDemosReq = () => {
 
 export const deleteDemoReq = async (user_id, demo_id) => {
   let formData = new FormData();
-  formData.append("user_id", user_id);
+  formData.append("group_id", user_id);
 
   return new Promise((resolve, reject) => {
     axiosInstance({

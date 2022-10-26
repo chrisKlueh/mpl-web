@@ -207,9 +207,9 @@ class InstanceDetail(APIView):
 
     def delete(self, request, pk, format=None):
         instance = self.get_object(pk)
-        group_id = instance.group_id
-        print(group_id)
-        print(request.data["group_id"])
+        group_id = instance.group_id.id
+        #print(group_id)
+        #print(request.data["group_id"])
         #host = instance.host
         #pid = instance.pid
         #if request.data["host"] == str(host) and request.data["pid"] == str(pid) and request.data["user_id"] == str(user_id):
