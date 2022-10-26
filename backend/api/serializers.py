@@ -2,6 +2,19 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .models import UserGroup, Demo, Instance, FeedbackType, Feedback
 
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+
+        userGroup = UserGroup.objects.get(group_name=attrs['group_name'])
+        data['group_name'] = userGroup.group_name
+        data['group_id'] = userGroup.id
+        data['is_admin'] = userGroup.is_admin
+        data['created_at'] = userGroup.created_at
+        
+        return data
+
 class UserGroupSerializer(serializers.ModelSerializer):
     group_name = serializers.CharField(required=True)
     is_admin = serializers.BooleanField()

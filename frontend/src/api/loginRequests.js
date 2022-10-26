@@ -8,7 +8,6 @@ export const loginReq = (group_name, password) => {
         password,
       })
       .then((response) => {
-        console.log(response);
         axiosInstance.defaults.headers["Authorization"] =
           "JWT " + response.data.access;
         localStorage.setItem("access_token", response.data.access);

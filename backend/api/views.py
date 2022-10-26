@@ -16,10 +16,13 @@ from rest_framework.decorators import api_view
 from rest_framework.permissions import BasePermission
 
 #from .serializers import UserGroupSerializer
-
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import UserGroup, Demo, Instance, FeedbackType, Feedback
 from .serializers import *
 
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 class UserGroupCreate(APIView):
     permission_classes = (permissions.AllowAny,)
