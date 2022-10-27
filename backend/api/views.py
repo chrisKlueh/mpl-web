@@ -175,7 +175,9 @@ class InstanceList(APIView):
         print(demoFileString)
         demoFileString = demoFileString[:len(demoFileString) - 3]
         print(demoFileString)
-        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --instance_id " + str(instanceId) + " --group_id " + str(userGroupId) + " --demo " + str(demoFileString)).split(), shell=False)
+
+        refreshToken = RefreshToken.for_user(UserGroup.objects.get(pk=userGroupId))
+        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --instance_id " + str(instanceId) + " --group_id " + str(userGroupId) + " --demo " + str(demoFileString) + " --refresh_token " + str(refreshToken)).split(), shell=False)
         return hostId, p.pid
         
     def get(self, request, format=None): 

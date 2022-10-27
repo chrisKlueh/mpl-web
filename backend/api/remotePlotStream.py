@@ -44,31 +44,63 @@ else:
     print("Using dev params: SIG_HOST")
     SIG_HOST = "192.168.2.115:8080"
 
+#TO DO:move me to constants
 CONNECTION_TIMEOUT_DURATION = 60.0
+#12h = 43200s => update refresh token every 43000s #TO DO: replace me by global constant
+UPDATE_REFRESH_TOKEN_INTERVAL = 43000.0
 
 # Use non-interactive backend to run the mpl demo
 use("Agg")
 
 class RemotePlotStream(object):
-    def __init__(self, demo, instance_id, group_id) -> None:
+    def __init__(self, demo, instance_id, group_id, refresh_token) -> None:
         self.instanceId = instance_id
         self.groupId = group_id
+        self.refreshToken = refresh_token
         self.establishSocketConnection(self.instanceId)
         self.pcs = set()
         self.initDemo(demo)
         self.timeout = Timer(CONNECTION_TIMEOUT_DURATION, self.terminateSelf, ["Timed out during signaling"])
         self.timeout.start()
+        self.updateRefreshTokenInterval = Timer(UPDATE_REFRESH_TOKEN_INTERVAL, self.updateRefreshToken, [False])
+        self.updateRefreshTokenInterval.start()
 
 
     def terminateSelf(self, reason):
-        print("######################")
+        print("\n######################")
         print("My time has come...")
         print("Reason: " + reason)
-        print("######################")
+        print("######################\n")
+        authHeader = self.getAuthorizedHeader()
         requestUrl = API_URL + "instances/" + str(self.instanceId)
-        #TO DO: use token here instead!
         formData = {"group_id": self.groupId}
-        terminateResponse = requests.delete(requestUrl, json = formData)
+        terminateResponse = requests.delete(requestUrl, headers=authHeader, json = formData)
+
+    def updateRefreshToken(self, returnResponse):
+        requestUrl = API_URL + "token/refresh/"
+        #print(self.refreshToken)
+        formData = {"refresh": self.refreshToken}
+        response = requests.post(requestUrl, json = formData)
+        if response.status_code == 200:
+            responseObject = json.loads(response.text)
+            self.refreshToken = responseObject["refresh"]
+            self.updateRefreshTokenInterval = Timer(UPDATE_REFRESH_TOKEN_INTERVAL, self.updateRefreshToken, [False])
+            self.updateRefreshTokenInterval.start()
+            print("Refresh token updated")
+            if returnResponse == True:
+                return responseObject
+        else:
+            print("Failed to update refresh token")
+            if returnResponse == True:
+                return None
+
+    def getAuthorizedHeader(self):
+        updatedTokenObject = self.updateRefreshToken(True)
+        if not (updatedTokenObject == None):
+            return {"Authorization": "JWT " + updatedTokenObject["access"]}
+        else:
+            return None
+        
 
     def establishSocketConnection(self, instance_id):
         loop = asyncio.get_event_loop()
@@ -299,6 +331,7 @@ def add_args():
     parser.add_argument("--demo", help="The filename of the demo (without .py)", required=True)
     parser.add_argument("--instance_id", help="The instance's id", required=True)
     parser.add_argument("--group_id", help="The instance owner's group", required=True)
+    parser.add_argument("--refresh_token", help="The refresh token required for self-termination", required=True)
 
     return parser.parse_args()
 
@@ -319,4 +352,4 @@ if __name__ == "__main__":
         demoModule = import_module("." + args.demo, "demo_files")
         demo = demoModule.Demo(blocking=False)
         
-        remotePlotStream = RemotePlotStream(demo, args.instance_id, args.group_id)
+        remotePlotStream = RemotePlotStream(demo, args.instance_id, args.group_id, args.refresh_token)
