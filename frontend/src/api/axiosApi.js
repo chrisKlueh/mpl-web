@@ -23,15 +23,14 @@ axiosInstance.interceptors.response.use(
     // Prevent infinite loops early
     if (
       error.response.status === 401 &&
-      /* originalRequest.url === API_URL + "token/refresh/" */
-      originalRequest.url === "/token/refresh/"
+      originalRequest.url === "token/refresh/"
     ) {
       console.log("refresh attempt: refresh token blacklisted");
       store.dispatch(logoutSuccess());
       return Promise.reject(error);
     }
 
-    if (error.response.status === 404 && originalRequest.url === "logout/") {
+    if (error.response.status === 400 && originalRequest.url === "logout/") {
       console.log("logout attempt: refresh token blacklisted");
       store.dispatch(logoutSuccess());
       return Promise.reject(error);
@@ -53,7 +52,7 @@ axiosInstance.interceptors.response.use(
 
         if (tokenParts.exp > now) {
           return axiosInstance
-            .post("/token/refresh/", { refresh: refreshToken })
+            .post("token/refresh/", { refresh: refreshToken })
             .then((response) => {
               localStorage.setItem("access_token", response.data.access);
               localStorage.setItem("refresh_token", response.data.refresh);

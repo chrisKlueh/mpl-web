@@ -52,12 +52,7 @@ class LogoutAndBlacklistRefreshTokenView(APIView):
             token.blacklist()
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
-            if type(e) == TokenError:
-                #token has already been blacklisted
-                print(e)
-                return Response(status=status.HTTP_404_NOT_FOUND)
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 #########################################
 
