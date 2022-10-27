@@ -19,3 +19,22 @@ export const loginReq = (group_name, password) => {
       });
   });
 };
+
+export const logoutReq = (refreshToken) => {
+  return new Promise((resolve, reject) => {
+    axiosInstance
+      .post("logout/", {
+        refresh_token: refreshToken,
+      })
+      .then((response) => {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        axiosInstance.defaults.headers["Authorization"] = null;
+        resolve(response);
+      })
+      .catch((error) => {
+        console.log(error);
+        reject(error);
+      });
+  });
+};

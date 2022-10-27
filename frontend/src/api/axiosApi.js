@@ -1,5 +1,7 @@
 import axios from "axios";
 import { API_URL } from "../constants/index";
+import { store } from "../store";
+import { logoutSuccess } from "../slices/loginSlice";
 
 export const axiosInstance = axios.create({
   baseURL: API_URL,
@@ -21,9 +23,17 @@ axiosInstance.interceptors.response.use(
     // Prevent infinite loops early
     if (
       error.response.status === 401 &&
-      originalRequest.url === API_URL + "token/refresh/"
+      /* originalRequest.url === API_URL + "token/refresh/" */
+      originalRequest.url === "/token/refresh/"
     ) {
-      window.location.href = "/login/";
+      console.log("refresh attempt: refresh token blacklisted");
+      store.dispatch(logoutSuccess());
+      return Promise.reject(error);
+    }
+
+    if (error.response.status === 404 && originalRequest.url === "logout/") {
+      console.log("logout attempt: refresh token blacklisted");
+      store.dispatch(logoutSuccess());
       return Promise.reject(error);
     }
 
@@ -60,11 +70,11 @@ axiosInstance.interceptors.response.use(
             });
         } else {
           console.log("Refresh token is expired", tokenParts.exp, now);
-          window.location.href = "/login/";
+          store.dispatch(logoutSuccess());
         }
       } else {
         console.log("Refresh token not available.");
-        window.location.href = "/login/";
+        store.dispatch(logoutSuccess());
       }
     }
 

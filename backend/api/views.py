@@ -9,14 +9,14 @@ from django.db.models.signals import pre_delete, pre_save
 from django.dispatch.dispatcher import receiver
 
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework import status, permissions, exceptions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.permissions import BasePermission
 
-#from .serializers import UserGroupSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import UserGroup, Demo, Instance, FeedbackType, Feedback
 from .serializers import *
 
@@ -24,7 +24,7 @@ from .serializers import *
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
-class UserGroupCreate(APIView):
+class UserGroupCreateView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format='json'):
@@ -39,6 +39,25 @@ class UserGroupCreate(APIView):
 class HelloWorldView(APIView):
     def get(self, request):
         return Response(data={"hello":"world"}, status=status.HTTP_200_OK)
+
+#logs user out and blacklists user's refresh token
+class LogoutAndBlacklistRefreshTokenView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            if type(e) == TokenError:
+                #token has already been blacklisted
+                print(e)
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
 #########################################
 

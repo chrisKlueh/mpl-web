@@ -1,6 +1,6 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import { persistor } from "../store";
-import { loginReq } from "../api/loginRequests";
+import { loginReq, logoutReq } from "../api/loginRequests";
 import {
   loginRequest,
   loginSuccess,
@@ -25,10 +25,11 @@ export function* watcherLogin() {
 }
 
 export function* workerLogout({ payload }) {
-  const { userId } = payload;
-  console.log("logging out user " + userId);
+  /* const { userId } = payload; */
+  /* console.log("logging out user " + userId); */
   try {
-    //const res = yield call(logoutReq, userId);
+    const refreshToken = localStorage.getItem("refresh_token");
+    yield call(logoutReq, refreshToken);
     yield put(logoutSuccess());
     persistor.purge();
   } catch (error) {
