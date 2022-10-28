@@ -23,7 +23,7 @@ from aiortc.rtcrtpsender import RTCRtpSender
 from matplotlib import use
 import numpy as np
 
-from constants import FRAMERATE, MESSAGE_TYPES, MPL_MOUSE_BTNS
+from constants import FRAMERATE, CONNECTION_TIMEOUT_DURATION, UPDATE_REFRESH_TOKEN_INTERVAL, AUTH_HEADER_TYPE, MESSAGE_TYPES, MPL_MOUSE_BTNS
 from imageRenderingTrack import ImageRenderingTrack
 
 ROOT = os.path.dirname(__file__)
@@ -43,11 +43,6 @@ if not (os.environ.get('DJANGO_SIG_HOST') == None):
 else:
     print("Using dev params: SIG_HOST")
     SIG_HOST = "192.168.2.115:8080"
-
-#TO DO:move me to constants
-CONNECTION_TIMEOUT_DURATION = 60.0
-#12h = 43200s => update refresh token every 43000s #TO DO: replace me by global constant
-UPDATE_REFRESH_TOKEN_INTERVAL = 43000.0
 
 # Use non-interactive backend to run the mpl demo
 use("Agg")
@@ -72,13 +67,16 @@ class RemotePlotStream(object):
         print("Reason: " + reason)
         print("######################\n")
         authHeader = self.getAuthorizedHeader()
-        requestUrl = API_URL + "instances/" + str(self.instanceId)
-        formData = {"group_id": self.groupId}
-        terminateResponse = requests.delete(requestUrl, headers=authHeader, json = formData)
+        if not (authHeader == None):
+            requestUrl = API_URL + "instances/" + str(self.instanceId)
+            formData = {"group_id": self.groupId}
+            terminateResponse = requests.delete(requestUrl, headers=authHeader, json = formData)
+        else:
+            # terminate self anyways via os.kill?
+            print("Could not obtain auth header")
 
     def updateRefreshToken(self, returnResponse):
         requestUrl = API_URL + "token/refresh/"
-        #print(self.refreshToken)
         formData = {"refresh": self.refreshToken}
         response = requests.post(requestUrl, json = formData)
         if response.status_code == 200:
@@ -91,16 +89,11 @@ class RemotePlotStream(object):
                 return responseObject
         else:
             print("Failed to update refresh token")
-            if returnResponse == True:
-                return None
 
     def getAuthorizedHeader(self):
         updatedTokenObject = self.updateRefreshToken(True)
         if not (updatedTokenObject == None):
-            return {"Authorization": "JWT " + updatedTokenObject["access"]}
-        else:
-            return None
-        
+            return {"Authorization": AUTH_HEADER_TYPE + " " + updatedTokenObject["access"]}     
 
     def establishSocketConnection(self, instance_id):
         loop = asyncio.get_event_loop()
