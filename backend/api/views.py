@@ -9,7 +9,7 @@ from django.db.models.signals import pre_delete, pre_save
 from django.dispatch.dispatcher import receiver
 
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework import status, permissions, exceptions, generics
 from rest_framework.response import Response
@@ -61,15 +61,19 @@ class OnlyAdminPermission(BasePermission):
         self.restricted_methods = restricted_methods
         
     def has_permission(self, request, view):
-        print("checking for has_permission")
-        print(request.data)
         if request.method in self.restricted_methods:
+            print("Checking has_permission: " + request.build_absolute_uri())
+            tokenUserGroupString = request.headers.get('Authorization').replace('JWT ', '')
+            tokenUserGroupId = AccessToken(tokenUserGroupString)["user_id"]
             try:
-                userGroup = UserGroup.objects.get(pk=request.data['group_id'])
-                if not userGroup.is_admin:
-                    raise exceptions.PermissionDenied(detail="Only admins can perform this action.")
+                paramUserGroup = UserGroup.objects.get(pk=request.data['group_id'])
+                if paramUserGroup.id == tokenUserGroupId:
+                    if not paramUserGroup.is_admin:
+                        raise exceptions.PermissionDenied(detail="Only admins can perform this action.")
+                    else:
+                        return paramUserGroup.is_admin
                 else:
-                    return userGroup.is_admin
+                    raise exceptions.PermissionDenied(detail="Token does not belong to this user group.")
             except UserGroup.DoesNotExist:
                 raise exceptions.NotFound(detail="User group does not exist.")
         else:
