@@ -102,6 +102,20 @@ const Navbar = (props) => {
                       </Link>
                     </MenuItem>
                   )}
+                  {isAdmin && (
+                    <MenuItem key={"groups"} onClick={handleCloseUserMenu}>
+                      <Link
+                        to="/groups"
+                        style={{
+                          textDecoration: "none",
+                          color: "black",
+                          textAlign: "center",
+                        }}
+                      >
+                        Groups
+                      </Link>
+                    </MenuItem>
+                  )}
                   <MenuItem key={"logout"} onClick={handleLogout}>
                     <Typography className={styles.logout}>Logout</Typography>
                   </MenuItem>
