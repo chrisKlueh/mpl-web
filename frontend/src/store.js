@@ -11,7 +11,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import sessionStorage from "redux-persist/lib/storage/session";
 
 import loginReducer from "./slices/loginSlice";
 import demosReducer from "./slices/demosSlice";
@@ -28,7 +28,7 @@ const middleware = [sagaMiddleware];
 const persistConfig = {
   key: "root",
   version: 1,
-  storage,
+  storage: sessionStorage,
 };
 
 const persistedReducer = persistReducer(persistConfig, loginReducer);

@@ -9,11 +9,13 @@ import {
   logoutSuccess,
   logoutError,
 } from "../slices/loginSlice";
+import { setToken, getToken, clearToken } from "../api/axiosApi";
 
 export function* workerLogin({ payload }) {
   const { username, password } = payload;
   try {
     const res = yield call(loginReq, username, password);
+    setToken(res.data.access, res.data.refresh);
     yield put(loginSuccess(res.data));
   } catch (error) {
     yield put(loginError());
@@ -25,11 +27,10 @@ export function* watcherLogin() {
 }
 
 export function* workerLogout({ payload }) {
-  /* const { userId } = payload; */
-  /* console.log("logging out user " + userId); */
   try {
-    const refreshToken = localStorage.getItem("refresh_token");
+    const refreshToken = getToken("refresh_token");
     yield call(logoutReq, refreshToken);
+    clearToken();
     yield put(logoutSuccess());
     persistor.purge();
   } catch (error) {

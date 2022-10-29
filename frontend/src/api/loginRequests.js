@@ -8,10 +8,6 @@ export const loginReq = (group_name, password) => {
         password,
       })
       .then((response) => {
-        axiosInstance.defaults.headers["Authorization"] =
-          "JWT " + response.data.access;
-        localStorage.setItem("access_token", response.data.access);
-        localStorage.setItem("refresh_token", response.data.refresh);
         resolve(response);
       })
       .catch((error) => {
@@ -27,9 +23,6 @@ export const logoutReq = (refreshToken) => {
         refresh_token: refreshToken,
       })
       .then((response) => {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        axiosInstance.defaults.headers["Authorization"] = null;
         resolve(response);
       })
       .catch((error) => {
