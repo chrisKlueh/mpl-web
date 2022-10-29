@@ -22,7 +22,7 @@ class UserGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserGroup
-        fields = ('group_name', 'is_admin', 'password')
+        fields = ('id', 'group_name', 'is_admin', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -42,7 +42,7 @@ class DemoSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = Demo 
-        fields = ('id', 'name', 'created_at', 'group_id', 'title', 'short_desc', 'detail_desc', 'file')
+        fields = ('id', 'name', 'created_at', 'group_id', 'title', 'short_desc', 'detail_desc', 'file', 'user_groups')
 
 class InstanceSerializer(serializers.ModelSerializer):
 

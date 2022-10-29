@@ -120,8 +120,15 @@ class UserGroupDetail(APIView):
 class DemoList(APIView):
     permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
     def get(self, request, format=None):
-        demoList = Demo.objects.all().order_by('-created_at')
-        serializer = DemoSerializer(demoList, context={'request': request}, many=True)
+        tokenUserGroupString = request.headers.get('Authorization').replace('JWT ', '')
+        tokenUserGroupId = AccessToken(tokenUserGroupString)["user_id"]
+        isTokenUserAdmin = UserGroup.objects.get(pk=tokenUserGroupId).is_admin
+        fullDemoList = Demo.objects.all().order_by('-created_at')
+        if isTokenUserAdmin == True:
+            serializer = DemoSerializer(fullDemoList, context={'request': request}, many=True)    
+        else:
+            restrictedDemoList = fullDemoList.filter(user_groups=tokenUserGroupId)
+            serializer = DemoSerializer(restrictedDemoList, context={'request': request}, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -264,20 +271,6 @@ class FeedbackDetail(APIView):
         feedbackDetail = self.get_object(pk)
         feedbackDetail.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-#todo
-#class Login(APIView):
-#    def get_object(self, name):
-#        try:
-#            return User.objects.get(name=name)
-#        except User.DoesNotExist:
-#            raise Http404
-#
-#    def post(self, request, format=None):
-#        print(request.data)
-#        user = self.get_object(request.data["username"])
-#        serializer = UserSerializer(user, context={'request': request})
-#        return Response(serializer.data)
 
 @receiver(pre_delete, sender=Demo)
 def demo_file_delete(sender, instance, **kwargs):
