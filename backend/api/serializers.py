@@ -19,10 +19,19 @@ class UserGroupSerializer(serializers.ModelSerializer):
     group_name = serializers.CharField(required=True)
     is_admin = serializers.BooleanField()
     password = serializers.CharField(min_length=8, write_only=True)
+    accessible_demos = serializers.SerializerMethodField()
+
+    def get_accessible_demos(self, userGroup):
+        if UserGroup.objects.get(pk=userGroup['id']).is_admin == True:
+            fullDemoList = Demo.objects.all()
+            return fullDemoList.values('id', 'title')
+        else:
+            restrictedDemoList = UserGroup.objects.get(pk=userGroup['id']).authorized_user_groups.all()
+            return restrictedDemoList.values('id', 'title')
 
     class Meta:
         model = UserGroup
-        fields = ('id', 'group_name', 'is_admin', 'password', 'created_at')
+        fields = ('id', 'group_name', 'is_admin', 'password', 'created_at', 'accessible_demos')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):

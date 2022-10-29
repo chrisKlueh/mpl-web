@@ -49,6 +49,15 @@ const GroupsList = (props) => {
     deleteGroupRequest({ group_id: groupId, target_group: targetGroupId });
   };
 
+  const getDemoCount = (listItem) => {
+    console.log(listItem);
+    if (listItem.is_admin) {
+      return "All demos";
+    } else {
+      return `${listItem.accessible_demos.length} demos`;
+    }
+  };
+
   const createListItems = (listItemArray) => {
     if (isLoadingGroups) {
       return <ListRowSkeleton rows={maxLength} className={styles.skeleton} />;
@@ -73,6 +82,10 @@ const GroupsList = (props) => {
               />
               <ListItemText
                 primary={listItem.group_name}
+                className={styles.demoTitle}
+              />
+              <ListItemText
+                primary={getDemoCount(listItem)}
                 className={styles.demoTitle}
               />
               <ListItemText
