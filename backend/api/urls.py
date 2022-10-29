@@ -1,15 +1,20 @@
-from django.urls import re_path
-from api import views
-
+from django.urls import path, re_path
+from rest_framework_simplejwt import views as jwt_views
+from .views import CustomTokenObtainPairView, LogoutAndBlacklistRefreshTokenView, UserGroupCreateView, HelloWorldView, UserGroupList, UserGroupDetail, DemoList, DemoDetail, InstanceList, InstanceDetail, FeedbackList, FeedbackDetail
 
 urlpatterns = [
-    re_path(r'^api/users/$', views.UserList.as_view()),
-    re_path(r'^api/users/([0-9]*)$', views.UserDetail.as_view()),
-    re_path(r'^api/demos/$', views.DemoList.as_view()),
-    re_path(r'^api/demos/([0-9]*)$', views.DemoDetail.as_view()),
-    re_path(r'^api/feedback/$', views.FeedbackList.as_view()),
-    re_path(r'^api/feedback/([0-9]*)$', views.FeedbackDetail.as_view()),
-    re_path(r'^api/instances/$', views.InstanceList.as_view()),
-    re_path(r'^api/instances/([0-9]*)$', views.InstanceDetail.as_view()),
-    re_path(r'^api/login/$', views.Login.as_view()),
+    path('usergroup/create/', UserGroupCreateView.as_view(), name='create_user_group'),
+    path('hello/', HelloWorldView.as_view(), name='hello_world'),
+    #path('token/obtain/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),#override sjwt stock token
+    path('token/obtain/', CustomTokenObtainPairView.as_view(), name='token_create'),
+    path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('logout/', LogoutAndBlacklistRefreshTokenView.as_view(), name='logout'),
+    re_path(r'users/$', UserGroupList.as_view()),
+    re_path(r'users/([0-9]*)$', UserGroupDetail.as_view()),
+    re_path(r'demos/$', DemoList.as_view()),
+    re_path(r'demos/([0-9]*)$', DemoDetail.as_view()),
+    re_path(r'feedback/$', FeedbackList.as_view()),
+    re_path(r'feedback/([0-9]*)$', FeedbackDetail.as_view()),
+    re_path(r'instances/$', InstanceList.as_view()),
+    re_path(r'instances/([0-9]*)$', InstanceDetail.as_view()),
 ]

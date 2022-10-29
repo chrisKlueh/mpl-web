@@ -1,59 +1,24 @@
 import subprocess
+import os
 import signal
 import os
 
 from uuid import getnode
+
 from functools import partial
 from django.http import Http404
-from django.db.models.signals import pre_delete, pre_save
-from django.dispatch.dispatcher import receiver
 
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework import status, permissions, exceptions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
+from rest_framework import status, exceptions, generics
 from rest_framework.permissions import BasePermission
 
-from .models import UserGroup, Demo, Instance, FeedbackType, Feedback
+from django.db.models.signals import pre_delete, pre_save
+from django.dispatch.dispatcher import receiver
+
+from .models import User, Demo, Instance, FeedbackType, Feedback
 from .serializers import *
-
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
-
-class UserGroupCreateView(APIView):
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format='json'):
-        serializer = UserGroupSerializer(data=request.data)
-        if serializer.is_valid():
-            user_group = serializer.save()
-            if user_group:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class HelloWorldView(APIView):
-    def get(self, request):
-        return Response(data={"hello":"world"}, status=status.HTTP_200_OK)
-
-#logs user out and blacklists user's refresh token
-class LogoutAndBlacklistRefreshTokenView(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-
-    def post(self, request):
-        try:
-            refresh_token = request.data["refresh_token"]
-            RefreshToken(refresh_token).blacklist()
-            return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-#########################################
 
 class OnlyAdminPermission(BasePermission):
     def __init__(self, restricted_methods):
@@ -61,21 +26,17 @@ class OnlyAdminPermission(BasePermission):
         self.restricted_methods = restricted_methods
         
     def has_permission(self, request, view):
+        print("checking for has_permission")
+        print(request.data)
         if request.method in self.restricted_methods:
-            print("Checking has_permission: " + request.build_absolute_uri())
-            tokenUserGroupString = request.headers.get('Authorization').replace('JWT ', '')
-            tokenUserGroupId = AccessToken(tokenUserGroupString)["user_id"]
             try:
-                paramUserGroup = UserGroup.objects.get(pk=request.data['group_id'])
-                if paramUserGroup.id == tokenUserGroupId:
-                    if not paramUserGroup.is_admin:
-                        raise exceptions.PermissionDenied(detail="Only admins can perform this action.")
-                    else:
-                        return paramUserGroup.is_admin
+                user = User.objects.get(pk=request.data['user_id'])
+                if not user.is_admin:
+                    raise exceptions.PermissionDenied(detail="Only admins can perform this action.")
                 else:
-                    raise exceptions.PermissionDenied(detail="Token does not belong to this user group.")
-            except UserGroup.DoesNotExist:
-                raise exceptions.NotFound(detail="User group does not exist.")
+                    return user.is_admin
+            except User.DoesNotExist:
+                raise exceptions.NotFound(detail="User does not exist.")
         else:
             return True
 
@@ -86,40 +47,41 @@ class OnlyAdminPermission(BasePermission):
         print(view)
         print(obj)
         return True
-
-class UserGroupList(APIView):
+class UserList(APIView):
     def get(self, request, format=None):
-        userGroupList = UserGroup.objects.values('group_name', 'id', 'created_at', 'is_admin')
-        serializer = UserGroupSerializer(userGroupList, context={'request': request}, many=True)
+        
+        userList = User.objects.values('name', 'id', 'created_at', 'is_admin')
+        serializer = UserSerializer(userList, context={'request': request}, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = UserGroupSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserGroupDetail(APIView):
+class UserDetail(APIView):
     def get_object(self, pk):
         try:
-            return UserGroup.objects.get(pk=pk)
-        except UserGroup.DoesNotExist:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        userGroup = self.get_object(pk)
-        serializer = UserGroupSerializer(userGroup, context={'request': request})
+        user = self.get_object(pk)
+        serializer = UserSerializer(user, context={'request': request})
         return Response(serializer.data)
 
     def delete(self, request, pk, format=None):
-        userGroup = self.get_object(pk)
-        userGroup.delete()
+        user = self.get_object(pk)
+        user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DemoList(APIView):
-    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
+    permission_classes = [partial(OnlyAdminPermission, ['POST'])]
     def get(self, request, format=None):
+        
         demoList = Demo.objects.all().order_by('-created_at')
         serializer = DemoSerializer(demoList, context={'request': request}, many=True)
         return Response(serializer.data)
@@ -132,7 +94,7 @@ class DemoList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DemoDetail(APIView):
-    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['PUT', 'DELETE'])]
+    permission_classes = [partial(OnlyAdminPermission, ['PUT', 'DELETE'])]
     def get_object(self, pk):
         try:
             return Demo.objects.get(pk=pk)
@@ -172,31 +134,30 @@ class FeedbackList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class InstanceList(APIView):
-    def spawnInstance(self, demoId, instanceId, userGroupId):
+    def spawnInstance(self, demoId, instanceId, userId):
         hostId = hex(getnode())
         demoFile = Demo.objects.get(pk=demoId).file
         demoFileString = str(demoFile).split("/")[1]
         print(demoFileString)
         demoFileString = demoFileString[:len(demoFileString) - 3]
         print(demoFileString)
-
-        refreshToken = RefreshToken.for_user(UserGroup.objects.get(pk=userGroupId))
-        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --instance_id " + str(instanceId) + " --group_id " + str(userGroupId) + " --demo " + str(demoFileString) + " --refresh_token " + str(refreshToken)).split(), shell=False)
+        p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --instance_id " + str(instanceId) + " --user_id " + str(userId) + " --demo " + str(demoFileString)).split(), shell=False)
         return hostId, p.pid
         
-    def get(self, request, format=None): 
+    def get(self, request, format=None):
+        
         instanceList = Instance.objects.all()
         serializer = InstanceSerializer(instanceList, context={'request': request}, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        instanceData = {'group_id': request.data["group_id"], 'demo': request.data["demo"]}
+        instanceData = {'user_id': request.data["user_id"], 'demo': request.data["demo"]}
         print(instanceData)
         #try:
         serializer = InstanceSerializer(data=instanceData)
         if serializer.is_valid():
             instance = serializer.save()
-            host, pid = self.spawnInstance(instanceData['demo'], instance.id, instanceData['group_id'])
+            host, pid = self.spawnInstance(instanceData['demo'], instance.id, instanceData['user_id'])
             instanceData['host'] = host
             instanceData['pid'] = pid
             InstanceDetail.get_object(self, instance.id)
@@ -226,13 +187,13 @@ class InstanceDetail(APIView):
 
     def delete(self, request, pk, format=None):
         instance = self.get_object(pk)
-        group_id = instance.group_id.id
-        #print(group_id)
-        #print(request.data["group_id"])
+        user_id = instance.user_id
+        print(user_id)
+        print(request.data["user_id"])
         #host = instance.host
         #pid = instance.pid
         #if request.data["host"] == str(host) and request.data["pid"] == str(pid) and request.data["user_id"] == str(user_id):
-        if request.data["group_id"] == str(group_id):
+        if request.data["user_id"] == str(user_id):
             try:
                 instance.delete()
                 os.kill(instance.pid, signal.SIGSTOP)
@@ -248,7 +209,7 @@ class InstanceDetail(APIView):
         
 
 class FeedbackDetail(APIView):
-    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['DELETE'])]
+    permission_classes = [partial(OnlyAdminPermission, ['DELETE'])]
     def get_object(self, pk):
         try:
             return Feedback.objects.get(pk=pk)
@@ -266,18 +227,18 @@ class FeedbackDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 #todo
-#class Login(APIView):
-#    def get_object(self, name):
-#        try:
-#            return User.objects.get(name=name)
-#        except User.DoesNotExist:
-#            raise Http404
-#
-#    def post(self, request, format=None):
-#        print(request.data)
-#        user = self.get_object(request.data["username"])
-#        serializer = UserSerializer(user, context={'request': request})
-#        return Response(serializer.data)
+class Login(APIView):
+    def get_object(self, name):
+        try:
+            return User.objects.get(name=name)
+        except User.DoesNotExist:
+            raise Http404
+
+    def post(self, request, format=None):
+        print(request.data)
+        user = self.get_object(request.data["username"])
+        serializer = UserSerializer(user, context={'request': request})
+        return Response(serializer.data)
 
 @receiver(pre_delete, sender=Demo)
 def demo_file_delete(sender, instance, **kwargs):

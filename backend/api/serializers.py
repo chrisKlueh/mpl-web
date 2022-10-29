@@ -1,28 +1,54 @@
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from .models import User, Demo, Instance, FeedbackType, Feedback
+from .models import UserGroup, Demo, Instance, FeedbackType, Feedback
 
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+
+        userGroup = UserGroup.objects.get(group_name=attrs['group_name'])
+        data['group_name'] = userGroup.group_name
+        data['group_id'] = userGroup.id
+        data['is_admin'] = userGroup.is_admin
+        data['created_at'] = userGroup.created_at
+        
+        return data
+
+class UserGroupSerializer(serializers.ModelSerializer):
+    group_name = serializers.CharField(required=True)
+    is_admin = serializers.BooleanField()
+    password = serializers.CharField(min_length=8, write_only=True)
+
     class Meta:
-        model = User 
-        fields = ('id', 'created_at', 'name', 'is_admin', 'password')
+        model = UserGroup
+        fields = ('group_name', 'is_admin', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        instance = self.Meta.model(**validated_data)  # as long as the fields are the same, we can just use this
+        if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
 
 class DemoSerializer(serializers.ModelSerializer):
     file = serializers.FileField(write_only=True)
     name = serializers.SerializerMethodField()
 
     def get_name(self, demo):
-        return(demo.user_id.name)
+        return(demo.group_id.group_name)
         
     class Meta:
         model = Demo 
-        fields = ('id', 'name', 'created_at', 'user_id', 'title', 'short_desc', 'detail_desc', 'file')
+        fields = ('id', 'name', 'created_at', 'group_id', 'title', 'short_desc', 'detail_desc', 'file')
 
 class InstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Instance 
-        fields = ('id', 'created_at', 'user_id', 'demo', 'host', 'pid')
+        fields = ('id', 'created_at', 'group_id', 'demo', 'host', 'pid')
 
 class FeedbackTypeSerializer(serializers.ModelSerializer):
 

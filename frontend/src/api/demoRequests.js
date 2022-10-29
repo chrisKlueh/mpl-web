@@ -1,11 +1,10 @@
-import axios from "axios";
-import { API_URL } from "../constants/index";
+import { axiosInstance } from "./axiosApi";
 
 export const showDemoReq = async (id) => {
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "get",
-      url: `${API_URL}demos/${id}`,
+      url: `demos/${id}`,
     })
       .then((response) => {
         resolve(response);
@@ -24,16 +23,16 @@ export const uploadDemoReq = async (
   file
 ) => {
   let formData = new FormData();
-  formData.append("user_id", user_id);
+  formData.append("group_id", user_id);
   formData.append("title", title);
   formData.append("short_desc", short_desc);
   formData.append("detail_desc", detail_desc);
   formData.append("file", file);
 
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "post",
-      url: `${API_URL}demos/`,
+      url: `demos/`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
@@ -55,16 +54,16 @@ export const editDemoReq = async (
   file
 ) => {
   let formData = new FormData();
-  formData.append("user_id", user_id);
+  formData.append("group_id", user_id);
   formData.append("title", title);
   formData.append("short_desc", short_desc);
   formData.append("detail_desc", detail_desc);
   formData.append("file", file);
 
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "put",
-      url: `${API_URL}demos/${id}`,
+      url: `demos/${id}`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })

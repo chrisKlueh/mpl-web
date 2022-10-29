@@ -3,9 +3,9 @@ export const validateUsername = (values) => {
   const errors = {};
   if (!values.username) {
     errors.username = "Required";
-  } else if (!/^fdai[0-9]+$/i.test(values.username)) {
+  } /* else if (!/^fdai[0-9]+$/i.test(values.username)) {
     errors.username = "Invalid fd code";
-  }
+  } */
   return errors;
 };
 

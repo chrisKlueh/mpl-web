@@ -1,15 +1,14 @@
-import axios from "axios";
-import { API_URL } from "../constants/index";
+import { axiosInstance } from "./axiosApi";
 
 export const spawnInstanceReq = async (user_id, demo_id) => {
   let formData = new FormData();
-  formData.append("user_id", user_id);
+  formData.append("group_id", user_id);
   formData.append("demo", demo_id);
 
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "post",
-      url: `${API_URL}instances/`,
+      url: `instances/`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
@@ -67,12 +66,12 @@ export const showInstanceReq = async (id) => {
 
 export const deleteInstanceReq = async (user_id, instance_id) => {
   let formData = new FormData();
-  formData.append("user_id", user_id);
+  formData.append("group_id", user_id);
 
   return new Promise((resolve, reject) => {
-    axios({
+    axiosInstance({
       method: "delete",
-      url: `${API_URL}instances/${instance_id}`,
+      url: `instances/${instance_id}`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })

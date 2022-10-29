@@ -23,7 +23,7 @@ from aiortc.rtcrtpsender import RTCRtpSender
 from matplotlib import use
 import numpy as np
 
-from constants import FRAMERATE, CONNECTION_TIMEOUT_DURATION, UPDATE_REFRESH_TOKEN_INTERVAL, AUTH_HEADER_TYPE, MESSAGE_TYPES, MPL_MOUSE_BTNS
+from constants import FRAMERATE, MESSAGE_TYPES, MPL_MOUSE_BTNS
 from imageRenderingTrack import ImageRenderingTrack
 
 ROOT = os.path.dirname(__file__)
@@ -44,58 +44,32 @@ else:
     print("Using dev params: SIG_HOST")
     SIG_HOST = "192.168.2.115:8080"
 
+CONNECTION_TIMEOUT_DURATION = 60.0
+
 # Use non-interactive backend to run the mpl demo
 use("Agg")
 
 class RemotePlotStream(object):
-    def __init__(self, demo, instance_id, group_id, refresh_token) -> None:
+    def __init__(self, demo, instance_id, user_id) -> None:
         self.instanceId = instance_id
-        self.groupId = group_id
-        self.refreshToken = refresh_token
-        self.establishSocketConnection(self.instanceId)
+        self.userId = user_id
+        self.establishSocketConnection(self.instanceId, self.userId)
         self.pcs = set()
         self.initDemo(demo)
         self.timeout = Timer(CONNECTION_TIMEOUT_DURATION, self.terminateSelf, ["Timed out during signaling"])
         self.timeout.start()
-        self.updateRefreshTokenInterval = Timer(UPDATE_REFRESH_TOKEN_INTERVAL, self.updateRefreshToken, [False])
-        self.updateRefreshTokenInterval.start()
 
 
     def terminateSelf(self, reason):
-        print("\n######################")
+        print("######################")
         print("My time has come...")
         print("Reason: " + reason)
-        print("######################\n")
-        authHeader = self.getAuthorizedHeader()
-        if not (authHeader == None):
-            requestUrl = API_URL + "instances/" + str(self.instanceId)
-            formData = {"group_id": self.groupId}
-            terminateResponse = requests.delete(requestUrl, headers=authHeader, json = formData)
-        else:
-            # terminate self anyways via os.kill?
-            print("Could not obtain auth header")
+        print("######################")
+        requestUrl = API_URL + "instances/" + str(self.instanceId)
+        formData = {"user_id": self.userId}
+        terminateResponse = requests.delete(requestUrl, json = formData)
 
-    def updateRefreshToken(self, returnResponse):
-        requestUrl = API_URL + "token/refresh/"
-        formData = {"refresh": self.refreshToken}
-        response = requests.post(requestUrl, json = formData)
-        if response.status_code == 200:
-            responseObject = json.loads(response.text)
-            self.refreshToken = responseObject["refresh"]
-            self.updateRefreshTokenInterval = Timer(UPDATE_REFRESH_TOKEN_INTERVAL, self.updateRefreshToken, [False])
-            self.updateRefreshTokenInterval.start()
-            print("Refresh token updated")
-            if returnResponse == True:
-                return responseObject
-        else:
-            print("Failed to update refresh token")
-
-    def getAuthorizedHeader(self):
-        updatedTokenObject = self.updateRefreshToken(True)
-        if not (updatedTokenObject == None):
-            return {"Authorization": AUTH_HEADER_TYPE + " " + updatedTokenObject["access"]}     
-
-    def establishSocketConnection(self, instance_id):
+    def establishSocketConnection(self, instance_id, user_id):
         loop = asyncio.get_event_loop()
         self.sio = socketio.Client()
         self.sig_room = "instance_" + str(instance_id)
@@ -323,8 +297,7 @@ def add_args():
     )
     parser.add_argument("--demo", help="The filename of the demo (without .py)", required=True)
     parser.add_argument("--instance_id", help="The instance's id", required=True)
-    parser.add_argument("--group_id", help="The instance owner's group", required=True)
-    parser.add_argument("--refresh_token", help="The refresh token required for self-termination", required=True)
+    parser.add_argument("--user_id", help="The instance's owner", required=True)
 
     return parser.parse_args()
 
@@ -345,4 +318,4 @@ if __name__ == "__main__":
         demoModule = import_module("." + args.demo, "demo_files")
         demo = demoModule.Demo(blocking=False)
         
-        remotePlotStream = RemotePlotStream(demo, args.instance_id, args.group_id, args.refresh_token)
+        remotePlotStream = RemotePlotStream(demo, args.instance_id, args.user_id)
