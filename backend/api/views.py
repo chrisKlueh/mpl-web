@@ -7,6 +7,7 @@ from functools import partial
 from django.http import Http404
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch.dispatcher import receiver
+from django.db import IntegrityError
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
@@ -19,41 +20,6 @@ from rest_framework.permissions import BasePermission
 
 from .models import UserGroup, Demo, Instance, FeedbackType, Feedback
 from .serializers import *
-
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
-
-class UserGroupCreateView(APIView):
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format='json'):
-        serializer = UserGroupSerializer(data=request.data)
-        if serializer.is_valid():
-            user_group = serializer.save()
-            if user_group:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class HelloWorldView(APIView):
-    def get(self, request):
-        return Response(data={"hello":"world"}, status=status.HTTP_200_OK)
-
-#logs user out and blacklists user's refresh token
-class LogoutAndBlacklistRefreshTokenView(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-
-    def post(self, request):
-        try:
-            refresh_token = request.data["refresh_token"]
-            RefreshToken(refresh_token).blacklist()
-            return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-#########################################
 
 class OnlyAdminPermission(BasePermission):
     def __init__(self, restricted_methods):
@@ -87,18 +53,66 @@ class OnlyAdminPermission(BasePermission):
         print(obj)
         return True
 
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+class UserGroupCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
+
+    def post(self, request, format='json'):
+        serializer = UserGroupSerializer(data=request.data)
+        if serializer.is_valid():
+            user_group = serializer.save()
+            if user_group:
+                json = serializer.data
+                return Response(json, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class HelloWorldView(APIView):
+    def get(self, request):
+        return Response(data={"hello":"world"}, status=status.HTTP_200_OK)
+
+#logs user out and blacklists user's refresh token
+class LogoutAndBlacklistRefreshTokenView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            RefreshToken(refresh_token).blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+#########################################
+
 class UserGroupList(APIView):
+    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
+
     def get(self, request, format=None):
         userGroupList = UserGroup.objects.values('group_name', 'id', 'created_at', 'is_admin')
         serializer = UserGroupSerializer(userGroupList, context={'request': request}, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+    """ def post(self, request, format='json'):
         serializer = UserGroupSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            user_group = serializer.save()
+            if user_group:
+                json = serializer.data
+                return Response(json, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) """
+
+    def post(self, request, format=None):
+        try:
+            serializer = UserGroupSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            return Response("Group name already exists.", status=status.HTTP_400_BAD_REQUEST)
 
 class UserGroupDetail(APIView):
     def get_object(self, pk):
