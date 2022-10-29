@@ -20,6 +20,7 @@ import {
   deleteGroupError,
 } from "../slices/groupsSlice";
 import { snackbarNotification } from "../helpers/notifierHelper";
+import GroupCreationDialog from "../features/groups/GroupCreationDialog";
 
 export function* workerShowGroups({ payload }) {
   try {
@@ -35,6 +36,23 @@ export function* watcherShowGroups() {
   yield takeEvery(showGroupsRequest, workerShowGroups);
 }
 
+export function* workerDeleteGroup({ payload }) {
+  try {
+    console.log(payload);
+    const { group_id, target_group } = payload;
+    let res = yield call(deleteGroupReq, group_id, target_group);
+    yield put(deleteGroupSuccess(res.data));
+    yield put(showGroupsRequest());
+  } catch (error) {
+    yield put(deleteGroupError());
+    yield put(snackbarNotification("Failed to delete group.", "error"));
+  }
+}
+
+export function* watcherDeleteGroup() {
+  yield takeEvery(deleteGroupRequest, workerDeleteGroup);
+}
+
 export default function* rootSaga() {
-  yield all([fork(watcherShowGroups)]);
+  yield all([fork(watcherShowGroups), fork(watcherDeleteGroup)]);
 }

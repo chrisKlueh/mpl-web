@@ -4,7 +4,7 @@ import { TablePagination } from "@mui/material";
 
 import styles from "./GroupsContainer.module.css";
 import WrapperContainer from "../general/WrapperContainer";
-import { showDemosRequest, resetDemosState } from "../../slices/demosSlice";
+import { showGroupsRequest, resetGroupsState } from "../../slices/groupsSlice";
 import GroupsList from "./GroupsList";
 import GroupCreationDialog from "./GroupCreationDialog";
 import { getSelectedPage, getMaxAmountOfPages } from "../../helpers/listHelper";
@@ -13,57 +13,60 @@ const GroupsContainer = (props) => {
   const rowsPerPageOptions = [5, 10, 15];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
-  const { isLoading, demos, isAdmin, showDemosRequest, resetDemosState } =
+  const { isLoading, groups, isAdmin, showGroupsRequest, resetGroupsState } =
     props;
 
-  /* useEffect(() => {
+  useEffect(() => {
     //equals componentDidMount
-    showDemosRequest();
+    showGroupsRequest();
     //return statement equals componentWillUnmount
     return () => {
-      resetDemosState();
+      resetGroupsState();
     };
-  }, [showDemosRequest, resetDemosState]);
+  }, [showGroupsRequest, resetGroupsState]);
 
   useEffect(() => {
-    if (demos.length > 0) {
-      const newAmountOfPages = getMaxAmountOfPages(demos, rowsPerPage);
+    if (groups.length > 0) {
+      const newAmountOfPages = getMaxAmountOfPages(groups, rowsPerPage);
       if (page >= newAmountOfPages) {
         setPage(newAmountOfPages - 1);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [demos]); */
+  }, [groups]);
 
   const handleChangePage = (event, newPage) => setPage(newPage);
 
   const handleChangeRowsPerPage = (event) => {
     const newRowsPerPage = event.target.value;
-    const newAmountOfPages = getMaxAmountOfPages(demos, newRowsPerPage);
+    const newAmountOfPages = getMaxAmountOfPages(groups, newRowsPerPage);
     if (page >= newAmountOfPages) {
       setPage(newAmountOfPages - 1);
     }
     setRowsPerPage(parseInt(event.target.value, 10));
   };
-
+  console.log(groups);
+  console.log(page);
+  console.log(rowsPerPage);
+  console.log(getSelectedPage(groups, page, rowsPerPage));
   return (
     <WrapperContainer
-      pageTitle="Available Demos"
-      handleRefresh={showDemosRequest}
+      pageTitle="Available Groups"
+      handleRefresh={showGroupsRequest}
       isRefreshing={isLoading}
       autoRefresh={60}
     >
       <GroupsList
-        listItems={getSelectedPage(demos, page, rowsPerPage)}
+        listItems={getSelectedPage(groups, page, rowsPerPage)}
         maxLength={rowsPerPage}
-        isGettingDemos={isLoading}
+        isLoadingGroups={isLoading}
         isAdmin={isAdmin}
       />
       <div className={styles.bottomContainer}>
-        {demos.length > 0 && (
+        {groups.length > 0 && (
           <TablePagination
             component="div"
-            count={demos.length}
+            count={groups.length}
             color="standard"
             rowsPerPageOptions={rowsPerPageOptions}
             labelRowsPerPage={"Rows"}
@@ -81,20 +84,21 @@ const GroupsContainer = (props) => {
 };
 
 const mapStateToProps = (state) => {
+  console.log(state.groups.groups);
   return {
-    demos: state.demos.demos,
+    groups: state.groups.groups,
     isLoading:
-      state.demos.isGettingDemos ||
-      state.demos.isDeletingDemo ||
-      state.demo.isUploadingDemo,
+      state.groups.isGettingGroups ||
+      state.groups.isCreatingGroup ||
+      state.groups.isDeletingGroup,
     isAdmin: state.login.isAdmin,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    showDemosRequest: () => dispatch(showDemosRequest()),
-    resetDemosState: () => dispatch(resetDemosState()),
+    showGroupsRequest: () => dispatch(showGroupsRequest()),
+    resetGroupsState: () => dispatch(resetGroupsState()),
   };
 };
 

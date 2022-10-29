@@ -39,7 +39,7 @@ export const feedbackSlice = createSlice({
     deleteGroupError: (state, action) => {
       state.isDeletingGroup = false;
     },
-    resetGroupState: (state, action) => initialState,
+    resetGroupsState: (state, action) => initialState,
   },
 });
 export const {
@@ -52,7 +52,7 @@ export const {
   deleteGroupRequest,
   deleteGroupSuccess,
   deleteGroupError,
-  resetGroupState,
+  resetGroupsState,
 } = feedbackSlice.actions;
 
 export default feedbackSlice.reducer;
