@@ -215,7 +215,8 @@ class InstanceList(APIView):
         groupId = request.data["group_id"]
         instanceData = {'group_id': groupId, 'demo': targetDemoId}
         targetDemo = Demo.objects.get(pk=targetDemoId)
-        if targetDemo.user_groups.filter(id=groupId).exists():
+        userGroup = UserGroup.objects.get(pk=groupId)
+        if userGroup.is_admin or targetDemo.user_groups.filter(id=groupId).exists():
             serializer = InstanceSerializer(data=instanceData)
             if serializer.is_valid():
                 instance = serializer.save()
