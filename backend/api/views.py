@@ -211,27 +211,29 @@ class InstanceList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        instanceData = {'group_id': request.data["group_id"], 'demo': request.data["demo"]}
-        print(instanceData)
-        #try:
-        serializer = InstanceSerializer(data=instanceData)
-        if serializer.is_valid():
-            instance = serializer.save()
-            host, pid = self.spawnInstance(instanceData['demo'], instance.id, instanceData['group_id'])
-            instanceData['host'] = host
-            instanceData['pid'] = pid
-            InstanceDetail.get_object(self, instance.id)
-            serializer = InstanceSerializer(instance, data=instanceData,context={'request': request})
+        targetDemoId = request.data["demo"]
+        groupId = request.data["group_id"]
+        instanceData = {'group_id': groupId, 'demo': targetDemoId}
+        targetDemo = Demo.objects.get(pk=targetDemoId)
+        if targetDemo.user_groups.filter(id=groupId).exists():
+            serializer = InstanceSerializer(data=instanceData)
             if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                instance = self.get_object(id)
-                instance.delete()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        #except:
-        #    return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+                instance = serializer.save()
+                host, pid = self.spawnInstance(instanceData['demo'], instance.id, instanceData['group_id'])
+                instanceData['host'] = host
+                instanceData['pid'] = pid
+                InstanceDetail.get_object(self, instance.id)
+                serializer = InstanceSerializer(instance, data=instanceData,context={'request': request})
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                else:
+                    instance = self.get_object(id)
+                    instance.delete()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response("You cannot access this demo.", status=status.HTTP_403_FORBIDDEN)
 
 class InstanceDetail(APIView):
     def get_object(self, pk):
