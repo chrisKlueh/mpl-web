@@ -2,62 +2,80 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import { uploadDemoRequest } from "../../slices/demoSlice";
-import DemoDialogBase from "../demos/DemoDialogBase";
+import { showDemosRequest } from "../../slices/demosSlice";
+import { createGroupRequest } from "../../slices/groupsSlice";
+import GroupDialogBase from "./GroupDialogBase";
 
 const GroupCreationDialog = (props) => {
   const [open, setOpen] = useState(false);
-  const [demoFiles, setDemoFiles] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
+  const [groupName, setGroupName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [accessibleDemos, setAccessibleDemos] = useState([]);
+  const [hasAdminPrivileges, setHasAdminPrivileges] = useState(false);
 
-  const { isUploadingDemo } = props;
+  const { isLoading, showDemosRequest, demos } = props;
 
   const resetStepper = () => setActiveStep(0);
 
   const closeDialog = () => {
     setOpen(false);
-    setDemoFiles([]);
     resetStepper();
   };
 
-  const submitRequest = (title, short_desc, detail_desc) => {
-    const { uploadDemoRequest, userId } = props;
-    uploadDemoRequest({
-      user_id: userId,
-      title: title,
-      short_desc: short_desc,
-      detail_desc: detail_desc,
-      file: demoFiles[0],
+  const handleOpenDialog = () => {
+    showDemosRequest();
+    setOpen(true);
+  };
+
+  const submitRequest = () => {
+    const { createGroupRequest, groupId } = props;
+    createGroupRequest({
+      groupId: groupId,
+      groupName: groupName,
+      password: password,
+      //möglicherweise gar nicht nötig, auch ich im state
+      confirmPassword: confirmPassword,
+      hasAdminPrivileges: hasAdminPrivileges,
+      accessibleDemos: accessibleDemos,
     });
     closeDialog();
   };
 
   return (
-    <DemoDialogBase
+    <GroupDialogBase
       title={"Create Group"}
-      stepTitles={["Provide demo files", "Enter demo details"]}
+      stepTitles={["Provide group details", "Manage demo access"]}
       hasFab
-      isLoading={isUploadingDemo}
+      isLoading={isLoading}
       open={open}
-      handleOpen={() => setOpen(true)}
+      handleOpen={handleOpenDialog}
       handleClose={closeDialog}
       handleSubmit={submitRequest}
       activeStep={activeStep}
       handleOpenStep={(index) => setActiveStep(index)}
-      files={demoFiles}
-      setFiles={(files) => setDemoFiles(files)}
+      setGroupName={setGroupName}
+      setPassword={setPassword}
+      setConfirmPassword={setConfirmPassword}
+      setHasAdminPrivileges={setHasAdminPrivileges}
+      setAccessibleDemos={setAccessibleDemos}
+      availableDemos={demos}
     />
   );
 };
 const mapStateToProps = (state) => {
   return {
-    isUploadingDemo: state.demos.isUploadingDemo,
-    userId: state.login.userId,
+    isLoading: state.groups.isCreatingGroup || state.demos.isGettingDemos,
+    userGroup: state.login.userId,
+    demos: state.demos.demos,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    uploadDemoRequest: (file) => dispatch(uploadDemoRequest(file)),
+    createGroupRequest: (payload) => dispatch(createGroupRequest(payload)),
+    showDemosRequest: () => dispatch(showDemosRequest()),
   };
 };
 
