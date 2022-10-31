@@ -1,11 +1,9 @@
-//validates username corresponding to fd-code (= fdai + arbitrary amount of numbers)
-export const validateUsername = (values) => {
+//validates groupName filled
+export const validateGroupName = (values) => {
   const errors = {};
-  if (!values.username) {
-    errors.username = "Required";
-  } /* else if (!/^fdai[0-9]+$/i.test(values.username)) {
-    errors.username = "Invalid fd code";
-  } */
+  if (!values.group_name) {
+    errors.group_name = "Required";
+  }
   return errors;
 };
 
@@ -18,17 +16,17 @@ export const validatePassword = (values) => {
   return errors;
 };
 
-//merges validateUsername and validatePassword error objects
-export const validateUsernameAndPasswords = (
+//merges validateGroupName and validatePassword error objects
+export const validateGroupNameAndPassword = (
   values,
   hasPasswordConfirmation,
   discloseRequiredChars
 ) => {
-  const usernameErrors = validateUsername(values);
+  const groupNameErrors = validateGroupName(values);
   const passwordErrors = validatePassword(
     values,
     hasPasswordConfirmation,
     discloseRequiredChars
   );
-  return { ...usernameErrors, ...passwordErrors };
+  return { ...groupNameErrors, ...passwordErrors };
 };

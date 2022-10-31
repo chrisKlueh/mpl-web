@@ -6,15 +6,13 @@ import { Button, LinearProgress } from "@mui/material";
 import { TextField } from "formik-mui";
 
 import { loginRequest } from "../../slices/loginSlice";
-import { validateUsernameAndPasswords } from "../../helpers/loginValidationHelper";
+import { validateGroupNameAndPassword } from "../../helpers/loginValidationHelper";
 import styles from "./LoginForm.module.css";
 
 class LogInForm extends React.Component {
-  handleLogin = (username, password) => {
+  handleLogin = (groupName, password) => {
     const { login } = this.props;
-    if (username != null && password != null) {
-      login(username, password);
-    }
+    login({ groupName, password });
   };
 
   render() {
@@ -31,27 +29,27 @@ class LogInForm extends React.Component {
         </Typography>
         <Formik
           initialValues={{
-            username: "",
+            group_name: "",
             password: "",
           }}
           validate={(values) =>
-            validateUsernameAndPasswords(values, false, false)
+            validateGroupNameAndPassword(values, false, false)
           }
           onSubmit={(values, { setSubmitting, resetForm }) => {
-            this.handleLogin(values.username, values.password);
+            this.handleLogin(values.group_name, values.password);
             resetForm();
           }}
         >
-          {({ submitForm }) => (
+          {({ submitForm, values }) => (
             <Form>
               <Grid container className={styles.container}>
                 <Grid item>
                   <Field
                     component={TextField}
-                    name="username"
+                    name="group_name"
                     type="text"
-                    label="Username"
-                    placeholder="fdai1234"
+                    label="Group name"
+                    placeholder="MyGroup"
                     disabled={isLoggingIn}
                   />
                 </Grid>
@@ -73,7 +71,9 @@ class LogInForm extends React.Component {
                     variant="outlined"
                     color="primary"
                     className={styles.loginButton}
-                    disabled={isLoggingIn}
+                    disabled={
+                      isLoggingIn || !values.group_name || !values.password
+                    }
                     onClick={submitForm}
                   >
                     Log In
@@ -97,8 +97,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (username, password) =>
-      dispatch(loginRequest({ username, password })),
+    login: (payload) => dispatch(loginRequest(payload)),
   };
 };
 
