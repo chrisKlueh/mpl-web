@@ -92,12 +92,14 @@ const GroupDialogBase = (props) => {
                   setGroupName={setGroupName}
                   setPassword={setPassword}
                   setConfirmPassword={setConfirmPassword}
+                  initValues={initValues}
                 />
               ) : (
                 <DemoAccessForm
                   handleSubmit={handleSubmit}
                   handleClose={handleClose}
                   availableDemos={availableDemos}
+                  initValues={initValues}
                 />
               )}
             </Fragment>

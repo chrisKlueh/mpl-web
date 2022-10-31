@@ -5,6 +5,7 @@ import demoSaga from "./demoSaga";
 import feedbackSaga from "./feedbackSaga";
 import instanceSaga from "./instanceSaga";
 import groupsSaga from "./groupsSaga";
+import groupSaga from "./groupSaga";
 import remotePlotSaga from "./remotePlotSaga";
 
 export default function* rootSaga() {
@@ -15,6 +16,7 @@ export default function* rootSaga() {
     feedbackSaga(),
     instanceSaga(),
     groupsSaga(),
+    groupSaga(),
     remotePlotSaga(),
   ]);
 }

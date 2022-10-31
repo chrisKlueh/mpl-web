@@ -28,9 +28,9 @@ const GroupDetailsForm = (props) => {
   return (
     <Formik
       initialValues={{
-        group_name: initValues ? initValues.title : "",
-        password: initValues ? initValues.short_desc : "",
-        confirm_password: initValues ? initValues.detail_desc : "",
+        group_name: initValues ? initValues.group_name : "",
+        password: "",
+        confirm_password: "",
       }}
       validate={(values) => validateAll(values)}
       onSubmit={(values, { resetForm }) => {

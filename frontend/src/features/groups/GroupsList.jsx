@@ -10,33 +10,48 @@ import {
   ListItemSecondaryAction,
   Tooltip,
 } from "@mui/material";
-import { Delete, Group, AdminPanelSettings } from "@mui/icons-material";
+import { Edit, Delete, Group, AdminPanelSettings } from "@mui/icons-material";
 import { connect } from "react-redux";
 
+import GroupEditDialog from "./GroupEditDialog";
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 /* import FeedbackDetails from "./FeedbackDetails"; */
 import Placeholder from "../general/Placeholder";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { deleteGroupRequest } from "../../slices/groupsSlice";
+import { showDemosRequest } from "../../slices/demosSlice";
+import { editGroupRequest } from "../../slices/groupsSlice";
+import { showGroupRequest } from "../../slices/groupSlice";
 import { truncateString } from "../../helpers/listHelper";
 import styles from "./GroupsList.module.css";
+import { resetGroupState } from "../../slices/groupSlice";
 
 const GroupsList = (props) => {
-  const [selectedListItem, setSelectedListItem] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [isFeedbackDetailsOpen, setFeedbackDetailsOpen] = useState(false);
+  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
 
-  const { isLoadingGroups, listItems, deleteGroupRequest, maxLength } = props;
+  const {
+    isLoadingGroups,
+    listItems,
+    deleteGroupRequest,
+    showDemosRequest,
+    showGroupRequest,
+    maxLength,
+  } = props;
 
-  const updateSelectedAndOpenDialog = (listItem, type) => {
-    setSelectedListItem(listItem);
+  const updateSelectedAndOpenDialog = (id, type) => {
+    setSelectedId(id);
     switch (type) {
       case "DELETE":
         setDeleteDialogOpen(true);
         break;
-      case "GROUP_DETAILS":
-        setFeedbackDetailsOpen(true);
+      case "EDIT":
+        console.log(id);
+        showDemosRequest();
+        showGroupRequest(id);
+        setEditDialogOpen(true);
         break;
       default:
         break;
@@ -47,6 +62,11 @@ const GroupsList = (props) => {
     const { groupId } = props;
     console.log(targetGroupId, groupId);
     deleteGroupRequest({ group_id: groupId, target_group: targetGroupId });
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditDialogOpen(false);
+    resetGroupState();
   };
 
   const getDemoCount = (listItem) => {
@@ -67,9 +87,7 @@ const GroupsList = (props) => {
           <Fragment key={listItem.id}>
             <ListItem
               button
-              onClick={() =>
-                updateSelectedAndOpenDialog(listItem, "GROUP_DETAILS")
-              }
+              onClick={() => updateSelectedAndOpenDialog(listItem.id, "EDIT")}
             >
               <ListItemAvatar>
                 <Avatar>
@@ -93,12 +111,23 @@ const GroupsList = (props) => {
                 className={styles.feedbackDate}
               />
               <ListItemSecondaryAction>
+                <Tooltip title="Edit group">
+                  <IconButton
+                    edge="end"
+                    aria-label="edit"
+                    onClick={() =>
+                      updateSelectedAndOpenDialog(listItem.id, "EDIT")
+                    }
+                  >
+                    <Edit />
+                  </IconButton>
+                </Tooltip>
                 <Tooltip title="Delete feedback">
                   <IconButton
                     edge="end"
                     aria-label="delete"
                     onClick={() =>
-                      updateSelectedAndOpenDialog(listItem, "DELETE")
+                      updateSelectedAndOpenDialog(listItem.id, "DELETE")
                     }
                   >
                     <Delete />
@@ -129,14 +158,15 @@ const GroupsList = (props) => {
         title="Confirm group deletion"
         description="Do you really want to delete this group?"
         handleClose={() => setDeleteDialogOpen(false)}
-        handleConfirm={() => handleDeleteGroup(selectedListItem.id)}
+        handleConfirm={() => handleDeleteGroup(selectedId)}
         open={isDeleteDialogOpen}
       />
-      {/* <FeedbackDetails
-        feedbackDetails={selectedListItem}
-        handleClose={() => setFeedbackDetailsOpen(false)}
-        open={isFeedbackDetailsOpen}
-      /> */}
+      <GroupEditDialog
+        id={selectedId}
+        open={isEditDialogOpen}
+        setOpen={setEditDialogOpen}
+        handleClose={handleCloseEditDialog}
+      />
     </div>
   );
 };
@@ -150,6 +180,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     deleteGroupRequest: (id) => dispatch(deleteGroupRequest(id)),
+    showGroupRequest: (id) => dispatch(showGroupRequest(id)),
+    showDemosRequest: () => dispatch(showDemosRequest()),
   };
 };
 

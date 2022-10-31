@@ -2,28 +2,23 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import { showDemosRequest } from "../../slices/demosSlice";
-import { createGroupRequest } from "../../slices/groupsSlice";
+import { editGroupRequest } from "../../slices/groupsSlice";
+import { showGroupRequest } from "../../slices/groupSlice";
 import GroupDialogBase from "./GroupDialogBase";
 
-const GroupCreationDialog = (props) => {
-  const [open, setOpen] = useState(false);
+const GroupEditDialog = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [groupName, setGroupName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { isLoading, showDemosRequest, demos } = props;
+  const { isLoading, demos, open, setOpen, group } = props;
 
   const resetStepper = () => setActiveStep(0);
 
   const closeDialog = () => {
     setOpen(false);
     resetStepper();
-  };
-
-  const handleOpenDialog = () => {
-    showDemosRequest();
-    setOpen(true);
   };
 
   const submitRequest = (hasAdminPrivileges, accessibleDemos) => {
@@ -44,12 +39,10 @@ const GroupCreationDialog = (props) => {
 
   return (
     <GroupDialogBase
-      title={"Create Group"}
+      title={"Edit Group"}
       stepTitles={["Provide group details", "Manage demo access"]}
-      hasFab
       isLoading={isLoading}
       open={open}
-      handleOpen={handleOpenDialog}
       handleClose={closeDialog}
       handleSubmit={submitRequest}
       activeStep={activeStep}
@@ -58,25 +51,23 @@ const GroupCreationDialog = (props) => {
       setPassword={setPassword}
       setConfirmPassword={setConfirmPassword}
       availableDemos={demos}
+      initValues={group}
     />
   );
 };
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.groups.isCreatingGroup || state.demos.isGettingDemos,
+    isLoading: state.group.isEditingGroup || state.demos.isGettingDemos,
     userGroup: state.login.userId,
     demos: state.demos.demos,
+    group: state.group.group,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createGroupRequest: (payload) => dispatch(createGroupRequest(payload)),
-    showDemosRequest: () => dispatch(showDemosRequest()),
+    editGroupRequest: (payload) => dispatch(editGroupRequest(payload)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GroupCreationDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupEditDialog);

@@ -23,13 +23,19 @@ const DemoAccessForm = (props) => {
     setHasAdminPrivileges(event.target.checked);
   }; */
 
+  const getAccessibleDemosInitValues = (initValues) => {
+    let accessibleDemos = [];
+    initValues.accessible_demos.map((demo) => accessibleDemos.push(demo.id));
+    return accessibleDemos;
+  };
+
   return (
     <Formik
       initialValues={{
-        has_admin_privileges: initValues
-          ? initValues.hasAdminPrivileges
-          : false,
-        accessible_demos: initValues ? initValues.accessibleDemos : "",
+        has_admin_privileges: initValues ? initValues.is_admin : false,
+        accessible_demos: initValues
+          ? getAccessibleDemosInitValues(initValues)
+          : "",
       }}
       onSubmit={(values, { resetForm }) => {
         console.log(values);

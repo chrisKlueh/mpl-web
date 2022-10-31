@@ -92,7 +92,8 @@ class UserGroupList(APIView):
     permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
 
     def get(self, request, format=None):
-        userGroupList = UserGroup.objects.values('group_name', 'id', 'created_at', 'is_admin').order_by('-created_at')
+        userGroupList = UserGroup.objects.all().order_by('-created_at')
+        #userGroupList = UserGroup.objects.values('group_name', 'id', 'created_at', 'is_admin', 'accessible_demos__id').order_by('-created_at')
         serializer = UserGroupSerializer(userGroupList, context={'request': request}, many=True)
         return Response(serializer.data)
 
@@ -126,6 +127,7 @@ class UserGroupList(APIView):
             return Response("Group name already exists.", status=status.HTTP_400_BAD_REQUEST)
 
 class UserGroupDetail(APIView):
+    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['PUT', 'DELETE'])]
     def get_object(self, pk):
         try:
             return UserGroup.objects.get(pk=pk)
@@ -136,6 +138,27 @@ class UserGroupDetail(APIView):
         userGroup = self.get_object(pk)
         serializer = UserGroupSerializer(userGroup, context={'request': request})
         return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        try:
+            try:
+                accessibleDemoList = request.data["accessible_demos"].split(",")
+            except MultiValueDictKeyError:
+                return Response("Accessible demos list is required.", status=status.HTTP_400_BAD_REQUEST)
+            userGroup = self.get_object(pk)
+            serializer = UserGroupSerializer(userGroup, data=request.data,context={'request': request})
+            if serializer.is_valid():
+                userGroup = serializer.save()
+                if not accessibleDemoList == [""]:
+                    user = UserGroup.objects.get(pk=userGroup.id)
+                    for demoId in accessibleDemoList:
+                        if Demo.objects.filter(pk=demoId).exists():
+                            demo = Demo.objects.get(pk=demoId)
+                            demo.user_groups.add(user)
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            return Response("Group name already exists.", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         userGroup = self.get_object(pk)

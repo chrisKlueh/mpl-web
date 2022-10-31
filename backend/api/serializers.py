@@ -15,20 +15,29 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         
         return data
 
+class DemoSerializer(serializers.ModelSerializer):
+    file = serializers.FileField(write_only=True)
+    name = serializers.SerializerMethodField()
+
+    def get_name(self, demo):
+        return(demo.group_id.group_name)
+        
+    class Meta:
+        model = Demo 
+        fields = ('id', 'name', 'created_at', 'group_id', 'title', 'short_desc', 'detail_desc', 'file', 'user_groups')
+
+class DemoSerializerShort(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Demo 
+        fields = ('id', 'title')
+
 class UserGroupSerializer(serializers.ModelSerializer):
     group_name = serializers.CharField(required=True)
     is_admin = serializers.BooleanField()
     password = serializers.CharField(min_length=8, write_only=True)
-    accessible_demos = serializers.SerializerMethodField()
-
-    def get_accessible_demos(self, userGroup):
-        if UserGroup.objects.get(pk=userGroup['id']).is_admin == True:
-            fullDemoList = Demo.objects.all()
-            return fullDemoList.values('id', 'title')
-        else:
-            restrictedDemoList = UserGroup.objects.get(pk=userGroup['id']).accessible_demos.all()
-            return restrictedDemoList.values('id', 'title')
-
+    accessible_demos = DemoSerializerShort(many=True)
+    
     class Meta:
         model = UserGroup
         fields = ('id', 'group_name', 'is_admin', 'password', 'created_at', 'accessible_demos')
@@ -41,17 +50,6 @@ class UserGroupSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
-
-class DemoSerializer(serializers.ModelSerializer):
-    file = serializers.FileField(write_only=True)
-    name = serializers.SerializerMethodField()
-
-    def get_name(self, demo):
-        return(demo.group_id.group_name)
-        
-    class Meta:
-        model = Demo 
-        fields = ('id', 'name', 'created_at', 'group_id', 'title', 'short_desc', 'detail_desc', 'file', 'user_groups')
 
 class InstanceSerializer(serializers.ModelSerializer):
 

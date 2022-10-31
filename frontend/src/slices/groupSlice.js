@@ -1,27 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  isGettingGroups: false,
+  isGettingGroup: false,
   isCreatingGroup: false,
   isEditingGroup: false,
   isDeletingGroup: false,
-  groups: [],
+  group: [],
 };
 
-export const groupsSlice = createSlice({
-  name: "groups",
+export const groupSlice = createSlice({
+  name: "group",
   initialState,
   reducers: {
-    showGroupsRequest: (state, action) => {
-      state.isGettingGroups = true;
+    showGroupRequest: (state, action) => {
+      state.isGettingGroup = true;
     },
-    showGroupsSuccess: (state, action) => {
-      state.groups = action.payload;
-      state.isGettingGroups = false;
+    showGroupSuccess: (state, action) => {
+      state.group = action.payload;
+      state.isGettingGroup = false;
     },
-    showGroupsError: (state, action) => {
-      state.isGettingGroups = false;
+    showGroupError: (state, action) => {
+      state.isGettingGroup = false;
     },
-    createGroupRequest: (state, action) => {
+    /* createGroupRequest: (state, action) => {
       state.isCreatingGroup = true;
     },
     createGroupSuccess: (state, action) => {
@@ -29,7 +29,7 @@ export const groupsSlice = createSlice({
     },
     createGroupError: (state, action) => {
       state.isCreatingGroup = false;
-    },
+    }, */
     editGroupRequest: (state, action) => {
       state.isEditingGroup = true;
     },
@@ -39,7 +39,7 @@ export const groupsSlice = createSlice({
     editGroupError: (state, action) => {
       state.isEditingGroup = false;
     },
-    deleteGroupRequest: (state, action) => {
+    /* deleteGroupRequest: (state, action) => {
       state.isDeletingGroup = true;
     },
     deleteGroupSuccess: (state, action) => {
@@ -47,24 +47,24 @@ export const groupsSlice = createSlice({
     },
     deleteGroupError: (state, action) => {
       state.isDeletingGroup = false;
-    },
-    resetGroupsState: (state, action) => initialState,
+    }, */
+    resetGroupState: (state, action) => initialState,
   },
 });
 export const {
-  showGroupsRequest,
-  showGroupsSuccess,
-  showGroupsError,
-  createGroupRequest,
+  showGroupRequest,
+  showGroupSuccess,
+  showGroupError,
+  /* createGroupRequest,
   createGroupSuccess,
-  createGroupError,
+  createGroupError, */
   editGroupRequest,
   editGroupSuccess,
   editGroupError,
-  deleteGroupRequest,
+  /* deleteGroupRequest,
   deleteGroupSuccess,
-  deleteGroupError,
-  resetGroupsState,
-} = groupsSlice.actions;
+  deleteGroupError, */
+  resetGroupState,
+} = groupSlice.actions;
 
-export default groupsSlice.reducer;
+export default groupSlice.reducer;
