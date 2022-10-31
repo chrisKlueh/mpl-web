@@ -16,14 +16,19 @@ export const showGroupsReq = async (id) => {
 };
 
 export const createGroupReq = async (
+  groupId,
+  groupName,
   password,
-  group_name,
-  accessible_demos
+  confirmPassword,
+  hasAdminPrivileges,
+  accessibleDemos
 ) => {
   let formData = new FormData();
+  formData.append("group_id", groupId);
+  formData.append("group_name", groupName);
   formData.append("password", password);
-  formData.append("group_name", group_name);
-  formData.append("accessible_demos", accessible_demos);
+  formData.append("is_admin", hasAdminPrivileges);
+  formData.append("accessible_demos", accessibleDemos);
 
   return new Promise((resolve, reject) => {
     axiosInstance({

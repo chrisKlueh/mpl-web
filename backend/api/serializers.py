@@ -26,7 +26,7 @@ class UserGroupSerializer(serializers.ModelSerializer):
             fullDemoList = Demo.objects.all()
             return fullDemoList.values('id', 'title')
         else:
-            restrictedDemoList = UserGroup.objects.get(pk=userGroup['id']).authorized_user_groups.all()
+            restrictedDemoList = UserGroup.objects.get(pk=userGroup['id']).accessible_demos.all()
             return restrictedDemoList.values('id', 'title')
 
     class Meta:

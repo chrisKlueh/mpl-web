@@ -8,6 +8,7 @@ from django.http import Http404
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch.dispatcher import receiver
 from django.db import IntegrityError
+from django.utils.datastructures import MultiValueDictKeyError
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
@@ -91,7 +92,7 @@ class UserGroupList(APIView):
     permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
 
     def get(self, request, format=None):
-        userGroupList = UserGroup.objects.values('group_name', 'id', 'created_at', 'is_admin')
+        userGroupList = UserGroup.objects.values('group_name', 'id', 'created_at', 'is_admin').order_by('-created_at')
         serializer = UserGroupSerializer(userGroupList, context={'request': request}, many=True)
         return Response(serializer.data)
 
@@ -106,9 +107,19 @@ class UserGroupList(APIView):
 
     def post(self, request, format=None):
         try:
+            try:
+                accessibleDemoList = request.data["accessible_demos"].split(",")
+            except MultiValueDictKeyError:
+                return Response("Accessible demos list is required.", status=status.HTTP_400_BAD_REQUEST)
             serializer = UserGroupSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save()
+                userGroup = serializer.save()
+                if not accessibleDemoList == [""]:
+                    user = UserGroup.objects.get(pk=userGroup.id)
+                    for demoId in accessibleDemoList:
+                        if Demo.objects.filter(pk=demoId).exists():
+                            demo = Demo.objects.get(pk=demoId)
+                            demo.user_groups.add(user)
                 return Response(status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except IntegrityError:

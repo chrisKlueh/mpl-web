@@ -53,6 +53,42 @@ export function* watcherDeleteGroup() {
   yield takeEvery(deleteGroupRequest, workerDeleteGroup);
 }
 
+export function* workerCreateGroup({ payload }) {
+  try {
+    console.log(payload);
+    const {
+      groupId,
+      groupName,
+      password,
+      confirmPassword,
+      hasAdminPrivileges,
+      accessibleDemos,
+    } = payload;
+    let res = yield call(
+      createGroupReq,
+      groupId,
+      groupName,
+      password,
+      confirmPassword,
+      hasAdminPrivileges,
+      accessibleDemos
+    );
+    yield put(createGroupSuccess(res.data));
+    yield put(showGroupsRequest());
+  } catch (error) {
+    yield put(createGroupError());
+    yield put(snackbarNotification("Failed to create group.", "error"));
+  }
+}
+
+export function* watcherCreateGroup() {
+  yield takeEvery(createGroupRequest, workerCreateGroup);
+}
+
 export default function* rootSaga() {
-  yield all([fork(watcherShowGroups), fork(watcherDeleteGroup)]);
+  yield all([
+    fork(watcherShowGroups),
+    fork(watcherDeleteGroup),
+    fork(watcherCreateGroup),
+  ]);
 }

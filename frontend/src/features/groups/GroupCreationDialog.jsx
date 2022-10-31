@@ -12,8 +12,6 @@ const GroupCreationDialog = (props) => {
   const [groupName, setGroupName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [accessibleDemos, setAccessibleDemos] = useState([]);
-  const [hasAdminPrivileges, setHasAdminPrivileges] = useState(false);
 
   const { isLoading, showDemosRequest, demos } = props;
 
@@ -29,17 +27,19 @@ const GroupCreationDialog = (props) => {
     setOpen(true);
   };
 
-  const submitRequest = () => {
-    const { createGroupRequest, groupId } = props;
-    createGroupRequest({
-      groupId: groupId,
+  const submitRequest = (hasAdminPrivileges, accessibleDemos) => {
+    const { createGroupRequest, userGroup } = props;
+    const reqParams = {
+      groupId: userGroup,
       groupName: groupName,
       password: password,
       //möglicherweise gar nicht nötig, auch ich im state
       confirmPassword: confirmPassword,
       hasAdminPrivileges: hasAdminPrivileges,
       accessibleDemos: accessibleDemos,
-    });
+    };
+    console.log(reqParams);
+    createGroupRequest(reqParams);
     closeDialog();
   };
 
@@ -58,8 +58,6 @@ const GroupCreationDialog = (props) => {
       setGroupName={setGroupName}
       setPassword={setPassword}
       setConfirmPassword={setConfirmPassword}
-      setHasAdminPrivileges={setHasAdminPrivileges}
-      setAccessibleDemos={setAccessibleDemos}
       availableDemos={demos}
     />
   );

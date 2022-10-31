@@ -49,7 +49,7 @@ class Demo(models.Model):
     short_desc = models.CharField("short desc", max_length=240)
     detail_desc = models.CharField("detail desc", max_length=240)
     file = models.FileField(upload_to='demo_files', validators=[FileExtensionValidator( ['py'] ) ])
-    user_groups = models.ManyToManyField(UserGroup, related_name='authorized_user_groups', blank=True)
+    user_groups = models.ManyToManyField(UserGroup, related_name='accessible_demos', blank=True)
     
     def __str__(self):
         return str(self.id)

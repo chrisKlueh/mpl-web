@@ -5,14 +5,7 @@ import { Switch, Select } from "formik-mui";
 
 import styles from "./DemoAccessForm.module.css";
 const DemoAccessForm = (props) => {
-  const {
-    handleSubmit,
-    handleClose,
-    initValues,
-    setAccessibleDemos,
-    setHasAdminPrivileges,
-    availableDemos,
-  } = props;
+  const { handleSubmit, handleClose, initValues, availableDemos } = props;
 
   /* const handleChangeMultiple = (event) => {
     const { options } = event.target;
@@ -40,9 +33,7 @@ const DemoAccessForm = (props) => {
       }}
       onSubmit={(values, { resetForm }) => {
         console.log(values);
-        setHasAdminPrivileges(values.has_admin_privileges);
-        setAccessibleDemos(values.accessible_demos);
-        handleSubmit();
+        handleSubmit(values.has_admin_privileges, values.accessible_demos);
         resetForm();
       }}
     >

@@ -30,8 +30,6 @@ const GroupDialogBase = (props) => {
     setGroupName,
     setPassword,
     setConfirmPassword,
-    setHasAdminPrivileges,
-    setAccessibleDemos,
     availableDemos,
   } = props;
 
@@ -97,9 +95,8 @@ const GroupDialogBase = (props) => {
                 />
               ) : (
                 <DemoAccessForm
+                  handleSubmit={handleSubmit}
                   handleClose={handleClose}
-                  setAccessibleDemos={setAccessibleDemos}
-                  setHasAdminPrivileges={setHasAdminPrivileges}
                   availableDemos={availableDemos}
                 />
               )}
