@@ -61,7 +61,7 @@ const GroupDetailsForm = (props) => {
                 component={TextField}
                 name="password"
                 type="password"
-                label="Password"
+                label={initValues ? "New password" : "Password"}
               />
             </Grid>
           </Grid>
@@ -72,7 +72,7 @@ const GroupDetailsForm = (props) => {
                 component={TextField}
                 name="confirm_password"
                 type="password"
-                label="Confirm password"
+                label={initValues ? "Confirm new password" : "Confirm password"}
               />
             </Grid>
           </Grid>
