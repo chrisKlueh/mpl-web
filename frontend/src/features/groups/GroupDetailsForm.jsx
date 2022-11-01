@@ -57,6 +57,7 @@ const GroupDetailsForm = (props) => {
           <Grid container className={styles.container}>
             <Grid item>
               <Field
+                className={styles.field}
                 component={TextField}
                 name="password"
                 type="password"
@@ -67,6 +68,7 @@ const GroupDetailsForm = (props) => {
           <Grid container className={styles.container}>
             <Grid item>
               <Field
+                className={styles.field}
                 component={TextField}
                 name="confirm_password"
                 type="password"

@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Grid, DialogActions, Button } from "@mui/material";
+import { Grid, DialogActions, Button, Typography } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import { Switch, Select } from "formik-mui";
 
@@ -32,7 +32,6 @@ const DemoAccessForm = (props) => {
             <Grid item>
               <label>
                 <Field
-                  className={styles.field}
                   component={Switch}
                   name="has_admin_privileges"
                   type="checkbox"
@@ -43,20 +42,28 @@ const DemoAccessForm = (props) => {
           </Grid>
           {values.has_admin_privileges ? (
             <Fragment>
-              <div>Admins can access every uploaded demo.</div>
-              <div>Caution: Admins have full control over this app!</div>
+              <Typography variant="body1">
+                Admins can access every uploaded demo.
+              </Typography>
+              <Typography variant="body1">
+                Caution: Admins have full control over this app!
+              </Typography>
             </Fragment>
           ) : (
             <Fragment>
-              <div>Select the demos this group can access.</div>
-              <div>Hold down the control key for multiselect.</div>
+              <Typography variant="body1">
+                Select the demos this group can access.
+              </Typography>
+              <Typography variant="body1">
+                Hold down the control key for multiselect.
+              </Typography>
             </Fragment>
           )}
           {!values.has_admin_privileges && (
-            <Grid container className={styles.container}>
+            <Grid container className={styles.multiselectContainer}>
               <Grid item>
                 <Field
-                  className={styles.field}
+                  className={styles.multiselect}
                   component={Select}
                   multiple
                   native
