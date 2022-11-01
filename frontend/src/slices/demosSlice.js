@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isGettingDemos: false,
-  isDeletingDemo: false,
   demos: [],
 };
 
@@ -19,15 +18,6 @@ export const demosSlice = createSlice({
     showDemosError: (state, action) => {
       state.isGettingDemos = false;
     },
-    deleteDemoRequest: (state, action) => {
-      state.isDeletingDemo = true;
-    },
-    deleteDemoSuccess: (state, action) => {
-      state.isDeletingDemo = false;
-    },
-    deleteDemoError: (state, action) => {
-      state.isDeletingDemo = false;
-    },
     resetDemosState: (state, action) => initialState,
   },
 });
@@ -35,9 +25,6 @@ export const {
   showDemosRequest,
   showDemosSuccess,
   showDemosError,
-  deleteDemoRequest,
-  deleteDemoSuccess,
-  deleteDemoError,
   resetDemosState,
 } = demosSlice.actions;
 

@@ -20,8 +20,11 @@ import LoadingDialog from "../general/LoadingDialog";
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import Placeholder from "../general/Placeholder";
-import { deleteDemoRequest } from "../../slices/demosSlice";
-import { showDemoRequest, resetDemoState } from "../../slices/demoSlice";
+import {
+  showDemoRequest,
+  resetDemoState,
+  deleteDemoRequest,
+} from "../../slices/demoSlice";
 import { spawnInstanceRequest } from "../../slices/instanceSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { truncateString } from "../../helpers/listHelper";

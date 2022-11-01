@@ -77,3 +77,23 @@ export const editDemoReq = async (
       });
   });
 };
+
+export const deleteDemoReq = async (user_id, demo_id) => {
+  let formData = new FormData();
+  formData.append("group_id", user_id);
+
+  return new Promise((resolve, reject) => {
+    axiosInstance({
+      method: "delete",
+      url: `demos/${demo_id}`,
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};

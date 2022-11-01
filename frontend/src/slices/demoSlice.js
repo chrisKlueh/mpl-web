@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isGettingDemo: false,
   isUploadingDemo: false,
+  isDeletingDemo: false,
   demo: {},
 };
 
@@ -37,6 +38,15 @@ export const demoSlice = createSlice({
     editDemoError: (state, action) => {
       state.isUploadingDemo = false;
     },
+    deleteDemoRequest: (state, action) => {
+      state.isDeletingDemo = true;
+    },
+    deleteDemoSuccess: (state, action) => {
+      state.isDeletingDemo = false;
+    },
+    deleteDemoError: (state, action) => {
+      state.isDeletingDemo = false;
+    },
     resetDemoState: (state, action) => initialState,
   },
 });
@@ -50,6 +60,9 @@ export const {
   editDemoRequest,
   editDemoSuccess,
   editDemoError,
+  deleteDemoRequest,
+  deleteDemoSuccess,
+  deleteDemoError,
   resetDemoState,
 } = demoSlice.actions;
 
