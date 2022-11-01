@@ -88,7 +88,7 @@ const DemoAccessForm = (props) => {
               onClick={submitForm}
               color="primary"
             >
-              Create
+              {initValues ? "Update" : "Create"}
             </Button>
           </DialogActions>
         </Form>

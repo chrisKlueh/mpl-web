@@ -67,7 +67,7 @@ const DemoDetailsForm = (props) => {
               Cancel
             </Button>
             <Button disabled={!isValid} onClick={submitForm} color="primary">
-              Upload
+              {initValues ? "Update" : "Upload"}
             </Button>
           </DialogActions>
         </Form>
