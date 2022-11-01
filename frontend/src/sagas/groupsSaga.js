@@ -55,7 +55,6 @@ export function* workerCreateGroup({ payload }) {
       groupId,
       groupName,
       password,
-      confirmPassword,
       hasAdminPrivileges,
       accessibleDemos,
     } = payload;
@@ -64,7 +63,6 @@ export function* workerCreateGroup({ payload }) {
       groupId,
       groupName,
       password,
-      confirmPassword,
       hasAdminPrivileges,
       accessibleDemos
     );

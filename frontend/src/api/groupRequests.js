@@ -19,7 +19,6 @@ export const createGroupReq = async (
   groupId,
   groupName,
   password,
-  confirmPassword,
   hasAdminPrivileges,
   accessibleDemos
 ) => {
@@ -51,7 +50,6 @@ export const editGroupReq = async (
   targetGroupId,
   groupName,
   password,
-  confirmPassword,
   hasAdminPrivileges,
   accessibleDemos
 ) => {

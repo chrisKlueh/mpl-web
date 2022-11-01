@@ -8,7 +8,6 @@ const GroupEditDialog = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [groupName, setGroupName] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   const { isLoading, demos, open, group, id, handleClose } = props;
 
@@ -26,8 +25,6 @@ const GroupEditDialog = (props) => {
       groupId: userGroup,
       groupName: groupName,
       password: password,
-      //möglicherweise gar nicht nötig, auch ich im state
-      confirmPassword: confirmPassword,
       hasAdminPrivileges: hasAdminPrivileges,
       accessibleDemos: accessibleDemos,
     });
@@ -46,7 +43,6 @@ const GroupEditDialog = (props) => {
       handleOpenStep={(index) => setActiveStep(index)}
       setGroupName={setGroupName}
       setPassword={setPassword}
-      setConfirmPassword={setConfirmPassword}
       availableDemos={demos}
       initValues={group}
     />

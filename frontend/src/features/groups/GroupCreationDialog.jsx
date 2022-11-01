@@ -10,7 +10,6 @@ const GroupCreationDialog = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [groupName, setGroupName] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   const { isLoading, showDemosRequest, demos } = props;
 
@@ -32,12 +31,9 @@ const GroupCreationDialog = (props) => {
       groupId: userGroup,
       groupName: groupName,
       password: password,
-      //möglicherweise gar nicht nötig, auch ich im state
-      confirmPassword: confirmPassword,
       hasAdminPrivileges: hasAdminPrivileges,
       accessibleDemos: accessibleDemos,
     };
-    console.log(reqParams);
     createGroupRequest(reqParams);
     closeDialog();
   };
@@ -56,7 +52,6 @@ const GroupCreationDialog = (props) => {
       handleOpenStep={(index) => setActiveStep(index)}
       setGroupName={setGroupName}
       setPassword={setPassword}
-      setConfirmPassword={setConfirmPassword}
       availableDemos={demos}
     />
   );

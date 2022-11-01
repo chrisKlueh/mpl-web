@@ -7,19 +7,12 @@ import { validateGroupNameAndPassword } from "../../helpers/loginValidationHelpe
 import styles from "./GroupDetailsForm.module.css";
 
 const GroupDetailsForm = (props) => {
-  const {
-    handleClose,
-    handleNext,
-    setGroupName,
-    setPassword,
-    setConfirmPassword,
-    initValues,
-  } = props;
+  const { handleClose, handleNext, setGroupName, setPassword, initValues } =
+    props;
 
   const handleNextStep = (values) => {
     setGroupName(values.group_name);
     setPassword(values.password);
-    setConfirmPassword(values.confirm_password);
     handleNext();
   };
 

@@ -19,7 +19,6 @@ export const createGroupReq = async (
   groupId,
   groupName,
   password,
-  confirmPassword,
   hasAdminPrivileges,
   accessibleDemos
 ) => {

@@ -29,7 +29,6 @@ const GroupDialogBase = (props) => {
     stepTitles,
     setGroupName,
     setPassword,
-    setConfirmPassword,
     availableDemos,
     handleClose,
   } = props;
@@ -83,7 +82,6 @@ const GroupDialogBase = (props) => {
                   handleNext={() => handleOpenStep(1)}
                   setGroupName={setGroupName}
                   setPassword={setPassword}
-                  setConfirmPassword={setConfirmPassword}
                   initValues={initValues}
                 />
               ) : (

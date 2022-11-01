@@ -32,7 +32,6 @@ export function* workerEditGroup({ payload }) {
       targetGroupId,
       groupName,
       password,
-      confirmPassword,
       hasAdminPrivileges,
       accessibleDemos,
     } = payload;
@@ -42,7 +41,6 @@ export function* workerEditGroup({ payload }) {
       targetGroupId,
       groupName,
       password,
-      confirmPassword,
       hasAdminPrivileges,
       accessibleDemos
     );
