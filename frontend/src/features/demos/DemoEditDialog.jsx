@@ -26,6 +26,7 @@ const DemoEditDialog = (props) => {
       short_desc: short_desc,
       detail_desc: detail_desc,
       file: demoFiles[0],
+      user_groups: demo.user_groups,
     });
     closeDialog();
   };
