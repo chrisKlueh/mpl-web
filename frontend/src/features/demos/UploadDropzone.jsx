@@ -56,7 +56,7 @@ const UploadDropzone = (props) => {
           Cancel
         </Button>
         <Button onClick={handleNext} disabled={disableNext} color="primary">
-          Next Step
+          Next
         </Button>
       </DialogActions>
     </Fragment>

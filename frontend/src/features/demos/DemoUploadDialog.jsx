@@ -19,7 +19,11 @@ const DemoUploadDialog = (props) => {
     <DemoDialogBase
       hasFab
       title={"Upload Demo"}
-      stepTitles={["Provide demo files", "Enter demo details"]}
+      stepTitles={[
+        "Provide demo files",
+        "Enter demo details",
+        "Manage demo access",
+      ]}
       isLoading={isLoading}
       open={open}
       handleOpen={handleOpenDialog}
