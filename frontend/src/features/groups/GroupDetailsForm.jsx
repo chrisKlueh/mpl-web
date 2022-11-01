@@ -7,12 +7,22 @@ import { validateGroupNameAndPassword } from "../../helpers/loginValidationHelpe
 import styles from "./GroupDetailsForm.module.css";
 
 const GroupDetailsForm = (props) => {
-  const { handleClose, handleNext, setGroupName, setPassword, initValues } =
-    props;
+  const {
+    handleClose,
+    handleNext,
+    groupNameState,
+    passwordState,
+    confirmPasswordState,
+    setGroupNameState,
+    setPasswordState,
+    setConfirmPasswordState,
+    initValues,
+  } = props;
 
   const handleNextStep = (values) => {
-    setGroupName(values.group_name);
-    setPassword(values.password);
+    setGroupNameState(values.group_name);
+    setPasswordState(values.password);
+    setConfirmPasswordState(values.confirm_password);
     handleNext();
   };
 
@@ -20,9 +30,13 @@ const GroupDetailsForm = (props) => {
     <Formik
       validateOnMount
       initialValues={{
-        group_name: initValues ? initValues.group_name : "",
-        password: "",
-        confirm_password: "",
+        group_name: initValues
+          ? groupNameState
+            ? groupNameState
+            : initValues.group_name
+          : "",
+        password: initValues ? passwordState : "",
+        confirm_password: initValues ? confirmPasswordState : "",
       }}
       validate={(values) => validateGroupNameAndPassword(values, true, true)}
     >
@@ -36,7 +50,7 @@ const GroupDetailsForm = (props) => {
                 name="group_name"
                 type="text"
                 label="Group name"
-                placeholder="MyCoolGroup"
+                placeholder="MyGroupName"
               />
             </Grid>
           </Grid>

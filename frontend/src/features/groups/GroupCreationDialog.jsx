@@ -7,52 +7,25 @@ import GroupDialogBase from "./GroupDialogBase";
 
 const GroupCreationDialog = (props) => {
   const [open, setOpen] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const [groupName, setGroupName] = useState("");
-  const [password, setPassword] = useState("");
 
-  const { isLoading, showDemosRequest, demos } = props;
-
-  const resetStepper = () => setActiveStep(0);
-
-  const closeDialog = () => {
-    setOpen(false);
-    resetStepper();
-  };
+  const { isLoading, showDemosRequest, demos, createGroupRequest } = props;
 
   const handleOpenDialog = () => {
     showDemosRequest();
     setOpen(true);
   };
 
-  const submitRequest = (hasAdminPrivileges, accessibleDemos) => {
-    const { createGroupRequest, userGroup } = props;
-    const reqParams = {
-      groupId: userGroup,
-      groupName: groupName,
-      password: password,
-      hasAdminPrivileges: hasAdminPrivileges,
-      accessibleDemos: accessibleDemos,
-    };
-    createGroupRequest(reqParams);
-    closeDialog();
-  };
-
   return (
     <GroupDialogBase
+      hasFab
       title={"Create Group"}
       stepTitles={["Provide group details", "Manage demo access"]}
-      hasFab
       isLoading={isLoading}
       open={open}
       handleOpen={handleOpenDialog}
-      handleClose={closeDialog}
-      handleSubmit={submitRequest}
-      activeStep={activeStep}
-      handleOpenStep={(index) => setActiveStep(index)}
-      setGroupName={setGroupName}
-      setPassword={setPassword}
+      handleClose={() => setOpen(false)}
       availableDemos={demos}
+      request={createGroupRequest}
     />
   );
 };

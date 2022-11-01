@@ -5,7 +5,7 @@ import { Switch, Select } from "formik-mui";
 
 import styles from "./DemoAccessForm.module.css";
 const DemoAccessForm = (props) => {
-  const { handleSubmit, handleClose, initValues, availableDemos } = props;
+  const { handleSubmit, initValues, availableDemos, handleBack } = props;
 
   const getAccessibleDemosInitValues = (initValues) => {
     let accessibleDemos = [];
@@ -70,8 +70,8 @@ const DemoAccessForm = (props) => {
             </Grid>
           )}
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
+            <Button onClick={handleBack} color="primary">
+              Back
             </Button>
             <Button
               disabled={

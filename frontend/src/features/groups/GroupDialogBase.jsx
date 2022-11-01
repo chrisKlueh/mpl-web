@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
 import {
   Fab,
   Tooltip,
@@ -17,25 +18,50 @@ import GroupDetailsForm from "./GroupDetailsForm";
 import DemoAccessForm from "./DemoAccessForm";
 
 const GroupDialogBase = (props) => {
+  const [activeStep, setActiveStep] = useState(0);
+  const [groupName, setGroupName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const {
     hasFab,
     isLoading,
     open,
     handleOpen,
-    activeStep,
-    handleSubmit,
     initValues,
     title,
     stepTitles,
-    setGroupName,
-    setPassword,
     availableDemos,
     handleClose,
+    request,
+    id,
   } = props;
 
-  const handleOpenStep = (index) => {
-    const { handleOpenStep } = props;
-    handleOpenStep(index);
+  const resetStepper = () => setActiveStep(0);
+
+  const resetLocalState = () => {
+    setGroupName("");
+    setPassword("");
+    setConfirmPassword("");
+  };
+
+  const closeDialog = () => {
+    handleClose();
+    resetStepper();
+    resetLocalState();
+  };
+
+  const submitRequest = (hasAdminPrivileges, accessibleDemos) => {
+    const { userGroup } = props;
+    request({
+      targetGroupId: id,
+      groupId: userGroup,
+      groupName: groupName,
+      password: password,
+      hasAdminPrivileges: hasAdminPrivileges,
+      accessibleDemos: accessibleDemos,
+    });
+    closeDialog();
   };
 
   return (
@@ -56,7 +82,7 @@ const GroupDialogBase = (props) => {
       )}
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={closeDialog}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">{title}</DialogTitle>
@@ -78,16 +104,21 @@ const GroupDialogBase = (props) => {
               </Stepper>
               {activeStep === 0 ? (
                 <GroupDetailsForm
-                  handleClose={handleClose}
-                  handleNext={() => handleOpenStep(1)}
-                  setGroupName={setGroupName}
-                  setPassword={setPassword}
+                  handleClose={closeDialog}
+                  handleNext={() => setActiveStep(1)}
+                  groupNameState={groupName}
+                  passwordState={password}
+                  confirmPasswordState={confirmPassword}
+                  setGroupNameState={setGroupName}
+                  setPasswordState={setPassword}
+                  setConfirmPasswordState={setConfirmPassword}
                   initValues={initValues}
                 />
               ) : (
                 <DemoAccessForm
-                  handleSubmit={handleSubmit}
-                  handleClose={handleClose}
+                  handleBack={() => setActiveStep(0)}
+                  handleSubmit={submitRequest}
+                  handleClose={closeDialog}
                   availableDemos={availableDemos}
                   initValues={initValues}
                 />
@@ -100,4 +131,11 @@ const GroupDialogBase = (props) => {
   );
 };
 
-export default GroupDialogBase;
+const mapStateToProps = (state) => {
+  return {
+    userGroup: state.login.userId,
+    demos: state.demos.demos,
+  };
+};
+
+export default connect(mapStateToProps, null)(GroupDialogBase);
