@@ -10,6 +10,7 @@ const DemoDetailsForm = (props) => {
   const { handleSubmit, handleClose, initValues } = props;
   return (
     <Formik
+      validateOnMount
       initialValues={{
         title: initValues ? initValues.title : "",
         short_desc: initValues ? initValues.short_desc : "",
@@ -21,7 +22,7 @@ const DemoDetailsForm = (props) => {
         resetForm();
       }}
     >
-      {({ submitForm, values }) => (
+      {({ submitForm, values, isValid }) => (
         <Form>
           <Grid container className={styles.container}>
             <Grid item>
@@ -65,13 +66,7 @@ const DemoDetailsForm = (props) => {
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button
-              disabled={
-                !values.title || !values.short_desc || !values.detail_desc
-              }
-              onClick={submitForm}
-              color="primary"
-            >
+            <Button disabled={!isValid} onClick={submitForm} color="primary">
               Upload
             </Button>
           </DialogActions>

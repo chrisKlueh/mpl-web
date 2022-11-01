@@ -28,6 +28,7 @@ class LogInForm extends React.Component {
           Login
         </Typography>
         <Formik
+          validateOnMount
           initialValues={{
             group_name: "",
             password: "",
@@ -40,7 +41,7 @@ class LogInForm extends React.Component {
             resetForm();
           }}
         >
-          {({ submitForm, values }) => (
+          {({ submitForm, values, isValid }) => (
             <Form>
               <Grid container className={styles.container}>
                 <Grid item>
@@ -71,9 +72,7 @@ class LogInForm extends React.Component {
                     variant="outlined"
                     color="primary"
                     className={styles.loginButton}
-                    disabled={
-                      isLoggingIn || !values.group_name || !values.password
-                    }
+                    disabled={isLoggingIn || !isValid}
                     onClick={submitForm}
                   >
                     Log In
