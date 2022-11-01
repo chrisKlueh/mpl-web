@@ -16,14 +16,14 @@ export const showDemoReq = async (id) => {
 };
 
 export const uploadDemoReq = async (
-  user_id,
+  user_group,
   title,
   short_desc,
   detail_desc,
   file
 ) => {
   let formData = new FormData();
-  formData.append("group_id", user_id);
+  formData.append("group_id", user_group);
   formData.append("title", title);
   formData.append("short_desc", short_desc);
   formData.append("detail_desc", detail_desc);
@@ -47,7 +47,7 @@ export const uploadDemoReq = async (
 
 export const editDemoReq = async (
   id,
-  user_id,
+  user_group,
   title,
   short_desc,
   detail_desc,
@@ -55,7 +55,7 @@ export const editDemoReq = async (
   user_groups
 ) => {
   let formData = new FormData();
-  formData.append("group_id", user_id);
+  formData.append("group_id", user_group);
   formData.append("title", title);
   formData.append("short_desc", short_desc);
   formData.append("detail_desc", detail_desc);

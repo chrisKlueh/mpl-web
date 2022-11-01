@@ -7,20 +7,55 @@ import { validateAll } from "../../helpers/demoDetailsValidationHelper";
 import styles from "./DemoDetailsForm.module.css";
 
 const DemoDetailsForm = (props) => {
-  const { handleSubmit, handleClose, initValues } = props;
+  const {
+    initValues,
+    demoTitleState,
+    shortDescState,
+    detailDescState,
+    setDemoTitleState,
+    setShortDescState,
+    setDetailDescState,
+    handleNext,
+    handleBack,
+  } = props;
+
+  const saveValuesToLocalState = (values) => {
+    setDemoTitleState(values.title);
+    setShortDescState(values.short_desc);
+    setDetailDescState(values.detail_desc);
+  };
+
+  const handleNextStep = (values) => {
+    saveValuesToLocalState(values);
+    handleNext();
+  };
+
+  const handlePreviousStep = (values) => {
+    saveValuesToLocalState(values);
+    handleBack();
+  };
+
   return (
     <Formik
       validateOnMount
       initialValues={{
-        title: initValues ? initValues.title : "",
-        short_desc: initValues ? initValues.short_desc : "",
-        detail_desc: initValues ? initValues.detail_desc : "",
+        title: demoTitleState
+          ? demoTitleState
+          : initValues
+          ? initValues.title
+          : demoTitleState,
+        short_desc: shortDescState
+          ? shortDescState
+          : initValues
+          ? initValues.short_desc
+          : shortDescState,
+        detail_desc: detailDescState
+          ? detailDescState
+          : initValues
+          ? initValues.detail_desc
+          : detailDescState,
       }}
       validate={(values) => validateAll(values)}
-      onSubmit={(values, { resetForm }) => {
-        handleSubmit(values.title, values.short_desc, values.detail_desc);
-        resetForm();
-      }}
     >
       {({ submitForm, values, isValid }) => (
         <Form>
@@ -63,11 +98,15 @@ const DemoDetailsForm = (props) => {
             </Grid>
           </Grid>
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
+            <Button onClick={() => handlePreviousStep(values)} color="primary">
+              Back
             </Button>
-            <Button disabled={!isValid} onClick={submitForm} color="primary">
-              {initValues ? "Update" : "Upload"}
+            <Button
+              disabled={!isValid}
+              onClick={() => handleNextStep(values)}
+              color="primary"
+            >
+              Next
             </Button>
           </DialogActions>
         </Form>

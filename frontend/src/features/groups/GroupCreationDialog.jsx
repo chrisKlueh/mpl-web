@@ -32,7 +32,6 @@ const GroupCreationDialog = (props) => {
 const mapStateToProps = (state) => {
   return {
     isLoading: state.groups.isCreatingGroup || state.demos.isGettingDemos,
-    userGroup: state.login.userId,
     demos: state.demos.demos,
   };
 };

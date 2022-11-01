@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
 import {
   Fab,
   Tooltip,
@@ -14,36 +15,59 @@ import AddIcon from "@mui/icons-material/Add";
 import styles from "./DemoDialogBase.module.css";
 import UploadDropzone from "./UploadDropzone";
 import DemoDetailsForm from "./DemoDetailsForm";
+import GroupAccessForm from "./GroupAccessForm";
 import LoadingFragment from "../general/LoadingFragment";
 
 const DemoDialogBase = (props) => {
+  const [activeStep, setActiveStep] = useState(0);
+  const [demoFiles, setDemoFiles] = useState([]);
+  const [demoTitle, setDemoTitle] = useState("");
+  const [shortDesc, setShortDesc] = useState("");
+  const [detailDesc, setDetailDesc] = useState("");
   const {
     hasFab,
     isLoading,
     open,
     handleOpen,
-    activeStep,
-    handleSubmit,
-    files,
-    setFiles,
+    availableGroups,
     initValues,
     title,
     stepTitles,
+    request,
+    id,
+    handleClose,
   } = props;
 
-  const checkFirstStepComplete = () => files.length > 0;
+  const resetStepper = () => setActiveStep(0);
 
-  const handleOpenStep = (index) => {
-    const { handleOpenStep } = props;
-    if (checkFirstStepComplete()) {
-      handleOpenStep(index);
-    }
+  const resetLocalState = () => {
+    setDemoFiles([]);
+    setDemoTitle("");
+    setShortDesc("");
+    setDetailDesc("");
   };
 
-  const handleClose = () => {
-    const { handleClose } = props;
+  const closeDialog = () => {
     handleClose();
+    resetStepper();
+    resetLocalState();
   };
+
+  const submitRequest = (user_groups) => {
+    const { userGroup } = props;
+    request({
+      id: id,
+      user_group: userGroup,
+      title: demoTitle,
+      short_desc: shortDesc,
+      detail_desc: detailDesc,
+      file: demoFiles[0],
+      user_groups: user_groups,
+    });
+    closeDialog();
+  };
+
+  const checkFirstStepComplete = () => demoFiles.length > 0;
 
   return (
     <div>
@@ -63,7 +87,7 @@ const DemoDialogBase = (props) => {
       )}
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={closeDialog}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">{title}</DialogTitle>
@@ -77,29 +101,40 @@ const DemoDialogBase = (props) => {
                   const stepProps = {};
                   const labelProps = {};
                   return (
-                    <Step
-                      key={label}
-                      {...stepProps}
-                      onClick={() => handleOpenStep(index)}
-                    >
+                    <Step key={label} {...stepProps}>
                       <StepLabel {...labelProps}>{label}</StepLabel>
                     </Step>
                   );
                 })}
               </Stepper>
-              {activeStep === 0 ? (
+              {activeStep === 0 && (
                 <UploadDropzone
-                  handleClose={handleClose}
-                  handleNext={() => handleOpenStep(1)}
+                  handleClose={closeDialog}
+                  handleNext={() => setActiveStep(1)}
                   disableNext={!checkFirstStepComplete()}
-                  files={files}
-                  setFiles={setFiles}
+                  files={demoFiles}
+                  setFiles={(files) => setDemoFiles(files)}
                   allowMultipleFiles={false}
                 />
-              ) : (
+              )}
+              {activeStep === 1 && (
                 <DemoDetailsForm
-                  handleClose={handleClose}
-                  handleSubmit={handleSubmit}
+                  handleNext={() => setActiveStep(2)}
+                  handleBack={() => setActiveStep(0)}
+                  initValues={initValues}
+                  demoTitleState={demoTitle}
+                  shortDescState={shortDesc}
+                  detailDescState={detailDesc}
+                  setDemoTitleState={setDemoTitle}
+                  setShortDescState={setShortDesc}
+                  setDetailDescState={setDetailDesc}
+                />
+              )}
+              {activeStep === 2 && (
+                <GroupAccessForm
+                  availableGroups={availableGroups}
+                  handleSubmit={submitRequest}
+                  handleBack={() => setActiveStep(1)}
                   initValues={initValues}
                 />
               )}
@@ -111,4 +146,11 @@ const DemoDialogBase = (props) => {
   );
 };
 
-export default DemoDialogBase;
+const mapStateToProps = (state) => {
+  return {
+    userGroup: state.login.userId,
+    /* demos: state.demos.demos, */
+  };
+};
+
+export default connect(mapStateToProps, null)(DemoDialogBase);

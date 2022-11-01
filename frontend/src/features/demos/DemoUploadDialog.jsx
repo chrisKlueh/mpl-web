@@ -2,62 +2,44 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import { uploadDemoRequest } from "../../slices/demoSlice";
+import { showGroupsRequest } from "../../slices/groupsSlice";
 import DemoDialogBase from "./DemoDialogBase";
 
 const DemoUploadDialog = (props) => {
   const [open, setOpen] = useState(false);
-  const [demoFiles, setDemoFiles] = useState([]);
-  const [activeStep, setActiveStep] = useState(0);
 
-  const { isUploadingDemo } = props;
+  const { isLoading, uploadDemoRequest, showGroupsRequest, groups } = props;
 
-  const resetStepper = () => setActiveStep(0);
-
-  const closeDialog = () => {
-    setOpen(false);
-    setDemoFiles([]);
-    resetStepper();
-  };
-
-  const submitRequest = (title, short_desc, detail_desc) => {
-    const { uploadDemoRequest, userId } = props;
-    uploadDemoRequest({
-      user_id: userId,
-      title: title,
-      short_desc: short_desc,
-      detail_desc: detail_desc,
-      file: demoFiles[0],
-    });
-    closeDialog();
+  const handleOpenDialog = () => {
+    showGroupsRequest();
+    setOpen(true);
   };
 
   return (
     <DemoDialogBase
+      hasFab
       title={"Upload Demo"}
       stepTitles={["Provide demo files", "Enter demo details"]}
-      hasFab
-      isLoading={isUploadingDemo}
+      isLoading={isLoading}
       open={open}
-      handleOpen={() => setOpen(true)}
-      handleClose={closeDialog}
-      handleSubmit={submitRequest}
-      activeStep={activeStep}
-      handleOpenStep={(index) => setActiveStep(index)}
-      files={demoFiles}
-      setFiles={(files) => setDemoFiles(files)}
+      handleOpen={handleOpenDialog}
+      handleClose={() => setOpen(false)}
+      request={uploadDemoRequest}
+      availableGroups={groups}
     />
   );
 };
 const mapStateToProps = (state) => {
   return {
-    isUploadingDemo: state.demos.isUploadingDemo,
-    userId: state.login.userId,
+    isLoading: state.demos.isUploadingDemo || state.groups.isGettingGroups,
+    groups: state.groups.groups,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     uploadDemoRequest: (file) => dispatch(uploadDemoRequest(file)),
+    showGroupsRequest: () => dispatch(showGroupsRequest()),
   };
 };
 

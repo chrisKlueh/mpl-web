@@ -118,7 +118,6 @@ const GroupDialogBase = (props) => {
                 <DemoAccessForm
                   handleBack={() => setActiveStep(0)}
                   handleSubmit={submitRequest}
-                  handleClose={closeDialog}
                   availableDemos={availableDemos}
                   initValues={initValues}
                 />
@@ -134,7 +133,7 @@ const GroupDialogBase = (props) => {
 const mapStateToProps = (state) => {
   return {
     userGroup: state.login.userId,
-    demos: state.demos.demos,
+    /* demos: state.demos.demos, */
   };
 };
 

@@ -25,12 +25,12 @@ import {
   resetDemoState,
   deleteDemoRequest,
 } from "../../slices/demoSlice";
+import { showGroupsRequest } from "../../slices/groupsSlice";
 import { spawnInstanceRequest } from "../../slices/instanceSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { truncateString } from "../../helpers/listHelper";
 
 const DemosList = (props) => {
-  //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
   const [selectedId, setSelectedId] = useState(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
@@ -45,6 +45,7 @@ const DemosList = (props) => {
     isSpawningInstance,
     isAdmin,
     resetDemoState,
+    showGroupsRequest,
   } = props;
 
   const updateSelectedAndOpenDialog = (id, dialog) => {
@@ -54,6 +55,7 @@ const DemosList = (props) => {
         setDeleteDialogOpen(true);
         break;
       case "EDIT":
+        showGroupsRequest();
         showDemoRequest(id);
         setEditDialogOpen(true);
         break;
@@ -192,6 +194,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     deleteDemoRequest: (id) => dispatch(deleteDemoRequest(id)),
     showDemoRequest: (id) => dispatch(showDemoRequest(id)),
+    showGroupsRequest: () => dispatch(showGroupsRequest()),
     spawnInstanceRequest: (payload) => dispatch(spawnInstanceRequest(payload)),
     resetDemoState: () => dispatch(resetDemoState()),
   };
