@@ -1,0 +1,43 @@
+.root {
+  max-width: 100%;
+  padding: 0 10px;
+}
+
+.list {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.genericListItem {
+  max-width: 100px;
+}
+
+.accessibleDemosCount {
+  max-width: 100px;
+}
+
+.groupName {
+  max-width: 100%;
+}
+
+.timestamp {
+  max-width: 200px;
+}
+
+.skeleton {
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .timestamp {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 750px) and (orientation: portrait) {
+  .genericListItem {
+    display: none;
+  }
+}

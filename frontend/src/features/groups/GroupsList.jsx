@@ -93,19 +93,19 @@ const GroupsList = (props) => {
               </ListItemAvatar>
               <ListItemText
                 primary={listItem.is_admin ? "Admin" : "Student"}
-                className={styles.demoTitle}
+                className={styles.genericListItem}
               />
               <ListItemText
                 primary={listItem.group_name}
-                className={styles.demoTitle}
+                className={styles.groupName}
               />
               <ListItemText
                 primary={getDemoCount(listItem)}
-                className={styles.demoTitle}
+                className={styles.accessibleDemosCount}
               />
               <ListItemText
                 primary={formatIsoDate(listItem.created_at, true)}
-                className={styles.feedbackDate}
+                className={styles.timestamp}
               />
               <ListItemSecondaryAction>
                 <Tooltip title="Edit group">
