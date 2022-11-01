@@ -21,7 +21,6 @@ import Placeholder from "../general/Placeholder";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { deleteGroupRequest } from "../../slices/groupsSlice";
 import { showDemosRequest } from "../../slices/demosSlice";
-import { editGroupRequest } from "../../slices/groupsSlice";
 import { showGroupRequest } from "../../slices/groupSlice";
 import { truncateString } from "../../helpers/listHelper";
 import styles from "./GroupsList.module.css";
@@ -39,6 +38,7 @@ const GroupsList = (props) => {
     showDemosRequest,
     showGroupRequest,
     maxLength,
+    resetGroupState,
   } = props;
 
   const updateSelectedAndOpenDialog = (id, type) => {
@@ -60,17 +60,16 @@ const GroupsList = (props) => {
 
   const handleDeleteGroup = (targetGroupId) => {
     const { groupId } = props;
-    console.log(targetGroupId, groupId);
     deleteGroupRequest({ group_id: groupId, target_group: targetGroupId });
   };
 
   const handleCloseEditDialog = () => {
+    console.log("handle close edit dialog");
     setEditDialogOpen(false);
     resetGroupState();
   };
 
   const getDemoCount = (listItem) => {
-    console.log(listItem);
     if (listItem.is_admin) {
       return "All demos";
     } else {
@@ -164,7 +163,6 @@ const GroupsList = (props) => {
       <GroupEditDialog
         id={selectedId}
         open={isEditDialogOpen}
-        setOpen={setEditDialogOpen}
         handleClose={handleCloseEditDialog}
       />
     </div>
@@ -182,6 +180,7 @@ const mapDispatchToProps = (dispatch) => {
     deleteGroupRequest: (id) => dispatch(deleteGroupRequest(id)),
     showGroupRequest: (id) => dispatch(showGroupRequest(id)),
     showDemosRequest: () => dispatch(showDemosRequest()),
+    resetGroupState: () => dispatch(resetGroupState()),
   };
 };
 

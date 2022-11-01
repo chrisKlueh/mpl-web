@@ -47,21 +47,34 @@ export const createGroupReq = async (
 };
 
 export const editGroupReq = async (
-  group_id,
+  groupId,
+  targetGroupId,
+  groupName,
   password,
-  group_name,
-  accessible_demos
+  confirmPassword,
+  hasAdminPrivileges,
+  accessibleDemos
 ) => {
+  console.log(
+    groupId,
+    targetGroupId,
+    groupName,
+    password,
+    confirmPassword,
+    hasAdminPrivileges,
+    accessibleDemos
+  );
   let formData = new FormData();
-  formData.append("group_id", group_id);
+  formData.append("group_id", groupId);
+  formData.append("group_name", groupName);
   formData.append("password", password);
-  formData.append("group_name", group_name);
-  formData.append("accessible_demos", accessible_demos);
+  formData.append("is_admin", hasAdminPrivileges);
+  formData.append("accessible_demos", accessibleDemos);
 
   return new Promise((resolve, reject) => {
     axiosInstance({
       method: "put",
-      url: `groups/${group_id}`,
+      url: `groups/${targetGroupId}`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })

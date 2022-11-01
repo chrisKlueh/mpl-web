@@ -31,16 +31,12 @@ const GroupDialogBase = (props) => {
     setPassword,
     setConfirmPassword,
     availableDemos,
+    handleClose,
   } = props;
 
   const handleOpenStep = (index) => {
     const { handleOpenStep } = props;
     handleOpenStep(index);
-  };
-
-  const handleClose = () => {
-    const { handleClose } = props;
-    handleClose();
   };
 
   return (
@@ -78,7 +74,7 @@ const GroupDialogBase = (props) => {
                     <Step
                       key={label}
                       {...stepProps}
-                      onClick={() => handleOpenStep(index)}
+                      /* onClick={() => handleOpenStep(index)} */
                     >
                       <StepLabel {...labelProps}>{label}</StepLabel>
                     </Step>

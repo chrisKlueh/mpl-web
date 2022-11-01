@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import { showDemosRequest } from "../../slices/demosSlice";
-import { editGroupRequest } from "../../slices/groupsSlice";
-import { showGroupRequest } from "../../slices/groupSlice";
+import { editGroupRequest } from "../../slices/groupSlice";
 import GroupDialogBase from "./GroupDialogBase";
 
 const GroupEditDialog = (props) => {
@@ -12,18 +10,21 @@ const GroupEditDialog = (props) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { isLoading, demos, open, setOpen, group } = props;
+  const { isLoading, demos, open, group, id, handleClose } = props;
 
+  console.log("GroupEditDialog: id:" + id);
+  console.log(demos);
   const resetStepper = () => setActiveStep(0);
 
   const closeDialog = () => {
-    setOpen(false);
+    handleClose();
     resetStepper();
   };
 
   const submitRequest = (hasAdminPrivileges, accessibleDemos) => {
-    const { createGroupRequest, userGroup } = props;
+    const { editGroupRequest, userGroup } = props;
     const reqParams = {
+      targetGroupId: id,
       groupId: userGroup,
       groupName: groupName,
       password: password,
@@ -33,7 +34,7 @@ const GroupEditDialog = (props) => {
       accessibleDemos: accessibleDemos,
     };
     console.log(reqParams);
-    createGroupRequest(reqParams);
+    editGroupRequest(reqParams);
     closeDialog();
   };
 
@@ -57,7 +58,10 @@ const GroupEditDialog = (props) => {
 };
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.group.isEditingGroup || state.demos.isGettingDemos,
+    isLoading:
+      state.group.isEditingGroup ||
+      state.demos.isGettingDemos ||
+      state.group.isGettingGroup,
     userGroup: state.login.userId,
     demos: state.demos.demos,
     group: state.group.group,

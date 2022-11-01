@@ -45,10 +45,7 @@ const GroupsContainer = (props) => {
     }
     setRowsPerPage(parseInt(event.target.value, 10));
   };
-  console.log(groups);
-  console.log(page);
-  console.log(rowsPerPage);
-  console.log(getSelectedPage(groups, page, rowsPerPage));
+
   return (
     <WrapperContainer
       pageTitle="Available Groups"
@@ -84,7 +81,6 @@ const GroupsContainer = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  console.log(state.groups.groups);
   return {
     groups: state.groups.groups,
     isLoading:

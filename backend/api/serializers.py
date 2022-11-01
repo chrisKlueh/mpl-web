@@ -36,7 +36,7 @@ class UserGroupSerializer(serializers.ModelSerializer):
     group_name = serializers.CharField(required=True)
     is_admin = serializers.BooleanField()
     password = serializers.CharField(min_length=8, write_only=True)
-    accessible_demos = DemoSerializerShort(many=True)
+    accessible_demos = DemoSerializerShort(many=True, required=False)
     
     class Meta:
         model = UserGroup

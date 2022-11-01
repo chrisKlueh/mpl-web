@@ -24,7 +24,7 @@ const GroupDetailsForm = (props) => {
     setConfirmPassword(values.confirm_password);
     handleNext();
   };
-
+  console.log(initValues);
   return (
     <Formik
       initialValues={{
@@ -34,7 +34,11 @@ const GroupDetailsForm = (props) => {
       }}
       validate={(values) => validateAll(values)}
       onSubmit={(values, { resetForm }) => {
-        handleSubmit(values.title, values.short_desc, values.detail_desc);
+        handleSubmit(
+          values.group_name,
+          values.password,
+          values.confirm_password
+        );
         resetForm();
       }}
     >
@@ -49,8 +53,6 @@ const GroupDetailsForm = (props) => {
                 type="text"
                 label="Group name"
                 placeholder="MyCoolGroup"
-                /* value={groupName}
-                onChange={(event) => setGroupName(event.target.value)} */
               />
             </Grid>
           </Grid>
@@ -61,8 +63,6 @@ const GroupDetailsForm = (props) => {
                 name="password"
                 type="password"
                 label="Password"
-                /* value={password}
-                onChange={(event) => setPassword(event.target.value)} */
               />
             </Grid>
           </Grid>
@@ -73,8 +73,6 @@ const GroupDetailsForm = (props) => {
                 name="confirm_password"
                 type="password"
                 label="Confirm password"
-                /* value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)} */
               />
             </Grid>
           </Grid>
@@ -94,6 +92,7 @@ const GroupDetailsForm = (props) => {
               Next
             </Button>
           </DialogActions>
+          <div>{initValues.group_name}</div>
         </Form>
       )}
     </Formik>

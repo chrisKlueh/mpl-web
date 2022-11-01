@@ -143,6 +143,7 @@ class UserGroupDetail(APIView):
         try:
             try:
                 accessibleDemoList = request.data["accessible_demos"].split(",")
+                print(accessibleDemoList)
             except MultiValueDictKeyError:
                 return Response("Accessible demos list is required.", status=status.HTTP_400_BAD_REQUEST)
             userGroup = self.get_object(pk)
@@ -155,6 +156,11 @@ class UserGroupDetail(APIView):
                         if Demo.objects.filter(pk=demoId).exists():
                             demo = Demo.objects.get(pk=demoId)
                             demo.user_groups.add(user)
+                            print(demo.user_groups)
+                print("###########")
+                savedObject = self.get_object(pk)
+                print(savedObject.accessible_demos)
+                print("###########")
                 return Response(status=status.HTTP_204_NO_CONTENT)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except IntegrityError:
