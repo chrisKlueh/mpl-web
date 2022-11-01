@@ -48,7 +48,6 @@ const GroupsList = (props) => {
         setDeleteDialogOpen(true);
         break;
       case "EDIT":
-        console.log(id);
         showDemosRequest();
         showGroupRequest(id);
         setEditDialogOpen(true);
@@ -64,7 +63,6 @@ const GroupsList = (props) => {
   };
 
   const handleCloseEditDialog = () => {
-    console.log("handle close edit dialog");
     setEditDialogOpen(false);
     resetGroupState();
   };

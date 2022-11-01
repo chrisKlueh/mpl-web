@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import {
   Fab,
   Tooltip,
@@ -71,11 +71,7 @@ const GroupDialogBase = (props) => {
                   const stepProps = {};
                   const labelProps = {};
                   return (
-                    <Step
-                      key={label}
-                      {...stepProps}
-                      /* onClick={() => handleOpenStep(index)} */
-                    >
+                    <Step key={label} {...stepProps}>
                       <StepLabel {...labelProps}>{label}</StepLabel>
                     </Step>
                   );

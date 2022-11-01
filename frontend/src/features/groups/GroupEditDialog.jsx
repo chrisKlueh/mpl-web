@@ -12,8 +12,6 @@ const GroupEditDialog = (props) => {
 
   const { isLoading, demos, open, group, id, handleClose } = props;
 
-  console.log("GroupEditDialog: id:" + id);
-  console.log(demos);
   const resetStepper = () => setActiveStep(0);
 
   const closeDialog = () => {
@@ -23,7 +21,7 @@ const GroupEditDialog = (props) => {
 
   const submitRequest = (hasAdminPrivileges, accessibleDemos) => {
     const { editGroupRequest, userGroup } = props;
-    const reqParams = {
+    editGroupRequest({
       targetGroupId: id,
       groupId: userGroup,
       groupName: groupName,
@@ -32,16 +30,14 @@ const GroupEditDialog = (props) => {
       confirmPassword: confirmPassword,
       hasAdminPrivileges: hasAdminPrivileges,
       accessibleDemos: accessibleDemos,
-    };
-    console.log(reqParams);
-    editGroupRequest(reqParams);
+    });
     closeDialog();
   };
 
   return (
     <GroupDialogBase
       title={"Edit Group"}
-      stepTitles={["Provide group details", "Manage demo access"]}
+      stepTitles={["Edit group details", "Edit demo access"]}
       isLoading={isLoading}
       open={open}
       handleClose={closeDialog}

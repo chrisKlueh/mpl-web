@@ -55,15 +55,6 @@ export const editGroupReq = async (
   hasAdminPrivileges,
   accessibleDemos
 ) => {
-  console.log(
-    groupId,
-    targetGroupId,
-    groupName,
-    password,
-    confirmPassword,
-    hasAdminPrivileges,
-    accessibleDemos
-  );
   let formData = new FormData();
   formData.append("group_id", groupId);
   formData.append("group_name", groupName);

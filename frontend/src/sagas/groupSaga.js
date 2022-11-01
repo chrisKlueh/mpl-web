@@ -27,7 +27,6 @@ export function* watcherShowGroups() {
 
 export function* workerEditGroup({ payload }) {
   try {
-    console.log(payload);
     const {
       groupId,
       targetGroupId,

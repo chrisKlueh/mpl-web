@@ -8,7 +8,6 @@ import styles from "./GroupDetailsForm.module.css";
 
 const GroupDetailsForm = (props) => {
   const {
-    handleSubmit,
     handleClose,
     handleNext,
     setGroupName,
@@ -33,16 +32,8 @@ const GroupDetailsForm = (props) => {
         confirm_password: "",
       }}
       validate={(values) => validateGroupNameAndPassword(values, true, true)}
-      onSubmit={(values, { resetForm }) => {
-        handleSubmit(
-          values.group_name,
-          values.password,
-          values.confirm_password
-        );
-        resetForm();
-      }}
     >
-      {({ submitForm, values, isValid }) => (
+      {({ values, isValid }) => (
         <Form>
           <Grid container className={styles.container}>
             <Grid item>
@@ -88,7 +79,6 @@ const GroupDetailsForm = (props) => {
               Next
             </Button>
           </DialogActions>
-          <div>{initValues.group_name}</div>
         </Form>
       )}
     </Formik>

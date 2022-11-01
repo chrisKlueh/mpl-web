@@ -7,22 +7,6 @@ import styles from "./DemoAccessForm.module.css";
 const DemoAccessForm = (props) => {
   const { handleSubmit, handleClose, initValues, availableDemos } = props;
 
-  /* const handleChangeMultiple = (event) => {
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setAccessibleDemos(value);
-  };
-
-  const handleChangeAdminPrivileges = (event) => {
-    console.log(event.target.checked);
-    setHasAdminPrivileges(event.target.checked);
-  }; */
-
   const getAccessibleDemosInitValues = (initValues) => {
     let accessibleDemos = [];
     initValues.accessible_demos.map((demo) => accessibleDemos.push(demo.id));
@@ -38,7 +22,6 @@ const DemoAccessForm = (props) => {
           : "",
       }}
       onSubmit={(values, { resetForm }) => {
-        console.log(values);
         handleSubmit(values.has_admin_privileges, values.accessible_demos);
         resetForm();
       }}
@@ -53,8 +36,6 @@ const DemoAccessForm = (props) => {
                   component={Switch}
                   name="has_admin_privileges"
                   type="checkbox"
-                  /* checked={hasAdminPrivileges}
-                  onChange={handleChangeAdminPrivileges} */
                 />
                 Admin privileges
               </label>
@@ -80,8 +61,6 @@ const DemoAccessForm = (props) => {
                   multiple
                   native
                   name="accessible_demos"
-                  /* value={accessibleDemos}
-                  onChange={handleChangeMultiple} */
                 >
                   {availableDemos.map((demo) => (
                     <option value={demo.id}>{demo.title}</option>
