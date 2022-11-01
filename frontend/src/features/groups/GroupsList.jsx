@@ -96,7 +96,7 @@ const GroupsList = (props) => {
                 className={styles.genericListItem}
               />
               <ListItemText
-                primary={listItem.group_name}
+                primary={truncateString(listItem.group_name, 25)}
                 className={styles.groupName}
               />
               <ListItemText

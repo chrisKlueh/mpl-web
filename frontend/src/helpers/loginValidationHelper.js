@@ -1,8 +1,10 @@
 //validates groupName filled
-export const validateGroupName = (values) => {
+export const validateGroupName = (values, discloseRequiredLength) => {
   const errors = {};
   if (!values.group_name) {
     errors.group_name = "Required";
+  } else if (discloseRequiredLength && values.group_name.length > 50) {
+    errors.group_name = "Group name too long";
   }
   return errors;
 };
@@ -11,12 +13,12 @@ export const validateGroupName = (values) => {
 export const validatePassword = (
   values,
   hasPasswordConfirmation,
-  discloseRequiredChars
+  discloseRequiredLength
 ) => {
   const errors = {};
   if (!values.password) {
     errors.password = "Required";
-  } else if (discloseRequiredChars && !(values.password.length >= 8)) {
+  } else if (discloseRequiredLength && !(values.password.length >= 8)) {
     errors.password = "Password too short";
   }
   if (hasPasswordConfirmation) {
@@ -33,13 +35,13 @@ export const validatePassword = (
 export const validateGroupNameAndPassword = (
   values,
   hasPasswordConfirmation,
-  discloseRequiredChars
+  discloseRequiredLength
 ) => {
-  const groupNameErrors = validateGroupName(values);
+  const groupNameErrors = validateGroupName(values, discloseRequiredLength);
   const passwordErrors = validatePassword(
     values,
     hasPasswordConfirmation,
-    discloseRequiredChars
+    discloseRequiredLength
   );
   return { ...groupNameErrors, ...passwordErrors };
 };
