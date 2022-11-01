@@ -19,7 +19,7 @@ import ConfirmationDialog from "../general/ConfirmationDialog";
 /* import FeedbackDetails from "./FeedbackDetails"; */
 import Placeholder from "../general/Placeholder";
 import { formatIsoDate } from "../../helpers/formatHelper";
-import { deleteGroupRequest } from "../../slices/groupsSlice";
+import { deleteGroupRequest } from "../../slices/groupSlice";
 import { showDemosRequest } from "../../slices/demosSlice";
 import { showGroupRequest } from "../../slices/groupSlice";
 import { truncateString } from "../../helpers/listHelper";

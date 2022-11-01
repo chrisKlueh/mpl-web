@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import { showDemosRequest } from "../../slices/demosSlice";
-import { createGroupRequest } from "../../slices/groupsSlice";
+import { createGroupRequest } from "../../slices/groupSlice";
 import GroupDialogBase from "./GroupDialogBase";
 
 const GroupCreationDialog = (props) => {
