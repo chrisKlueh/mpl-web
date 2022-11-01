@@ -16,7 +16,6 @@ import { connect } from "react-redux";
 import GroupEditDialog from "./GroupEditDialog";
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
-/* import FeedbackDetails from "./FeedbackDetails"; */
 import Placeholder from "../general/Placeholder";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { deleteGroupRequest } from "../../slices/groupSlice";
