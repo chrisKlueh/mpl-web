@@ -104,7 +104,7 @@ const DemosList = (props) => {
               />
               <ListItemText
                 primary={formatIsoDate(listItem.created_at, true)}
-                secondary={"By " + listItem.name}
+                secondary={"By " + listItem.creator}
                 className={styles.listItemDate}
               />
               <ListItemSecondaryAction>

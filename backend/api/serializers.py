@@ -15,16 +15,23 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         
         return data
 
+class UserGroupSerializerShort(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UserGroup 
+        fields = ('id', 'group_name')
+
 class DemoSerializer(serializers.ModelSerializer):
     file = serializers.FileField(write_only=True)
-    name = serializers.SerializerMethodField()
+    creator = serializers.SerializerMethodField()
+    user_groups = UserGroupSerializerShort(many=True, required=False)
 
-    def get_name(self, demo):
+    def get_creator(self, demo):
         return(demo.group_id.group_name)
         
     class Meta:
         model = Demo 
-        fields = ('id', 'name', 'created_at', 'group_id', 'title', 'short_desc', 'detail_desc', 'file', 'user_groups')
+        fields = ('id', 'creator', 'created_at', 'group_id', 'title', 'short_desc', 'detail_desc', 'file', 'user_groups')
 
 class DemoSerializerShort(serializers.ModelSerializer):
     
