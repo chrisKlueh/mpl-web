@@ -30,13 +30,13 @@ const GroupDetailsForm = (props) => {
     <Formik
       validateOnMount
       initialValues={{
-        group_name: initValues
+        group_name: groupNameState
           ? groupNameState
-            ? groupNameState
-            : initValues.group_name
-          : "",
-        password: initValues ? passwordState : "",
-        confirm_password: initValues ? confirmPasswordState : "",
+          : initValues
+          ? initValues.group_name
+          : groupNameState,
+        password: passwordState,
+        confirm_password: confirmPasswordState,
       }}
       validate={(values) => validateGroupNameAndPassword(values, true, true)}
     >
