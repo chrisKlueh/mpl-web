@@ -91,20 +91,17 @@ class LogoutAndBlacklistRefreshTokenView(APIView):
 class UserGroupList(APIView):
     permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
 
+    def setAccessibleDemos(self, userGroup, accessibleDemoList):
+        if userGroup.is_admin == False and not accessibleDemoList == [""]:
+            for demoId in accessibleDemoList:
+                if Demo.objects.filter(pk=demoId).exists():
+                    demo = Demo.objects.get(pk=demoId)
+                    userGroup.accessible_demos.add(demo)
+
     def get(self, request, format=None):
         userGroupList = UserGroup.objects.all().order_by('-created_at')
-        #userGroupList = UserGroup.objects.values('group_name', 'id', 'created_at', 'is_admin', 'accessible_demos__id').order_by('-created_at')
         serializer = UserGroupSerializer(userGroupList, context={'request': request}, many=True)
         return Response(serializer.data)
-
-    """ def post(self, request, format='json'):
-        serializer = UserGroupSerializer(data=request.data)
-        if serializer.is_valid():
-            user_group = serializer.save()
-            if user_group:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) """
 
     def post(self, request, format=None):
         try:
@@ -115,12 +112,7 @@ class UserGroupList(APIView):
             serializer = UserGroupSerializer(data=request.data)
             if serializer.is_valid():
                 userGroup = serializer.save()
-                if not accessibleDemoList == [""]:
-                    user = UserGroup.objects.get(pk=userGroup.id)
-                    for demoId in accessibleDemoList:
-                        if Demo.objects.filter(pk=demoId).exists():
-                            demo = Demo.objects.get(pk=demoId)
-                            demo.user_groups.add(user)
+                self.setAccessibleDemos(userGroup, accessibleDemoList)
                 return Response(status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except IntegrityError:
@@ -128,6 +120,15 @@ class UserGroupList(APIView):
 
 class UserGroupDetail(APIView):
     permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['PUT', 'DELETE'])]
+    
+    def setAccessibleDemos(self, userGroup, accessibleDemoList):
+        if userGroup.is_admin == False and not accessibleDemoList == [""]:
+            userGroup.accessible_demos.clear()
+            for demoId in accessibleDemoList:
+                if Demo.objects.filter(pk=demoId).exists():
+                    demo = Demo.objects.get(pk=demoId)
+                    userGroup.accessible_demos.add(demo)
+
     def get_object(self, pk):
         try:
             return UserGroup.objects.get(pk=pk)
@@ -143,24 +144,13 @@ class UserGroupDetail(APIView):
         try:
             try:
                 accessibleDemoList = request.data["accessible_demos"].split(",")
-                print(accessibleDemoList)
             except MultiValueDictKeyError:
                 return Response("Accessible demos list is required.", status=status.HTTP_400_BAD_REQUEST)
             userGroup = self.get_object(pk)
             serializer = UserGroupSerializer(userGroup, data=request.data,context={'request': request})
             if serializer.is_valid():
                 userGroup = serializer.save()
-                if not accessibleDemoList == [""]:
-                    user = UserGroup.objects.get(pk=userGroup.id)
-                    for demoId in accessibleDemoList:
-                        if Demo.objects.filter(pk=demoId).exists():
-                            demo = Demo.objects.get(pk=demoId)
-                            demo.user_groups.add(user)
-                            print(demo.user_groups)
-                print("###########")
-                savedObject = self.get_object(pk)
-                print(savedObject.accessible_demos)
-                print("###########")
+                self.setAccessibleDemos(userGroup, accessibleDemoList)
                 return Response(status=status.HTTP_204_NO_CONTENT)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except IntegrityError:
