@@ -20,7 +20,8 @@ export const uploadDemoReq = async (
   title,
   short_desc,
   detail_desc,
-  file
+  file,
+  user_groups
 ) => {
   let formData = new FormData();
   formData.append("group_id", user_group);
@@ -28,6 +29,7 @@ export const uploadDemoReq = async (
   formData.append("short_desc", short_desc);
   formData.append("detail_desc", detail_desc);
   formData.append("file", file);
+  formData.append("user_groups", user_groups);
 
   return new Promise((resolve, reject) => {
     axiosInstance({

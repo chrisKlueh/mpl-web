@@ -24,7 +24,7 @@ class UserGroupSerializerShort(serializers.ModelSerializer):
 class DemoSerializer(serializers.ModelSerializer):
     file = serializers.FileField(write_only=True)
     creator = serializers.SerializerMethodField()
-    user_groups = UserGroupSerializerShort(many=True, required=False)
+    #user_groups = UserGroupSerializerShort(many=True, required=False)
 
     def get_creator(self, demo):
         return(demo.group_id.group_name)
