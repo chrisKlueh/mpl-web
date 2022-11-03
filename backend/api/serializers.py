@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from django.core.files.storage import FileSystemStorage
+from django.core.files.storage import default_storage
 from .models import UserGroup, Demo, Instance, FeedbackType, Feedback
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -85,16 +85,8 @@ class DemoSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_groups = validated_data.pop('user_groups')
         instance = Demo.objects.create(**validated_data)
-        print("filesystemstorage")
-        print(FileSystemStorage)
-        print(FileSystemStorage.location)
-        print(validated_data)
-        demo_file = validated_data['file']
-        print(demo_file)
-        file_handle = FileSystemStorage().save('demo_files/' + demo_file.name, demo_file)
-        print(file_handle)
-        #instance.file = file_handle
-        instance.save()
+        file_name = default_storage.save(instance.file.name, instance.file)
+        instance.file = file_name
         for user_group in user_groups:
             instance.user_groups.add(user_group)
         instance.save()
