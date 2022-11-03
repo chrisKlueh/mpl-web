@@ -57,6 +57,7 @@ export function* workerEditGroup({ payload }) {
     );
     yield put(editGroupSuccess(res.data));
     yield put(showGroupsRequest());
+    yield put(snackbarNotification("Group updated.", "success"));
   } catch (error) {
     yield put(editGroupError());
     yield put(snackbarNotification("Failed to edit group.", "error"));
@@ -74,6 +75,7 @@ export function* workerDeleteGroup({ payload }) {
     let res = yield call(deleteGroupReq, group_id, target_group);
     yield put(deleteGroupSuccess(res.data));
     yield put(showGroupsRequest());
+    yield put(snackbarNotification("Group deleted.", "success"));
   } catch (error) {
     yield put(deleteGroupError());
     yield put(snackbarNotification("Failed to delete group.", "error"));
@@ -104,6 +106,7 @@ export function* workerCreateGroup({ payload }) {
     );
     yield put(createGroupSuccess(res.data));
     yield put(showGroupsRequest());
+    yield put(snackbarNotification("Group created.", "success"));
   } catch (error) {
     yield put(createGroupError());
     yield put(snackbarNotification("Failed to create group.", "error"));
