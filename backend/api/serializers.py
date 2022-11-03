@@ -19,13 +19,13 @@ class UserGroupSerializerShort(serializers.ModelSerializer):
     
     class Meta:
         model = UserGroup 
-        fields = ('id', 'group_name')
+        fields = ('id',)
 
 class DemoSerializerShort(serializers.ModelSerializer):
     
     class Meta:
         model = Demo 
-        fields = ('id', 'title')
+        fields = ('id',)
 
 class UserGroupSerializer(serializers.ModelSerializer):
     group_name = serializers.CharField(required=True)
@@ -40,16 +40,38 @@ class UserGroupSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
-        instance = self.Meta.model(**validated_data)  # as long as the fields are the same, we can just use this
+        accessible_demos = validated_data.pop('accessible_demos', None)
+        instance = UserGroup.objects.create(**validated_data)
         if password is not None:
             instance.set_password(password)
+        if accessible_demos is not None:
+            for accessible_demo in accessible_demos:
+                instance.accessible_demos.add(accessible_demo)
+        return instance
+
+    def update(self, instance, validated_data):
+        accessible_demos = validated_data.pop('accessible_demos')
+        instance.group_name = validated_data.get('group_name', instance.group_name)
+        instance.is_admin = validated_data.get('is_admin', instance.is_admin)
+        instance.password = validated_data.get('password', instance.password)
+        instance.accessible_demos.clear()
+        for accessible_demo in accessible_demos:
+            instance.accessible_demos.add(accessible_demo)
         instance.save()
         return instance
+
+    def to_internal_value(self, data):
+        accessibleDemoObjects = []
+        for accessible_demo in data['accessible_demos'].split(','):
+            accessibleDemoObjects.append(Demo.objects.get(pk=accessible_demo))
+        validated_data = super().to_internal_value(data)
+        validated_data['accessible_demos'] = accessibleDemoObjects
+        return validated_data
 
 class DemoSerializer(serializers.ModelSerializer):
     file = serializers.FileField(write_only=True)
     creator = serializers.SerializerMethodField()
-    user_groups = UserGroupSerializer(many=True, required=False)
+    user_groups = UserGroupSerializerShort(many=True, required=False)
 
     def get_creator(self, demo):
         return(demo.group_id.group_name)
@@ -59,24 +81,14 @@ class DemoSerializer(serializers.ModelSerializer):
         fields = ('id', 'creator', 'created_at', 'group_id', 'title', 'short_desc', 'detail_desc', 'file', 'user_groups')
 
     def create(self, validated_data):
-        print("create")
-        print(validated_data)
         user_groups = validated_data.pop('user_groups')
         demo = Demo.objects.create(**validated_data)
-        print(demo)
         for user_group in user_groups:
-            print(user_group)
-            print(user_group.id)
             demo.user_groups.add(user_group)
         return demo
     
     def update(self, instance, validated_data):
-        print("update")
-        print(instance)
-        print(validated_data)
         user_groups = validated_data.pop('user_groups')
-        #demo = Demo.objects.create(**validated_data)
-        #print(demo)
         instance.group_id = validated_data.get('group_id', instance.group_id)
         instance.title = validated_data.get('title', instance.title)
         instance.short_desc = validated_data.get('short_desc', instance.short_desc)
@@ -84,34 +96,16 @@ class DemoSerializer(serializers.ModelSerializer):
         instance.file = validated_data.get('file', instance.file)
         instance.user_groups.clear()
         for user_group in user_groups:
-            print(user_group)
-            print(user_group.id)
             instance.user_groups.add(user_group)
         instance.save()
         return instance
 
     def to_internal_value(self, data):
-        print("to_internal_value")
-        print(data)
-        print("super().to_internal_value")
         userGroupObjects = []
         for user_group in data['user_groups'].split(','):
-            print(user_group)
-            print(UserGroup.objects.get(pk=user_group))
             userGroupObjects.append(UserGroup.objects.get(pk=user_group))
-        print(userGroupObjects)
-        data['user_groups'] = userGroupObjects
-        #creator = UserGroup.objects.get(pk=data['group_id'])
-        #creator = 1
-        #print(creator)
-        #print(type(creator))
-        #data['group_id'] = creator
         validated_data = super().to_internal_value(data)
-        #validated_data = list(validated_data.items()).append(('user_groups',userGroupObjects))
-        #print(validated_data)
-        #validated_data = OrderedDict(validated_data)
         validated_data['user_groups'] = userGroupObjects
-        print(validated_data)
         return validated_data
         
 
