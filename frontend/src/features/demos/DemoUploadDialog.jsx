@@ -2,17 +2,28 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import { uploadDemoRequest } from "../../slices/demoSlice";
-import { showGroupsRequest } from "../../slices/groupsSlice";
+import { showGroupsRequest, resetGroupsState } from "../../slices/groupsSlice";
 import DemoDialogBase from "./DemoDialogBase";
 
 const DemoUploadDialog = (props) => {
   const [open, setOpen] = useState(false);
 
-  const { isLoading, uploadDemoRequest, showGroupsRequest, groups } = props;
+  const {
+    isLoading,
+    uploadDemoRequest,
+    showGroupsRequest,
+    resetGroupsState,
+    groups,
+  } = props;
 
   const handleOpenDialog = () => {
     showGroupsRequest();
     setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+    resetGroupsState();
   };
 
   return (
@@ -27,7 +38,7 @@ const DemoUploadDialog = (props) => {
       isLoading={isLoading}
       open={open}
       handleOpen={handleOpenDialog}
-      handleClose={() => setOpen(false)}
+      handleClose={handleCloseDialog}
       request={uploadDemoRequest}
       availableGroups={groups}
     />
@@ -44,6 +55,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     uploadDemoRequest: (file) => dispatch(uploadDemoRequest(file)),
     showGroupsRequest: () => dispatch(showGroupsRequest()),
+    resetGroupsState: () => dispatch(resetGroupsState()),
   };
 };
 

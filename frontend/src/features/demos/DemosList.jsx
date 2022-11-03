@@ -25,7 +25,7 @@ import {
   resetDemoState,
   deleteDemoRequest,
 } from "../../slices/demoSlice";
-import { showGroupsRequest } from "../../slices/groupsSlice";
+import { showGroupsRequest, resetGroupsState } from "../../slices/groupsSlice";
 import { spawnInstanceRequest } from "../../slices/instanceSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { truncateString } from "../../helpers/listHelper";
@@ -45,6 +45,7 @@ const DemosList = (props) => {
     isSpawningInstance,
     isAdmin,
     resetDemoState,
+    resetGroupsState,
     showGroupsRequest,
   } = props;
 
@@ -78,6 +79,7 @@ const DemosList = (props) => {
   const handleCloseEditDialog = () => {
     setEditDialogOpen(false);
     resetDemoState();
+    resetGroupsState();
   };
 
   const createListItems = (listItemArray) => {
@@ -197,6 +199,7 @@ const mapDispatchToProps = (dispatch) => {
     showGroupsRequest: () => dispatch(showGroupsRequest()),
     spawnInstanceRequest: (payload) => dispatch(spawnInstanceRequest(payload)),
     resetDemoState: () => dispatch(resetDemoState()),
+    resetGroupsState: () => dispatch(resetGroupsState()),
   };
 };
 

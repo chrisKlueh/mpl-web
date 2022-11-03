@@ -18,12 +18,14 @@ import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import Placeholder from "../general/Placeholder";
 import { formatIsoDate } from "../../helpers/formatHelper";
-import { deleteGroupRequest } from "../../slices/groupSlice";
-import { showDemosRequest } from "../../slices/demosSlice";
-import { showGroupRequest } from "../../slices/groupSlice";
+import { showDemosRequest, resetDemosState } from "../../slices/demosSlice";
 import { truncateString } from "../../helpers/listHelper";
 import styles from "./GroupsList.module.css";
-import { resetGroupState } from "../../slices/groupSlice";
+import {
+  resetGroupState,
+  deleteGroupRequest,
+  showGroupRequest,
+} from "../../slices/groupSlice";
 
 const GroupsList = (props) => {
   const [selectedId, setSelectedId] = useState(null);
@@ -38,6 +40,7 @@ const GroupsList = (props) => {
     showGroupRequest,
     maxLength,
     resetGroupState,
+    resetDemosState,
   } = props;
 
   const updateSelectedAndOpenDialog = (id, type) => {
@@ -64,6 +67,7 @@ const GroupsList = (props) => {
   const handleCloseEditDialog = () => {
     setEditDialogOpen(false);
     resetGroupState();
+    resetDemosState();
   };
 
   const getDemoCount = (listItem) => {
@@ -178,6 +182,7 @@ const mapDispatchToProps = (dispatch) => {
     showGroupRequest: (id) => dispatch(showGroupRequest(id)),
     showDemosRequest: () => dispatch(showDemosRequest()),
     resetGroupState: () => dispatch(resetGroupState()),
+    resetDemosState: () => dispatch(resetDemosState()),
   };
 };
 

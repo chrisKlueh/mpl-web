@@ -1,18 +1,29 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import { showDemosRequest } from "../../slices/demosSlice";
+import { showDemosRequest, resetDemosState } from "../../slices/demosSlice";
 import { createGroupRequest } from "../../slices/groupSlice";
 import GroupDialogBase from "./GroupDialogBase";
 
 const GroupCreationDialog = (props) => {
   const [open, setOpen] = useState(false);
 
-  const { isLoading, showDemosRequest, demos, createGroupRequest } = props;
+  const {
+    isLoading,
+    showDemosRequest,
+    demos,
+    createGroupRequest,
+    resetDemosState,
+  } = props;
 
   const handleOpenDialog = () => {
     showDemosRequest();
     setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+    resetDemosState();
   };
 
   return (
@@ -23,7 +34,7 @@ const GroupCreationDialog = (props) => {
       isLoading={isLoading}
       open={open}
       handleOpen={handleOpenDialog}
-      handleClose={() => setOpen(false)}
+      handleClose={handleCloseDialog}
       availableDemos={demos}
       request={createGroupRequest}
     />
@@ -40,6 +51,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     createGroupRequest: (payload) => dispatch(createGroupRequest(payload)),
     showDemosRequest: () => dispatch(showDemosRequest()),
+    resetDemosState: () => dispatch(resetDemosState()),
   };
 };
 
