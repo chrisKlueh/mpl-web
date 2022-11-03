@@ -16,7 +16,7 @@ const GroupAccessForm = (props) => {
   return (
     <Formik
       initialValues={{
-        user_groups: initValues ? getUserGroupsInitValues(initValues) : "",
+        user_groups: initValues ? getUserGroupsInitValues(initValues) : [],
       }}
       onSubmit={(values, { resetForm }) => {
         handleSubmit(values.user_groups);
@@ -43,7 +43,9 @@ const GroupAccessForm = (props) => {
                 name="user_groups"
               >
                 {availableGroups.map((group) => (
-                  <option value={group.id}>{group.group_name}</option>
+                  <option key={group.id} value={group.id}>
+                    {group.group_name}
+                  </option>
                 ))}
               </Field>
             </Grid>

@@ -19,7 +19,7 @@ const DemoAccessForm = (props) => {
         has_admin_privileges: initValues ? initValues.is_admin : false,
         accessible_demos: initValues
           ? getAccessibleDemosInitValues(initValues)
-          : "",
+          : [],
       }}
       onSubmit={(values, { resetForm }) => {
         handleSubmit(values.has_admin_privileges, values.accessible_demos);
@@ -70,7 +70,9 @@ const DemoAccessForm = (props) => {
                   name="accessible_demos"
                 >
                   {availableDemos.map((demo) => (
-                    <option value={demo.id}>{demo.title}</option>
+                    <option key={demo.id} value={demo.id}>
+                      {demo.title}
+                    </option>
                   ))}
                 </Field>
               </Grid>
