@@ -64,8 +64,11 @@ class UserGroupSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         accessibleDemoObjects = []
-        for accessible_demo in data['accessible_demos'].split(','):
-            accessibleDemoObjects.append(Demo.objects.get(pk=accessible_demo))
+        try:
+            for accessible_demo in data['accessible_demos'].split(','):
+                accessibleDemoObjects.append(Demo.objects.get(pk=accessible_demo))
+        except:
+            raise serializers.ValidationError({'accessible_demos': 'Expected a list of pks, but received ' + data['accessible_demos']})
         validated_data = super().to_internal_value(data)
         validated_data['accessible_demos'] = accessibleDemoObjects
         return validated_data
@@ -107,8 +110,11 @@ class DemoSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         userGroupObjects = []
-        for user_group in data['user_groups'].split(','):
-            userGroupObjects.append(UserGroup.objects.get(pk=user_group))
+        try:
+            for user_group in data['user_groups'].split(','):
+                userGroupObjects.append(UserGroup.objects.get(pk=user_group))
+        except:
+            raise serializers.ValidationError({'user_groups': 'Expected a list of pks, but received ' + data['user_groups']})
         validated_data = super().to_internal_value(data)
         validated_data['user_groups'] = userGroupObjects
         return validated_data
