@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
+from django.core.files.storage import FileSystemStorage
 from .models import UserGroup, Demo, Instance, FeedbackType, Feedback
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -47,13 +48,14 @@ class UserGroupSerializer(serializers.ModelSerializer):
         if accessible_demos is not None:
             for accessible_demo in accessible_demos:
                 instance.accessible_demos.add(accessible_demo)
+        instance.save()
         return instance
 
     def update(self, instance, validated_data):
         accessible_demos = validated_data.pop('accessible_demos')
         instance.group_name = validated_data.get('group_name', instance.group_name)
         instance.is_admin = validated_data.get('is_admin', instance.is_admin)
-        instance.password = validated_data.get('password', instance.password)
+        instance.set_password(validated_data.get('password', instance.password))
         instance.accessible_demos.clear()
         for accessible_demo in accessible_demos:
             instance.accessible_demos.add(accessible_demo)
@@ -82,10 +84,21 @@ class DemoSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_groups = validated_data.pop('user_groups')
-        demo = Demo.objects.create(**validated_data)
+        instance = Demo.objects.create(**validated_data)
+        print("filesystemstorage")
+        print(FileSystemStorage)
+        print(FileSystemStorage.location)
+        print(validated_data)
+        demo_file = validated_data['file']
+        print(demo_file)
+        file_handle = FileSystemStorage().save('demo_files/' + demo_file.name, demo_file)
+        print(file_handle)
+        #instance.file = file_handle
+        instance.save()
         for user_group in user_groups:
-            demo.user_groups.add(user_group)
-        return demo
+            instance.user_groups.add(user_group)
+        instance.save()
+        return instance
     
     def update(self, instance, validated_data):
         user_groups = validated_data.pop('user_groups')
