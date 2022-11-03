@@ -45,9 +45,10 @@ class UserGroupSerializer(serializers.ModelSerializer):
         instance = UserGroup.objects.create(**validated_data)
         if password is not None:
             instance.set_password(password)
-        if accessible_demos is not None:
-            for accessible_demo in accessible_demos:
-                instance.accessible_demos.add(accessible_demo)
+        if validated_data['is_admin'] == False:
+            if accessible_demos is not None:
+                for accessible_demo in accessible_demos:
+                    instance.accessible_demos.add(accessible_demo)
         instance.save()
         return instance
 
@@ -57,18 +58,21 @@ class UserGroupSerializer(serializers.ModelSerializer):
         instance.is_admin = validated_data.get('is_admin', instance.is_admin)
         instance.set_password(validated_data.get('password', instance.password))
         instance.accessible_demos.clear()
-        for accessible_demo in accessible_demos:
-            instance.accessible_demos.add(accessible_demo)
+        if validated_data['is_admin'] == False:
+            for accessible_demo in accessible_demos:
+                instance.accessible_demos.add(accessible_demo)
         instance.save()
         return instance
 
     def to_internal_value(self, data):
         accessibleDemoObjects = []
-        try:
-            for accessible_demo in data['accessible_demos'].split(','):
-                accessibleDemoObjects.append(Demo.objects.get(pk=accessible_demo))
-        except:
-            raise serializers.ValidationError({'accessible_demos': 'Expected a list of pks, but received ' + data['accessible_demos']})
+        if data['is_admin'] == 'false':
+            try:
+                if(data.__contains__('accessible_demos')):
+                    for accessible_demo in data['accessible_demos'].split(','):
+                        accessibleDemoObjects.append(Demo.objects.get(pk=accessible_demo))
+            except:
+                raise serializers.ValidationError({'accessible_demos': 'Expected a list of pks, but received ' + data['accessible_demos']})
         validated_data = super().to_internal_value(data)
         validated_data['accessible_demos'] = accessibleDemoObjects
         return validated_data
@@ -111,8 +115,9 @@ class DemoSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         userGroupObjects = []
         try:
-            for user_group in data['user_groups'].split(','):
-                userGroupObjects.append(UserGroup.objects.get(pk=user_group))
+            if (data.__contains__('user_groups')):
+                for user_group in data['user_groups'].split(','):
+                    userGroupObjects.append(UserGroup.objects.get(pk=user_group))
         except:
             raise serializers.ValidationError({'user_groups': 'Expected a list of pks, but received ' + data['user_groups']})
         validated_data = super().to_internal_value(data)
