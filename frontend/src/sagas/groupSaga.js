@@ -70,7 +70,6 @@ export function* watcherEditGroup() {
 
 export function* workerDeleteGroup({ payload }) {
   try {
-    console.log(payload);
     const { group_id, target_group } = payload;
     let res = yield call(deleteGroupReq, group_id, target_group);
     yield put(deleteGroupSuccess(res.data));
@@ -88,7 +87,6 @@ export function* watcherDeleteGroup() {
 
 export function* workerCreateGroup({ payload }) {
   try {
-    console.log(payload);
     const {
       groupId,
       groupName,

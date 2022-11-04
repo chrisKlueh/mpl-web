@@ -111,14 +111,3 @@ const sendPerDataChannel = (evtObject, dataChannel) => {
 export const requestSnapshot = (dataChannel) => {
   sendPerDataChannel({ type: "request_snapshot" }, dataChannel);
 };
-
-// function closeDC() {
-//   console.log("closing data channel");
-//   dataChannel.close();
-// }
-
-// function renderImg(blob) {
-//   let urlCreator = window.URL || window.webkitURL;
-//   let imgUrl = urlCreator.createObjectURL(blob);
-//   videoWindow.src = imgUrl;
-// }

@@ -29,7 +29,6 @@ export const loginSlice = createSlice({
       state.isLoggingIn = false;
     },
     logoutRequest: (state, action) => {
-      console.log(action);
       state.isLoggingOut = true;
     },
     logoutSuccess: (state, action) => initialState,

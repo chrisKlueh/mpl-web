@@ -31,7 +31,6 @@ const Navbar = (props) => {
 
   const handleLogout = () => {
     const { logoutRequest, userId } = props;
-    console.log("LOGOUT");
     handleCloseUserMenu();
     logoutRequest({ userId: userId });
   };

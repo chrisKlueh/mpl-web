@@ -26,7 +26,6 @@ export const logoutReq = (refreshToken) => {
         resolve(response);
       })
       .catch((error) => {
-        console.log(error);
         reject(error);
       });
   });

@@ -13,7 +13,6 @@ import { setToken, getToken, clearToken } from "../api/axiosApi";
 
 export function* workerLogin({ payload }) {
   const { groupName, password } = payload;
-  console.log(groupName, password);
   try {
     const res = yield call(loginReq, groupName, password);
     setToken(res.data.access, res.data.refresh);
