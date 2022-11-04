@@ -41,6 +41,7 @@ const GroupsList = (props) => {
     maxLength,
     resetGroupState,
     resetDemosState,
+    groupId,
   } = props;
 
   const updateSelectedAndOpenDialog = (id, type) => {
@@ -60,7 +61,6 @@ const GroupsList = (props) => {
   };
 
   const handleDeleteGroup = (targetGroupId) => {
-    const { groupId } = props;
     deleteGroupRequest({ group_id: groupId, target_group: targetGroupId });
   };
 
@@ -122,16 +122,19 @@ const GroupsList = (props) => {
                     <Edit />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Delete feedback">
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() =>
-                      updateSelectedAndOpenDialog(listItem.id, "DELETE")
-                    }
-                  >
-                    <Delete />
-                  </IconButton>
+                <Tooltip title="Delete group">
+                  <span>
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      disabled={listItem.id === groupId}
+                      onClick={() =>
+                        updateSelectedAndOpenDialog(listItem.id, "DELETE")
+                      }
+                    >
+                      <Delete />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               </ListItemSecondaryAction>
             </ListItem>
