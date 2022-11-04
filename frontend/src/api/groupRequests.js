@@ -1,10 +1,10 @@
 import { axiosInstance } from "./axiosApi";
 
-export const showDemoReq = async (id) => {
+export const showGroupReq = async (id) => {
   return new Promise((resolve, reject) => {
     axiosInstance({
       method: "get",
-      url: `demos/${id}`,
+      url: `groups/${id}`,
     })
       .then((response) => {
         resolve(response);
@@ -15,26 +15,24 @@ export const showDemoReq = async (id) => {
   });
 };
 
-export const uploadDemoReq = async (
-  user_group,
-  title,
-  short_desc,
-  detail_desc,
-  file,
-  user_groups
+export const createGroupReq = async (
+  groupId,
+  groupName,
+  password,
+  hasAdminPrivileges,
+  accessibleDemos
 ) => {
   let formData = new FormData();
-  formData.append("group_id", user_group);
-  formData.append("title", title);
-  formData.append("short_desc", short_desc);
-  formData.append("detail_desc", detail_desc);
-  formData.append("file", file);
-  formData.append("user_groups", user_groups);
+  formData.append("group_id", groupId);
+  formData.append("group_name", groupName);
+  formData.append("password", password);
+  formData.append("is_admin", hasAdminPrivileges);
+  formData.append("accessible_demos", accessibleDemos);
 
   return new Promise((resolve, reject) => {
     axiosInstance({
       method: "post",
-      url: `demos/`,
+      url: "groups/",
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
@@ -47,27 +45,25 @@ export const uploadDemoReq = async (
   });
 };
 
-export const editDemoReq = async (
-  id,
-  user_group,
-  title,
-  short_desc,
-  detail_desc,
-  file,
-  user_groups
+export const editGroupReq = async (
+  groupId,
+  targetGroupId,
+  groupName,
+  password,
+  hasAdminPrivileges,
+  accessibleDemos
 ) => {
   let formData = new FormData();
-  formData.append("group_id", user_group);
-  formData.append("title", title);
-  formData.append("short_desc", short_desc);
-  formData.append("detail_desc", detail_desc);
-  formData.append("file", file);
-  formData.append("user_groups", user_groups);
+  formData.append("group_id", groupId);
+  formData.append("group_name", groupName);
+  formData.append("password", password);
+  formData.append("is_admin", hasAdminPrivileges);
+  formData.append("accessible_demos", accessibleDemos);
 
   return new Promise((resolve, reject) => {
     axiosInstance({
       method: "put",
-      url: `demos/${id}`,
+      url: `groups/${targetGroupId}`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
@@ -80,14 +76,15 @@ export const editDemoReq = async (
   });
 };
 
-export const deleteDemoReq = async (user_id, demo_id) => {
+export const deleteGroupReq = async (group_id, target_group_id) => {
   let formData = new FormData();
-  formData.append("group_id", user_id);
+  formData.append("group_id", group_id);
+  formData.append("target_group_id", target_group_id);
 
   return new Promise((resolve, reject) => {
     axiosInstance({
       method: "delete",
-      url: `demos/${demo_id}`,
+      url: `groups/${target_group_id}`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })

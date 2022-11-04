@@ -12,39 +12,37 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-import styles from "./DemoDialogBase.module.css";
-import UploadDropzone from "./UploadDropzone";
-import DemoDetailsForm from "./DemoDetailsForm";
-import GroupAccessForm from "./GroupAccessForm";
+import styles from "./GroupDialogBase.module.css";
 import LoadingFragment from "../general/LoadingFragment";
+import GroupDetailsForm from "./GroupDetailsForm";
+import DemoAccessForm from "./DemoAccessForm";
 
-const DemoDialogBase = (props) => {
+const GroupDialogBase = (props) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [demoFiles, setDemoFiles] = useState([]);
-  const [demoTitle, setDemoTitle] = useState("");
-  const [shortDesc, setShortDesc] = useState("");
-  const [detailDesc, setDetailDesc] = useState("");
+  const [groupName, setGroupName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const {
     hasFab,
     isLoading,
     open,
     handleOpen,
-    availableGroups,
     initValues,
     title,
     stepTitles,
+    availableDemos,
+    handleClose,
     request,
     id,
-    handleClose,
   } = props;
 
   const resetStepper = () => setActiveStep(0);
 
   const resetLocalState = () => {
-    setDemoFiles([]);
-    setDemoTitle("");
-    setShortDesc("");
-    setDetailDesc("");
+    setGroupName("");
+    setPassword("");
+    setConfirmPassword("");
   };
 
   const closeDialog = () => {
@@ -53,26 +51,23 @@ const DemoDialogBase = (props) => {
     resetLocalState();
   };
 
-  const submitRequest = (user_groups) => {
+  const submitRequest = (hasAdminPrivileges, accessibleDemos) => {
     const { userGroup } = props;
     request({
-      id: id,
-      user_group: userGroup,
-      title: demoTitle,
-      short_desc: shortDesc,
-      detail_desc: detailDesc,
-      file: demoFiles[0],
-      user_groups: user_groups,
+      targetGroupId: id,
+      groupId: userGroup,
+      groupName: groupName,
+      password: password,
+      hasAdminPrivileges: hasAdminPrivileges,
+      accessibleDemos: accessibleDemos,
     });
     closeDialog();
   };
 
-  const checkFirstStepComplete = () => demoFiles.length > 0;
-
   return (
     <div>
       {hasFab && (
-        <Tooltip title="Upload a new demo">
+        <Tooltip title="Create a new group">
           <Fab
             size="medium"
             color="primary"
@@ -93,7 +88,7 @@ const DemoDialogBase = (props) => {
         <DialogTitle id="form-dialog-title">{title}</DialogTitle>
         <DialogContent>
           {isLoading ? (
-            <LoadingFragment message={"Loading demo details.."} />
+            <LoadingFragment message={"Loading group details.."} />
           ) : (
             <Fragment>
               <Stepper activeStep={activeStep} className={styles.stepper}>
@@ -107,34 +102,23 @@ const DemoDialogBase = (props) => {
                   );
                 })}
               </Stepper>
-              {activeStep === 0 && (
-                <UploadDropzone
+              {activeStep === 0 ? (
+                <GroupDetailsForm
                   handleClose={closeDialog}
                   handleNext={() => setActiveStep(1)}
-                  disableNext={!checkFirstStepComplete()}
-                  files={demoFiles}
-                  setFiles={(files) => setDemoFiles(files)}
-                  allowMultipleFiles={false}
-                />
-              )}
-              {activeStep === 1 && (
-                <DemoDetailsForm
-                  handleNext={() => setActiveStep(2)}
-                  handleBack={() => setActiveStep(0)}
+                  groupNameState={groupName}
+                  passwordState={password}
+                  confirmPasswordState={confirmPassword}
+                  setGroupNameState={setGroupName}
+                  setPasswordState={setPassword}
+                  setConfirmPasswordState={setConfirmPassword}
                   initValues={initValues}
-                  demoTitleState={demoTitle}
-                  shortDescState={shortDesc}
-                  detailDescState={detailDesc}
-                  setDemoTitleState={setDemoTitle}
-                  setShortDescState={setShortDesc}
-                  setDetailDescState={setDetailDesc}
                 />
-              )}
-              {activeStep === 2 && (
-                <GroupAccessForm
-                  availableGroups={availableGroups}
+              ) : (
+                <DemoAccessForm
+                  handleBack={() => setActiveStep(0)}
                   handleSubmit={submitRequest}
-                  handleBack={() => setActiveStep(1)}
+                  availableDemos={availableDemos}
                   initValues={initValues}
                 />
               )}
@@ -153,4 +137,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(DemoDialogBase);
+export default connect(mapStateToProps, null)(GroupDialogBase);

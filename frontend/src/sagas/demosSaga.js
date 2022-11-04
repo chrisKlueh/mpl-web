@@ -1,12 +1,9 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
-import { showDemosReq, deleteDemoReq } from "../api/demosRequests";
+import { showDemosReq } from "../api/demosRequests";
 import {
   showDemosRequest,
   showDemosSuccess,
   showDemosError,
-  deleteDemoRequest,
-  deleteDemoSuccess,
-  deleteDemoError,
 } from "../slices/demosSlice";
 import { snackbarNotification } from "../helpers/notifierHelper";
 
@@ -24,23 +21,6 @@ export function* watcherShowDemos() {
   yield takeEvery(showDemosRequest, workerShowDemos);
 }
 
-export function* workerDeleteDemo({ payload }) {
-  try {
-    const { user_id, demo_id } = payload;
-    yield call(deleteDemoReq, user_id, demo_id);
-    yield put(deleteDemoSuccess());
-    yield put(snackbarNotification("Demo deleted.", "success"));
-    yield put(showDemosRequest());
-  } catch (error) {
-    yield put(deleteDemoError());
-    yield put(snackbarNotification("Failed to delete demo.", "error"));
-  }
-}
-
-export function* watcherDeleteDemo() {
-  yield takeEvery(deleteDemoRequest, workerDeleteDemo);
-}
-
 export default function* rootSaga() {
-  yield all([fork(watcherShowDemos), fork(watcherDeleteDemo)]);
+  yield all([fork(watcherShowDemos)]);
 }

@@ -1,34 +1,47 @@
-//validates username corresponding to fd-code (= fdai + arbitrary amount of numbers)
-export const validateUsername = (values) => {
+//validates groupName filled
+export const validateGroupName = (values, discloseRequiredLength) => {
   const errors = {};
-  if (!values.username) {
-    errors.username = "Required";
-  } /* else if (!/^fdai[0-9]+$/i.test(values.username)) {
-    errors.username = "Invalid fd code";
-  } */
-  return errors;
-};
-
-//validates password filled
-export const validatePassword = (values) => {
-  const errors = {};
-  if (!values.password) {
-    errors.password = "Required";
+  if (!values.group_name) {
+    errors.group_name = "Required";
+  } else if (discloseRequiredLength && values.group_name.length > 50) {
+    errors.group_name = "Group name too long";
   }
   return errors;
 };
 
-//merges validateUsername and validatePassword error objects
-export const validateUsernameAndPasswords = (
+//validates password filled
+export const validatePassword = (
   values,
   hasPasswordConfirmation,
-  discloseRequiredChars
+  discloseRequiredLength
 ) => {
-  const usernameErrors = validateUsername(values);
+  const errors = {};
+  if (!values.password) {
+    errors.password = "Required";
+  } else if (discloseRequiredLength && !(values.password.length >= 8)) {
+    errors.password = "Password too short";
+  }
+  if (hasPasswordConfirmation) {
+    if (!values.confirm_password) {
+      errors.confirm_password = "Required";
+    } else if (values.password !== values.confirm_password) {
+      errors.confirm_password = "Confirmation does not match";
+    }
+  }
+  return errors;
+};
+
+//merges validateGroupName and validatePassword error objects
+export const validateGroupNameAndPassword = (
+  values,
+  hasPasswordConfirmation,
+  discloseRequiredLength
+) => {
+  const groupNameErrors = validateGroupName(values, discloseRequiredLength);
   const passwordErrors = validatePassword(
     values,
     hasPasswordConfirmation,
-    discloseRequiredChars
+    discloseRequiredLength
   );
-  return { ...usernameErrors, ...passwordErrors };
+  return { ...groupNameErrors, ...passwordErrors };
 };

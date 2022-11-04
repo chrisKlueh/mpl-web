@@ -17,6 +17,8 @@ import loginReducer from "./slices/loginSlice";
 import demosReducer from "./slices/demosSlice";
 import demoReducer from "./slices/demoSlice";
 import feedbackReducer from "./slices/feedbackSlice";
+import groupsReducer from "./slices/groupsSlice";
+import groupReducer from "./slices/groupSlice";
 import instanceReducer from "./slices/instanceSlice";
 import remotePlotReducer from "./slices/remotePlotSlice";
 import notifierReducer from "./slices/notifierSlice";
@@ -39,6 +41,8 @@ const store = configureStore({
     demos: demosReducer,
     demo: demoReducer,
     feedback: feedbackReducer,
+    groups: groupsReducer,
+    group: groupReducer,
     instance: instanceReducer,
     remotePlot: remotePlotReducer,
     notifier: notifierReducer,

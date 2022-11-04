@@ -7,6 +7,8 @@ from functools import partial
 from django.http import Http404
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch.dispatcher import receiver
+from django.db import IntegrityError
+from django.utils.datastructures import MultiValueDictKeyError
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
@@ -19,41 +21,6 @@ from rest_framework.permissions import BasePermission
 
 from .models import UserGroup, Demo, Instance, FeedbackType, Feedback
 from .serializers import *
-
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
-
-class UserGroupCreateView(APIView):
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format='json'):
-        serializer = UserGroupSerializer(data=request.data)
-        if serializer.is_valid():
-            user_group = serializer.save()
-            if user_group:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class HelloWorldView(APIView):
-    def get(self, request):
-        return Response(data={"hello":"world"}, status=status.HTTP_200_OK)
-
-#logs user out and blacklists user's refresh token
-class LogoutAndBlacklistRefreshTokenView(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-
-    def post(self, request):
-        try:
-            refresh_token = request.data["refresh_token"]
-            RefreshToken(refresh_token).blacklist()
-            return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-#########################################
 
 class OnlyAdminPermission(BasePermission):
     def __init__(self, restricted_methods):
@@ -87,20 +54,65 @@ class OnlyAdminPermission(BasePermission):
         print(obj)
         return True
 
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+class UserGroupCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
+
+    def post(self, request, format='json'):
+        serializer = UserGroupSerializer(data=request.data)
+        if serializer.is_valid():
+            user_group = serializer.save()
+            if user_group:
+                json = serializer.data
+                return Response(json, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class HelloWorldView(APIView):
+    def get(self, request):
+        return Response(data={"hello":"world"}, status=status.HTTP_200_OK)
+
+#logs user out and blacklists user's refresh token
+class LogoutAndBlacklistRefreshTokenView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            RefreshToken(refresh_token).blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+#########################################
+
 class UserGroupList(APIView):
+    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
+
     def get(self, request, format=None):
-        userGroupList = UserGroup.objects.values('group_name', 'id', 'created_at', 'is_admin')
+        userGroupList = UserGroup.objects.all().order_by('-created_at')
         serializer = UserGroupSerializer(userGroupList, context={'request': request}, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = UserGroupSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            try:
+                accessibleDemoList = request.data["accessible_demos"].split(",")
+            except MultiValueDictKeyError:
+                return Response("Accessible demos list is required.", status=status.HTTP_400_BAD_REQUEST)
+            serializer = UserGroupSerializer(data=request.data)
+            if serializer.is_valid():
+                userGroup = serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            return Response("Group name already exists.", status=status.HTTP_400_BAD_REQUEST)
 
 class UserGroupDetail(APIView):
+    permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['PUT', 'DELETE'])]
+    
     def get_object(self, pk):
         try:
             return UserGroup.objects.get(pk=pk)
@@ -112,16 +124,41 @@ class UserGroupDetail(APIView):
         serializer = UserGroupSerializer(userGroup, context={'request': request})
         return Response(serializer.data)
 
+    def put(self, request, pk, format=None):
+        try:
+            try:
+                accessibleDemoList = request.data["accessible_demos"].split(",")
+            except MultiValueDictKeyError:
+                return Response("Accessible demos list is required.", status=status.HTTP_400_BAD_REQUEST)
+            userGroup = self.get_object(pk)
+            serializer = UserGroupSerializer(userGroup, data=request.data,context={'request': request})
+            if serializer.is_valid():
+                userGroup = serializer.save()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            return Response("Group name already exists.", status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, pk, format=None):
-        userGroup = self.get_object(pk)
-        userGroup.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if not request.data['group_id'] == request.data['target_group_id']:
+            userGroup = self.get_object(pk)
+            userGroup.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response("You cannot delete your own group.", status=status.HTTP_403_FORBIDDEN)
 
 class DemoList(APIView):
     permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
     def get(self, request, format=None):
-        demoList = Demo.objects.all().order_by('-created_at')
-        serializer = DemoSerializer(demoList, context={'request': request}, many=True)
+        tokenUserGroupString = request.headers.get('Authorization').replace('JWT ', '')
+        tokenUserGroupId = AccessToken(tokenUserGroupString)["user_id"]
+        isTokenUserAdmin = UserGroup.objects.get(pk=tokenUserGroupId).is_admin
+        fullDemoList = Demo.objects.all().order_by('-created_at')
+        if isTokenUserAdmin == True:
+            serializer = DemoSerializer(fullDemoList, context={'request': request}, many=True)    
+        else:
+            restrictedDemoList = fullDemoList.filter(user_groups=tokenUserGroupId)
+            serializer = DemoSerializer(restrictedDemoList, context={'request': request}, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -190,27 +227,30 @@ class InstanceList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        instanceData = {'group_id': request.data["group_id"], 'demo': request.data["demo"]}
-        print(instanceData)
-        #try:
-        serializer = InstanceSerializer(data=instanceData)
-        if serializer.is_valid():
-            instance = serializer.save()
-            host, pid = self.spawnInstance(instanceData['demo'], instance.id, instanceData['group_id'])
-            instanceData['host'] = host
-            instanceData['pid'] = pid
-            InstanceDetail.get_object(self, instance.id)
-            serializer = InstanceSerializer(instance, data=instanceData,context={'request': request})
+        targetDemoId = request.data["demo"]
+        groupId = request.data["group_id"]
+        instanceData = {'group_id': groupId, 'demo': targetDemoId}
+        targetDemo = Demo.objects.get(pk=targetDemoId)
+        userGroup = UserGroup.objects.get(pk=groupId)
+        if userGroup.is_admin or targetDemo.user_groups.filter(id=groupId).exists():
+            serializer = InstanceSerializer(data=instanceData)
             if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                instance = self.get_object(id)
-                instance.delete()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        #except:
-        #    return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+                instance = serializer.save()
+                host, pid = self.spawnInstance(instanceData['demo'], instance.id, instanceData['group_id'])
+                instanceData['host'] = host
+                instanceData['pid'] = pid
+                InstanceDetail.get_object(self, instance.id)
+                serializer = InstanceSerializer(instance, data=instanceData,context={'request': request})
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                else:
+                    instance = self.get_object(id)
+                    instance.delete()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response("You cannot access this demo.", status=status.HTTP_403_FORBIDDEN)
 
 class InstanceDetail(APIView):
     def get_object(self, pk):
@@ -227,11 +267,6 @@ class InstanceDetail(APIView):
     def delete(self, request, pk, format=None):
         instance = self.get_object(pk)
         group_id = instance.group_id.id
-        #print(group_id)
-        #print(request.data["group_id"])
-        #host = instance.host
-        #pid = instance.pid
-        #if request.data["host"] == str(host) and request.data["pid"] == str(pid) and request.data["user_id"] == str(user_id):
         if request.data["group_id"] == str(group_id):
             try:
                 instance.delete()
@@ -264,20 +299,6 @@ class FeedbackDetail(APIView):
         feedbackDetail = self.get_object(pk)
         feedbackDetail.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-#todo
-#class Login(APIView):
-#    def get_object(self, name):
-#        try:
-#            return User.objects.get(name=name)
-#        except User.DoesNotExist:
-#            raise Http404
-#
-#    def post(self, request, format=None):
-#        print(request.data)
-#        user = self.get_object(request.data["username"])
-#        serializer = UserSerializer(user, context={'request': request})
-#        return Response(serializer.data)
 
 @receiver(pre_delete, sender=Demo)
 def demo_file_delete(sender, instance, **kwargs):

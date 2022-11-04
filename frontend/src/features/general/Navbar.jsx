@@ -31,7 +31,6 @@ const Navbar = (props) => {
 
   const handleLogout = () => {
     const { logoutRequest, userId } = props;
-    console.log("LOGOUT");
     handleCloseUserMenu();
     logoutRequest({ userId: userId });
   };
@@ -99,6 +98,20 @@ const Navbar = (props) => {
                         }}
                       >
                         Feedback
+                      </Link>
+                    </MenuItem>
+                  )}
+                  {isAdmin && (
+                    <MenuItem key={"groups"} onClick={handleCloseUserMenu}>
+                      <Link
+                        to="/groups"
+                        style={{
+                          textDecoration: "none",
+                          color: "black",
+                          textAlign: "center",
+                        }}
+                      >
+                        Groups
                       </Link>
                     </MenuItem>
                   )}

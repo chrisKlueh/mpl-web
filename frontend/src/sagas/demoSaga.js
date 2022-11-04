@@ -1,5 +1,10 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
-import { showDemoReq, uploadDemoReq, editDemoReq } from "../api/demoRequests";
+import {
+  showDemoReq,
+  uploadDemoReq,
+  editDemoReq,
+  deleteDemoReq,
+} from "../api/demoRequests";
 import {
   showDemoRequest,
   showDemoSuccess,
@@ -10,6 +15,9 @@ import {
   editDemoRequest,
   editDemoSuccess,
   editDemoError,
+  deleteDemoRequest,
+  deleteDemoSuccess,
+  deleteDemoError,
 } from "../slices/demoSlice";
 import { showDemosRequest } from "../slices/demosSlice";
 import { snackbarNotification } from "../helpers/notifierHelper";
@@ -29,9 +37,18 @@ export function* watcherShowDemo() {
 }
 
 export function* workerUploadDemo({ payload }) {
-  const { user_id, title, short_desc, detail_desc, file } = payload;
+  const { user_group, title, short_desc, detail_desc, file, user_groups } =
+    payload;
   try {
-    yield call(uploadDemoReq, user_id, title, short_desc, detail_desc, file);
+    yield call(
+      uploadDemoReq,
+      user_group,
+      title,
+      short_desc,
+      detail_desc,
+      file,
+      user_groups
+    );
     yield put(uploadDemoSuccess());
     yield put(showDemosRequest());
     yield put(snackbarNotification("Demo uploaded.", "success"));
@@ -46,9 +63,19 @@ export function* watcherUploadDemo() {
 }
 
 export function* workerEditDemo({ payload }) {
-  const { id, user_id, title, short_desc, detail_desc, file } = payload;
+  const { id, user_group, title, short_desc, detail_desc, file, user_groups } =
+    payload;
   try {
-    yield call(editDemoReq, id, user_id, title, short_desc, detail_desc, file);
+    yield call(
+      editDemoReq,
+      id,
+      user_group,
+      title,
+      short_desc,
+      detail_desc,
+      file,
+      user_groups
+    );
     yield put(editDemoSuccess());
     yield put(showDemosRequest());
     yield put(snackbarNotification("Demo edited.", "success"));
@@ -62,10 +89,28 @@ export function* watcherEditDemo() {
   yield takeEvery(editDemoRequest, workerEditDemo);
 }
 
+export function* workerDeleteDemo({ payload }) {
+  try {
+    const { user_id, demo_id } = payload;
+    yield call(deleteDemoReq, user_id, demo_id);
+    yield put(deleteDemoSuccess());
+    yield put(snackbarNotification("Demo deleted.", "success"));
+    yield put(showDemosRequest());
+  } catch (error) {
+    yield put(deleteDemoError());
+    yield put(snackbarNotification("Failed to delete demo.", "error"));
+  }
+}
+
+export function* watcherDeleteDemo() {
+  yield takeEvery(deleteDemoRequest, workerDeleteDemo);
+}
+
 export default function* rootSaga() {
   yield all([
     fork(watcherShowDemo),
     fork(watcherUploadDemo),
     fork(watcherEditDemo),
+    fork(watcherDeleteDemo),
   ]);
 }

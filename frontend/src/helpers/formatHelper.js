@@ -2,25 +2,25 @@ export const formatIsoDate = (isoDateString, includeTime) => {
   const date = new Date(isoDateString);
   if (includeTime === undefined || includeTime === true) {
     return (
-      addPadding(date.getUTCDate(), 2) +
+      addPadding(date.getDate(), 2) +
       "." +
-      addPadding(date.getUTCMonth() + 1, 2) +
+      addPadding(date.getMonth() + 1, 2) +
       "." +
-      date.getUTCFullYear() +
+      date.getFullYear() +
       ", " +
-      addPadding(date.getUTCHours(), 2) +
+      addPadding(date.getHours(), 2) +
       ":" +
-      addPadding(date.getUTCMinutes(), 2) +
+      addPadding(date.getMinutes(), 2) +
       ":" +
-      addPadding(date.getUTCSeconds(), 2)
+      addPadding(date.getSeconds(), 2)
     );
   } else {
     return (
-      addPadding(date.getUTCDate(), 2) +
+      addPadding(date.getDate(), 2) +
       "." +
-      addPadding(date.getUTCMonth() + 1, 2) +
+      addPadding(date.getMonth() + 1, 2) +
       "." +
-      date.getUTCFullYear()
+      date.getFullYear()
     );
   }
 };

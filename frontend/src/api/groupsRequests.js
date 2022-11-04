@@ -1,9 +1,11 @@
 import { axiosInstance } from "./axiosApi";
 
-export const showDemosReq = () => {
+export const showGroupsReq = async (id) => {
   return new Promise((resolve, reject) => {
-    axiosInstance
-      .get(`demos/`)
+    axiosInstance({
+      method: "get",
+      url: "groups/",
+    })
       .then((response) => {
         resolve(response);
       })

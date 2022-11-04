@@ -20,14 +20,17 @@ import LoadingDialog from "../general/LoadingDialog";
 import ListRowSkeleton from "../general/ListRowSkeleton";
 import ConfirmationDialog from "../general/ConfirmationDialog";
 import Placeholder from "../general/Placeholder";
-import { deleteDemoRequest } from "../../slices/demosSlice";
-import { showDemoRequest, resetDemoState } from "../../slices/demoSlice";
+import {
+  showDemoRequest,
+  resetDemoState,
+  deleteDemoRequest,
+} from "../../slices/demoSlice";
+import { showGroupsRequest, resetGroupsState } from "../../slices/groupsSlice";
 import { spawnInstanceRequest } from "../../slices/instanceSlice";
 import { formatIsoDate } from "../../helpers/formatHelper";
 import { truncateString } from "../../helpers/listHelper";
 
 const DemosList = (props) => {
-  //selectedId wird später für eine ConfirmDialog-Component gebraucht!!
   const [selectedId, setSelectedId] = useState(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
@@ -42,6 +45,8 @@ const DemosList = (props) => {
     isSpawningInstance,
     isAdmin,
     resetDemoState,
+    resetGroupsState,
+    showGroupsRequest,
   } = props;
 
   const updateSelectedAndOpenDialog = (id, dialog) => {
@@ -51,6 +56,7 @@ const DemosList = (props) => {
         setDeleteDialogOpen(true);
         break;
       case "EDIT":
+        showGroupsRequest();
         showDemoRequest(id);
         setEditDialogOpen(true);
         break;
@@ -73,6 +79,7 @@ const DemosList = (props) => {
   const handleCloseEditDialog = () => {
     setEditDialogOpen(false);
     resetDemoState();
+    resetGroupsState();
   };
 
   const createListItems = (listItemArray) => {
@@ -101,7 +108,7 @@ const DemosList = (props) => {
               />
               <ListItemText
                 primary={formatIsoDate(listItem.created_at, true)}
-                secondary={"By " + listItem.name}
+                secondary={"By " + listItem.creator}
                 className={styles.listItemDate}
               />
               <ListItemSecondaryAction>
@@ -189,8 +196,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     deleteDemoRequest: (id) => dispatch(deleteDemoRequest(id)),
     showDemoRequest: (id) => dispatch(showDemoRequest(id)),
+    showGroupsRequest: () => dispatch(showGroupsRequest()),
     spawnInstanceRequest: (payload) => dispatch(spawnInstanceRequest(payload)),
     resetDemoState: () => dispatch(resetDemoState()),
+    resetGroupsState: () => dispatch(resetGroupsState()),
   };
 };
 
