@@ -31,7 +31,7 @@ ROOT = os.path.dirname(__file__)
 if not (os.environ.get('DJANGO_SIG_HOST') == None):
     print("Using docker params: API_URL, ICE_SERVERS")
     API_URL = "http://" + os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')[0] + "/api/"#docker
-    ICE_SERVERS = [RTCIceServer("turn:192.168.2.115:3478", "testuser", "secret")]#docker
+    ICE_SERVERS = [RTCIceServer(os.environ.get('DJANGO_TURN_SERVER'), os.environ.get('DJANGO_TURN_USER'), os.environ.get('DJANGO_TURN_PASSWORD'))]#docker
 else:
     print("Using dev params: API_URL, ICE_SERVERS")
     API_URL = "http://192.168.2.115:8000/api/"#dev
