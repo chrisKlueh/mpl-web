@@ -25,6 +25,7 @@ import numpy as np
 
 from constants import FRAMERATE, CONNECTION_TIMEOUT_DURATION, UPDATE_REFRESH_TOKEN_INTERVAL, AUTH_HEADER_TYPE, MESSAGE_TYPES, MPL_MOUSE_BTNS
 from imageRenderingTrack import ImageRenderingTrack
+import MPLDemo
 
 ROOT = os.path.dirname(__file__)
 
