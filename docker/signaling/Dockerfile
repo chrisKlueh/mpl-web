@@ -1,6 +1,6 @@
 # docker/signaling/Dockerfile
 
-FROM python:3
+FROM python:3.8.10
 
 WORKDIR /app/signaling
 COPY ./signaling/requirements.txt ./
