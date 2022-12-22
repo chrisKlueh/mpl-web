@@ -46,14 +46,6 @@ class OnlyAdminPermission(BasePermission):
         else:
             return True
 
-    #not called for list views
-    def has_object_permission(self, request, view, obj):
-        print("checking for has_object_permission")
-        print(request)
-        print(view)
-        print(obj)
-        return True
-
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
@@ -69,7 +61,6 @@ class UserGroupCreateView(APIView):
                 return Response(json, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#logs user out and blacklists user's refresh token
 class LogoutAndBlacklistRefreshTokenView(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
@@ -81,8 +72,6 @@ class LogoutAndBlacklistRefreshTokenView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-#########################################
 
 class UserGroupList(APIView):
     permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['POST'])]
@@ -276,8 +265,6 @@ class InstanceDetail(APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
-        
-
 class FeedbackDetail(APIView):
     permission_classes = [permissions.IsAuthenticated, partial(OnlyAdminPermission, ['DELETE'])]
     def get_object(self, pk):
