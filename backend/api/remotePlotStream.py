@@ -29,13 +29,18 @@ import MPLDemo
 
 ROOT = os.path.dirname(__file__)
 
-if not (os.environ.get('DJANGO_SIG_HOST') == None):
-    print("Using docker params: API_URL, ICE_SERVERS")
+if not (os.environ.get('DJANGO_ALLOWED_HOSTS') == None):
+    print("Using docker params: API_URL")
     API_URL = "http://" + os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')[0] + "/api/"#docker
+else:
+    print("Using dev params: API_URL")
+    API_URL = "http://192.168.2.115:8000/api/"#dev
+
+if not (os.environ.get('DJANGO_TURN_SERVER') == None or os.environ.get('DJANGO_TURN_USER') == None or os.environ.get('DJANGO_TURN_PASSWORD') == None):
+    print("Using docker params: ICE_SERVERS")
     ICE_SERVERS = [RTCIceServer(os.environ.get('DJANGO_TURN_SERVER'), os.environ.get('DJANGO_TURN_USER'), os.environ.get('DJANGO_TURN_PASSWORD'))]#docker
 else:
-    print("Using dev params: API_URL, ICE_SERVERS")
-    API_URL = "http://192.168.2.115:8000/api/"#dev
+    print("Using dev params: ICE_SERVERS")
     ICE_SERVERS = [RTCIceServer("stun:stun.1.google.com:19302")]#dev
 
 if not (os.environ.get('DJANGO_SIG_HOST') == None):
