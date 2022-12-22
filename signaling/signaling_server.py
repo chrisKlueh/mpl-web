@@ -6,13 +6,11 @@ server_io = socketio.AsyncServer(async_mode='aiohttp', cors_allowed_origins='*')
 app = web.Application()
 server_io.attach(app)
 
-# Triggered when a client connects to our socket. 
 @server_io.event
 async def connect(sid, socket):    
     print(datetime.now() , ":", sid, 'connected', "\n")
     await server_io.emit("you_connected", to=sid)
 
-# Triggered when a client disconnects from our socket
 @server_io.event
 async def disconnect(sid):
     print(datetime.now() , ":", sid, 'disconnected', "\n")
