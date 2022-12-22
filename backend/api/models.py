@@ -76,7 +76,6 @@ class FeedbackType(models.Model):
 class Feedback(models.Model):
     id = models.AutoField("feedback id", primary_key=True)
     created_at = models.DateTimeField("created at", auto_now_add=True)
-    #details should be models.TextField?
     details = models.CharField("details", max_length=240)
     generated_details = models.CharField("generated details", max_length=1500, blank=True, default='')
     type = models.ForeignKey(FeedbackType, on_delete=models.CASCADE)
