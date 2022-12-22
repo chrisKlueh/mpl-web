@@ -200,10 +200,13 @@ const RemotePlot = (props) => {
   };
 
   const addEventListeners = () => {
-    eventListeners.map((item) =>
-      videoRef.current.addEventListener(item.event, item.listener)
-    );
-
+    eventListeners.map((item) => {
+      if (item.handlerBase === "key") {
+        window.addEventListener(item.event, item.listener);
+      } else {
+        videoRef.current.addEventListener(item.event, item.listener);
+      }
+    });
     videoRef.current.addEventListener("mouseenter", handleFigureEnter);
     videoRef.current.addEventListener("mouseleave", handleFigureLeave);
   };
