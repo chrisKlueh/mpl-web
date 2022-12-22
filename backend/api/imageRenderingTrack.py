@@ -1,5 +1,5 @@
-# based on https://pericror.com/software/python-create-a-webrtc-video-stream-from-images;
-# modified
+# Based on https://pericror.com/software/python-create-a-webrtc-video-stream-from-images;
+# Modified by Christian Klüh, 2022.
 
 import asyncio
 import numpy

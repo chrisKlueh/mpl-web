@@ -1,5 +1,5 @@
-# Based on aiortc/examples/webcam/webcam.py; 
-# heavily modified
+# Based on https://github.com/aiortc/aiortc/blob/main/examples/webcam/webcam.py;
+# Heavily modified by Christian Klüh, 2022.
 
 import argparse
 import asyncio

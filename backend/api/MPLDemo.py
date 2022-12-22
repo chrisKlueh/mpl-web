@@ -1,6 +1,7 @@
 # Python3 interactive visual demo template using matplotlib
 # requires: python3.6, numpy, matplotlib, PyQt5
 # Written by Alex Gepperth, 2022.
+# Modified by Christian Klüh, 2022.
 import numpy as np, matplotlib.pyplot as plt, math, sys ;
 
 # parent class: constructor with argument loop_forever
