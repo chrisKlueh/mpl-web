@@ -108,7 +108,6 @@ export const establishSocketConnection = (
             let jsonData = JSON.parse(data.data);
             connectionObj.peerConnection.setRemoteDescription(jsonData);
             resolve({
-              socket: client_io,
               peerConnection: connectionObj.peerConnection,
               dataChannel: connectionObj.dataChannel,
             });
