@@ -178,10 +178,16 @@ const RemotePlot = (props) => {
 
   const handleFigureEnter = (event) => {
     captureMouseRelated(event, dataChannel);
+    eventListeners.map((item) => {
+      if (item.handlerBase === "key") {
+        window.addEventListener(item.event, item.listener);
+      }
+    });
   };
 
   const handleFigureLeave = (event) => {
     captureMouseRelated(event, dataChannel);
+    removeEventListeners();
   };
 
   const handleSavePlot = () => requestSnapshot(dataChannel);
@@ -207,9 +213,7 @@ const RemotePlot = (props) => {
 
   const addEventListeners = () => {
     eventListeners.map((item) => {
-      if (item.handlerBase === "key") {
-        window.addEventListener(item.event, item.listener);
-      } else {
+      if (item.handlerBase !== "key") {
         videoRef.current.addEventListener(item.event, item.listener);
       }
     });
