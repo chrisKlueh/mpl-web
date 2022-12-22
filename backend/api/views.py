@@ -207,11 +207,6 @@ class InstanceList(APIView):
         p = subprocess.Popen(('python3 ./api/remotePlotStream.py' + " --instance_id " + str(instanceId) + " --group_id " + str(userGroupId) + " --demo " + str(demoFileString) + " --refresh_token " + str(refreshToken)).split(), shell=False)
         return hostId, p.pid
         
-    def get(self, request, format=None): 
-        instanceList = Instance.objects.all()
-        serializer = InstanceSerializer(instanceList, context={'request': request}, many=True)
-        return Response(serializer.data)
-
     def post(self, request, format=None):
         targetDemoId = request.data["demo"]
         groupId = request.data["group_id"]
@@ -246,10 +241,6 @@ class InstanceDetail(APIView):
         except Instance.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        instance = self.get_object(pk)
-        serializer = InstanceSerializer(instance, context={'request': request})
-        return Response(serializer.data)
 
     def delete(self, request, pk, format=None):
         instance = self.get_object(pk)

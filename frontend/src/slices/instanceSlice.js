@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isSpawningInstance: false,
-  isGettingInstance: false,
   isDeletingInstance: false,
   instance: {},
 };
@@ -10,16 +9,6 @@ export const instanceSlice = createSlice({
   name: "instance",
   initialState,
   reducers: {
-    showInstanceRequest: (state, action) => {
-      state.isGettingInstance = true;
-    },
-    showInstanceSuccess: (state, action) => {
-      state.isGettingInstance = false;
-      state.instance = action.payload;
-    },
-    showInstanceError: (state, action) => {
-      state.isGettingInstance = false;
-    },
     spawnInstanceRequest: (state, action) => {
       state.isSpawningInstance = true;
     },
@@ -43,9 +32,6 @@ export const instanceSlice = createSlice({
   },
 });
 export const {
-  showInstanceRequest,
-  showInstanceSuccess,
-  showInstanceError,
   spawnInstanceRequest,
   spawnInstanceSuccess,
   spawnInstanceError,
