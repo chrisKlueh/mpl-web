@@ -86,6 +86,7 @@ const RemotePlot = (props) => {
   useEffect(() => {
     //return statement equals componentWillUnmount
     return () => {
+      removeEventListeners();
       handleDisconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,6 +99,12 @@ const RemotePlot = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataChannel]);
+
+  useEffect(() => {
+    return () => {
+      clearInterval(autoEventInterval);
+    };
+  }, [autoEventInterval]);
 
   useEffect(() => {
     if (!isDebugMenuOpen) {
@@ -158,7 +165,6 @@ const RemotePlot = (props) => {
   };
 
   const handleDisconnect = () => {
-    handleClearMockedEvent();
     if (peerConnectionMonitor()) {
       stopPeerConnectionRequest({ peerConnection: peerConnectionMonitor() });
     }
@@ -172,10 +178,16 @@ const RemotePlot = (props) => {
 
   const handleFigureEnter = (event) => {
     captureMouseRelated(event, dataChannel);
+    eventListeners.map((item) => {
+      if (item.handlerBase === "key") {
+        window.addEventListener(item.event, item.listener);
+      }
+    });
   };
 
   const handleFigureLeave = (event) => {
     captureMouseRelated(event, dataChannel);
+    removeEventListeners();
   };
 
   const handleSavePlot = () => requestSnapshot(dataChannel);
@@ -200,12 +212,21 @@ const RemotePlot = (props) => {
   };
 
   const addEventListeners = () => {
-    eventListeners.map((item) =>
-      videoRef.current.addEventListener(item.event, item.listener)
-    );
-
+    eventListeners.map((item) => {
+      if (item.handlerBase !== "key") {
+        videoRef.current.addEventListener(item.event, item.listener);
+      }
+    });
     videoRef.current.addEventListener("mouseenter", handleFigureEnter);
     videoRef.current.addEventListener("mouseleave", handleFigureLeave);
+  };
+
+  const removeEventListeners = () => {
+    eventListeners.map((item) => {
+      if (item.handlerBase === "key") {
+        window.removeEventListener(item.event, item.listener);
+      }
+    });
   };
 
   const handleSubmitBugReport = (feedbackType, feedback) => {
