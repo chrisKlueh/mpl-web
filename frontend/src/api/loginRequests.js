@@ -19,7 +19,7 @@ export const loginReq = (group_name, password) => {
 export const logoutReq = (refreshToken) => {
   return new Promise((resolve, reject) => {
     axiosInstance
-      .post("logout/", {
+      .post("token/blacklist/", {
         refresh_token: refreshToken,
       })
       .then((response) => {

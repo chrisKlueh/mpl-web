@@ -52,7 +52,10 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response.status === 400 && originalRequest.url === "logout/") {
+    if (
+      error.response.status === 400 &&
+      originalRequest.url === "token/blacklist/"
+    ) {
       console.log("Logout attempt: refresh token blacklisted");
       store.dispatch(logoutSuccess());
       clearToken();

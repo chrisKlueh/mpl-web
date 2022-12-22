@@ -5,7 +5,7 @@ from .views import CustomTokenObtainPairView, LogoutAndBlacklistRefreshTokenView
 urlpatterns = [
     path('token/obtain/', CustomTokenObtainPairView.as_view(), name='token_create'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
-    path('logout/', LogoutAndBlacklistRefreshTokenView.as_view(), name='logout'),
+    path('token/blacklist/', LogoutAndBlacklistRefreshTokenView.as_view(), name='token_blacklist'),
     re_path(r'groups/$', UserGroupList.as_view()),
     re_path(r'groups/([0-9]*)$', UserGroupDetail.as_view()),
     re_path(r'demos/$', DemoList.as_view()),
