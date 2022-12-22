@@ -210,9 +210,12 @@ const start = (
   };
 
   dataChannel.onmessage = (event) => {
-    if (event.data instanceof Blob) {
-      const blob = event.data;
-      saveBlobToFile(blob);
+    let data = event.data;
+    if (data instanceof ArrayBuffer) {
+      data = new Blob([data]);
+    }
+    if (data instanceof Blob) {
+      saveBlobToFile(data);
     } else {
       let message = JSON.parse(event.data);
       if (message.type && message.type === "exception") {
