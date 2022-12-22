@@ -282,7 +282,7 @@ class RemotePlotStream(object):
 
 
 def add_args():
-    parser = argparse.ArgumentParser(description="WebRTC webcam demo")
+    parser = argparse.ArgumentParser(description="Remote interaction with a MPL demo via WebRTC")
     parser.add_argument("--verbose", "-v", action="count")
     parser.add_argument("--demo", help="The filename of the demo (without .py)", required=True)
     parser.add_argument("--instance_id", help="The instance's id", required=True)
