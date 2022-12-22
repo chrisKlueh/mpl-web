@@ -16,7 +16,7 @@
 }
 
 .plotVideo {
-  width: 100%;
+  width: calc(100% - 58px);
   border: 2px solid whitesmoke;
 }
 
@@ -29,5 +29,9 @@
     flex-direction: column;
     width: calc(100% - 10px);
     order: -1;
+  }
+
+  .plotVideo {
+    width: 100%;
   }
 }
