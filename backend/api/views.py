@@ -180,8 +180,8 @@ class DemoDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class FeedbackList(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request, format=None):
-        
         feedbackList = Feedback.objects.all().order_by('-created_at')
         serializer = FeedbackSerializer(feedbackList, context={'request': request}, many=True)
         return Response(serializer.data)
@@ -194,6 +194,7 @@ class FeedbackList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class InstanceList(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     def spawnInstance(self, demoId, instanceId, userGroupId):
         hostId = hex(getnode())
         demoFile = Demo.objects.get(pk=demoId).file
@@ -238,6 +239,7 @@ class InstanceList(APIView):
             return Response("You cannot access this demo.", status=status.HTTP_403_FORBIDDEN)
 
 class InstanceDetail(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     def get_object(self, pk):
         try:
             return Instance.objects.get(pk=pk)
