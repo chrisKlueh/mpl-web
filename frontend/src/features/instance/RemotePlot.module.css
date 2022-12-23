@@ -11,13 +11,20 @@
   margin: 5px;
 }
 
-.plotVideo:hover {
+.videoWrapper {
+  border: 2px solid whitesmoke;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.videoWrapper:hover {
   border: 2px solid #1976d2;
 }
 
 .plotVideo {
-  width: calc(100% - 58px);
-  border: 2px solid whitesmoke;
+  max-width: 100%;
+  height: auto;
 }
 
 @media screen and (orientation: portrait) {

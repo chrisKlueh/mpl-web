@@ -262,7 +262,9 @@ const RemotePlot = (props) => {
             <LoadingFragment message="Establishing connection.." />
           </div>
         ) : (
-          <video className={styles.plotVideo} ref={videoRef} autoPlay />
+          <div className={styles.videoWrapper}>
+            <video className={styles.plotVideo} ref={videoRef} autoPlay />
+          </div>
         )}
         <PlotControlBar
           handleTerminate={handleTerminate}
