@@ -108,7 +108,7 @@ In diesem Fall ist allerdings zunächst ein erneuter Build (siehe Deployment) n�
 
 Christian Klüh (christian.klueh@informatik.hs-fulda.de)
 
-Betreuer: Prof. Dr. Alexander Gepperth
-Zweitprüferin: Prof. Dr. Yvonne Jung
+Betreuer: Prof. Dr. Alexander Gepperth.
+Zweitprüferin: Prof. Dr. Yvonne Jung.
 
 Hochschule Fulda, WiSe22/23.
