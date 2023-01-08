@@ -1,0 +1,15 @@
+.container {
+  margin-bottom: 20px;
+}
+
+@media screen and (orientation: landscape) {
+  .plotty {
+    width: 60vh;
+  }
+}
+
+@media screen and (orientation: portrait) {
+  .plotty {
+    width: 60vw;
+  }
+}

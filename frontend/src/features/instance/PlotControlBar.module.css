@@ -1,0 +1,19 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+
+.fab {
+  margin: 10px 5px 0px 5px;
+}
+
+@media screen and (orientation: portrait) {
+  .root {
+    flex-direction: row;
+  }
+
+  .fab {
+    margin: 5px;
+  }
+}

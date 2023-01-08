@@ -1,0 +1,29 @@
+.root {
+  max-width: 100%;
+  padding: 0 10px;
+}
+
+.list {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.listItemTitle {
+  max-width: 100%;
+}
+
+.listItemDate {
+  max-width: 200px;
+}
+
+.skeleton {
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .listItemDate {
+    display: none;
+  }
+}

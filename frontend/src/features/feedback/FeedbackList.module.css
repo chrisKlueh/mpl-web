@@ -1,0 +1,47 @@
+.root {
+  max-width: 100%;
+  padding: 0 10px;
+}
+
+.list {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.genericListItem {
+  max-width: 100px;
+}
+
+.demoTitle {
+  max-width: 250px;
+}
+
+.feedbackDetails {
+  width: 200px;
+}
+
+.feedbackDate {
+  max-width: 150px;
+}
+
+.skeleton {
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .feedbackDate {
+    display: none;
+  }
+
+  .feedbackDetails {
+    max-width: 120px;
+  }
+}
+
+@media screen and (max-width: 750px) and (orientation: portrait) {
+  .genericListItem {
+    display: none;
+  }
+}

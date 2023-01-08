@@ -1,0 +1,22 @@
+.paper {
+  margin: auto auto;
+}
+
+.title {
+  padding-top: 10px;
+}
+
+.container {
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+}
+
+.login {
+  margin: 10px 0;
+  justify-content: center;
+}
+
+.loginButton {
+  text-transform: none;
+}

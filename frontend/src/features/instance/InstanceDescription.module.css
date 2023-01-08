@@ -1,0 +1,35 @@
+.root {
+  text-align: start;
+  background-color: #ffebb4;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 10px;
+  flex-grow: 1;
+  min-height: 50vh;
+}
+
+.shortDesc {
+  font-weight: bold;
+}
+
+.detailsHeading {
+  margin-top: 10px;
+}
+
+.detailsContainer {
+  padding: 5px 10px;
+  background-color: #fff4d5;
+  border-radius: 5px;
+  min-height: 150px;
+}
+
+@media screen and (orientation: portrait) {
+  .root {
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .detailsContainer {
+    min-height: 0;
+  }
+}
