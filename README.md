@@ -60,7 +60,7 @@ In den folgenden Dateien müssen Parameter vor dem Deployment angepasst werden:
   Zudem müssen ggfs. diverse Ports in der Zielumgebung für die Nutzung geöffnet werden.
   Weitere Details finden sich in meiner Thesis.
 
-Die gesamte Infrastruktur lässt sich mit Docker Compose erzeugen und starten:
+Die gesamte Infrastruktur lässt sich mit **Docker Compose** erzeugen und starten:
 
 ```
 docker-compose -f docker-compose-dev.yml up --build
@@ -91,7 +91,7 @@ in Erfahrung gebracht werden.
 
 ### Nachträgliche Erweiterung um Python-Bibliotheken
 
-Neue Bibliotheken können entweder kurzfristig mit dem Package-Manager pip
+Neue Bibliotheken können entweder kurzfristig mit dem Package-Manager **pip**
 im bestehenden Container `backend` über die Docker-Shell installiert werden:
 
 ```
