@@ -270,13 +270,13 @@ class RemotePlotStream(object):
         print("\nPlot snapshot requested. Sending blob.\n")
         # stop listending to the draw event to prevent infinite 
         # calls of this eventHandler (caused by savefig)
-        self.demo.fig.canvas.mpl_disconnect(self.cid)
+        self.demoFig.canvas.mpl_disconnect(self.cid)
         with io.BytesIO() as buff:
-            self.demo.fig.savefig(buff, format="png")
+            self.demoFig.savefig(buff, format="png")
             buff.seek(0)
             data = buff.getvalue()
         # subscribe to the draw event once again
-        self.cid = self.demo.fig.canvas.mpl_connect('draw_event', self.onUpdatePlot)
+        self.cid = self.demoFig.canvas.mpl_connect('draw_event', self.onUpdatePlot)
         #send image via data channel
         self.channel_send(self.channel, data)
 
